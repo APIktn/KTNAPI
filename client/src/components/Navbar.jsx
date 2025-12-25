@@ -13,7 +13,7 @@ import ApiIcon from "@mui/icons-material/Api";
 import SupportAgent from "@mui/icons-material/SupportAgent";
 
 // image
-import NavBg from "../assets/Design/Image/navbar_bg.png";
+import NavBg from "../assets/Design/Image/navi_bg.png";
 
 export default function Navbar() {
   const [value, setValue] = React.useState("recents");
@@ -31,7 +31,6 @@ export default function Navbar() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           borderRadius: "16px",
-          overflow: "hidden",
         }}
         className="flex items-center justify-between px-4 py-2"
       >
