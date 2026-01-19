@@ -1,8 +1,8 @@
-export default function Home() {
+export default function Register() {
   return (
     <>
       <div class="">
-        <h1>Home</h1>
+        <h1>Register</h1>
       </div>
     </>
   )
