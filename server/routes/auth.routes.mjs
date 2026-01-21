@@ -1,102 +1,113 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
-import { loginUser } from "../controllers/authService.mjs";
-import supabase from "../utils/db.mjs";
+import con from "../db.mjs";
 import { generateAvatarUrl } from "../utils/avatarGenerator.mjs";
-import { validateRegister, validateLogin } from "../middlewares/validators.mjs";
+import generateUserCode from "../utils/generateUserCode.mjs";
+import { validateRegister, validateLogin } from "../middleware/authValidator.mjs";
 
 const authRouter = Router();
 
+////////////////////////////////////////////////// register
+
 authRouter.post("/register", validateRegister, async (req, res) => {
-  const { firstname, lastname, email, password, tel_num } = req.body;
+  const { firstName, lastName, userEmail, password, userName } = req.body
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const profileImage = generateAvatarUrl(firstname, lastname);
+    const userCode = await generateUserCode(con); // gen code
+    const hashedPassword = await bcrypt.hash(password, 10); // encryp
+    const profileImage = generateAvatarUrl(firstName, lastName); // gen pic
 
-    const { error } = await supabase.from("users").insert([
-      {
-        firstname,
-        lastname,
-        tel_num,
-        email,
-        password: hashedPassword,
-        role: "user",
-        profile_image: profileImage,
-      },
-    ]);
-
-    if (error) throw error;
+    await con.query(
+      `INSERT INTO tbl_mas_users (
+        UserCode, FirstName, LastName, UserEmail, Password, UserName,
+        Profile_Image, create_by, create_datetime, update_by, update_datetime
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        userCode,
+        firstName,
+        lastName,
+        userEmail,
+        hashedPassword,
+        userName,
+        profileImage,
+        userCode,
+        new Date(),
+        userCode,
+        new Date()
+      ]
+    );
 
     res.status(201).json({ message: "ลงทะเบียนสำเร็จ" });
+
   } catch (error) {
-    res
-      .status(400)
-      .json({ error: "เกิดข้อผิดพลาดในการลงทะเบียน: " + error.message });
+    // unique ซ้ำ
+    if (error.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({
+        error: "มีผู้ลงทะเบียนมากเกินไป กรุณาลองใหม่อีกครั้ง"
+      });
+    }
+
+    res.status(500).json({
+      error: "เกิดข้อผิดพลาดในการลงทะเบียน"
+    });
   }
 });
 
-authRouter.post("/login/user", validateLogin, async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const { token, user } = await loginUser(email, password, "user");
-    res.json({ message: "เข้าสู่ระบบสำเร็จ", token, user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+////////////////////////////////////////////////// login
 
-authRouter.post("/login/admin", validateLogin, async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const { token, user } = await loginUser(email, password, "admin");
-    res.json({ message: "เข้าสู่ระบบแอดมินสำเร็จ", token, user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-authRouter.post("/logout", (req, res) => {
-  res.json({ message: "ออกจากระบบสำเร็จ" });
-});
-
-authRouter.post("/register/technician", validateRegister, async (req, res) => {
-  const { firstname, lastname, email, password, tel_num } = req.body;
+authRouter.post("/login", validateLogin, async (req, res) => {
+  const { userName, password } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const profileImage = generateAvatarUrl(firstname, lastname);
+    const [rows] = await con.query(
+      `select Id, UserCode, UserEmail, UserName, Password
+       from tbl_mas_users
+       where UserEmail = ? OR UserName = ?
+       limit 1`,
+      [userName, userName]
+    );
 
-    const { error } = await supabase.from("users").insert([
+    if (rows.length === 0) {
+      return res.status(404).json({
+        error: "ไม่พบผู้ใช้งานในระบบ"
+      });
+    }
+
+    const user = rows[0];
+
+    const ok = await bcrypt.compare(password, user.Password);
+    if (!ok) {
+      return res.status(400).json({
+        error: "รหัสผ่านไม่ถูกต้อง"
+      });
+    }
+
+    // สร้าง token
+    const token = jwt.sign(
       {
-        firstname,
-        lastname,
-        tel_num,
-        email,
-        password: hashedPassword,
-        role: "technician",
-        profile_image: profileImage,
+        id: user.Id,
+        userCode: user.UserCode,
+        email: user.UserEmail
       },
-    ]);
+      process.env.SECRET_KEY,
+      { expiresIn: "1h" }
+    );
 
-    if (error) throw error;
+    // แจก token
+    res.json({
+      message: "เข้าสู่ระบบสำเร็จ",
+      token,
+      user: {
+        userCode: user.UserCode,
+        email: user.UserEmail,
+        userName: user.UserName
+      }
+    });
 
-    res.status(201).json({ message: "ลงทะเบียนช่างเทคนิคสำเร็จ" });
-  } catch (error) {
-    res
-      .status(400)
-      .json({ error: "เกิดข้อผิดพลาดในการลงทะเบียน: " + error.message });
+  } catch (err) {
+    res.status(500).json({
+      error: "server error"
+    });
   }
 });
-
-authRouter.post("/login/technician", validateLogin, async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const { token, user } = await loginUser(email, password, "technician");
-    res.json({ message: "เข้าสู่ระบบช่างเทคนิคสำเร็จ", token, user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-export default authRouter;

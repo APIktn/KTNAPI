@@ -4,10 +4,8 @@ import { jwtDecode } from "jwt-decode";
 function jwtInterceptor() {
   axios.interceptors.request.use((req) => {
     const userToken = window.localStorage.getItem("token");
-    const adminToken = window.localStorage.getItem("admin-token");
-    const technicianToken = window.localStorage.getItem("technician-token");
 
-    let token = userToken || adminToken || technicianToken;
+    let token = userToken
 
     if (token) {
       const decodedToken = jwtDecode(token);
@@ -15,8 +13,6 @@ function jwtInterceptor() {
 
       if (decodedToken.exp < currentTime) {
         window.localStorage.removeItem("token");
-        window.localStorage.removeItem("admin-token");
-        window.localStorage.removeItem("technician-token");
         alert("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่");
         window.location.replace("/login");
       } else {
@@ -34,8 +30,6 @@ function jwtInterceptor() {
     (error) => {
       if (error.response && error.response.status === 401) {
         window.localStorage.removeItem("token");
-        window.localStorage.removeItem("admin-token");
-        window.localStorage.removeItem("technician-token");
         alert("เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่");
         window.location.replace("/login");
       }

@@ -1,28 +1,23 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Navbar from "./components/Navbar.jsx"
-import Home from "./views/Home.jsx"
-import ProtectedRoute from "./routes/ProtectedRoute.jsx"
-import PageA from "./views/test.jsx"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppThemeProvider from "./context/ThemeProvider.jsx";
+import Header from "./components/Header.jsx";
+import Home from "./views/Home.jsx";
+import PageA from "./views/test.jsx";
 
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <AppThemeProvider>
+        <Header />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/test" element={<PageA />} />
+        </Routes>
 
-        <Route
-          path="/test"
-          element={
-            <ProtectedRoute>
-              <PageA />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      </AppThemeProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
