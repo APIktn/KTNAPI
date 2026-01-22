@@ -43,3 +43,14 @@ body {
   font-family: "Mitr", system-ui, sans-serif !important;
   font-weight: 400;
 }
+
+/* sidebar */
+.sidebar {
+  width: 260px;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}

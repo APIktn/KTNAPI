@@ -1,20 +1,30 @@
 import { useTheme } from "../../context/Theme";
 
-function Navbar() {
+function Navbar({ onToggleSidebar }) {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
   return (
-    <nav className="navbar bg-body-tertiary col-lg-12 border rounded-4">
+    <nav className="navbar bg-body-tertiary border rounded-4">
       <div className="container d-flex justify-content-between align-items-center">
-        <span className="navbar-brand">my Navbar</span>
 
-        {/* Theme */}
+        {/* left */}
+        <div className="d-flex align-items-center gap-3">
+          <button
+            className="btn btn-outline-secondary"
+            onClick={onToggleSidebar}
+          >
+            <i className="fa-solid fa-bars"></i>
+          </button>
+
+          <span className="navbar-brand mb-0">Daily Duck</span>
+        </div>
+
+        {/* right */}
         <div
           onClick={toggleTheme}
           className={`theme-switch ${isDark ? "dark" : ""}`}
           role="button"
-          aria-label="toggle theme"
         >
           <div className="theme-switch-thumb">
             {isDark ? (
