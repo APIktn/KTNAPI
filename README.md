@@ -2,8 +2,7 @@
 
 client
 npm create vite@latest client -- --template react
-npm install tailwindcss @tailwindcss/vite
-npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm install bootstrap
 npm install axios
 
 server

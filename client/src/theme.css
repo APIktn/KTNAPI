@@ -1,0 +1,76 @@
+/* main theme */
+[data-bs-theme] {
+  transition: background-color 1s ease, color 1s ease;
+}
+
+[data-bs-theme="light"] {
+  --div-bg-color: #f8f9fa;
+  --header-bg-image: url("/img/header-light.png");
+}
+
+[data-bs-theme="dark"] {
+  --div-bg-color: #212529;
+  --header-bg-image: url("/img/header-dark.png");
+}
+
+.theme-div-bg-color {
+  background-color: var(--div-bg-color);
+  transition: background-color 0.5s ease;
+}
+
+.theme-header-bg-image {
+  background-image: var(--header-bg-image);
+  background-size: cover;
+  background-position: center;
+  transition: background-color 0.5s ease;
+}
+
+/* theme bootstrap components smooth */
+.card,
+.btn,
+.navbar,
+.alert,
+.form-control,
+.form-select,
+.dropdown-menu {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease;
+}
+
+div,
+.card i,
+.navbar i {
+  transition: color 0.35s ease;
+}
+
+
+/* theme-switch navbar */
+.theme-switch {
+  width: 56px;
+  height: 30px;
+  background: var(--bs-secondary-bg);
+  border-radius: 999px;
+  padding: 3px;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+  display: flex;
+  align-items: center;
+}
+
+.theme-switch-thumb {
+  width: 24px;
+  height: 24px;
+  background: var(--bs-body-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bs-body-color);
+  transition: transform 0.5s ease;
+}
+
+.theme-switch.dark .theme-switch-thumb {
+  transform: translateX(26px);
+}

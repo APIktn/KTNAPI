@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import con from "../db.mjs";
-import { generateAvatarUrl } from "../utils/avatarGenerator.mjs";
+import generateAvatarUrl from "../utils/avatarGenerator.mjs";
 import generateUserCode from "../utils/generateUserCode.mjs";
 import { validateRegister, validateLogin } from "../middleware/authValidator.mjs";
 
@@ -111,3 +111,5 @@ authRouter.post("/login", validateLogin, async (req, res) => {
     });
   }
 });
+
+export default authRouter

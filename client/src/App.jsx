@@ -1,23 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppThemeProvider from "./context/ThemeProvider.jsx";
-import Header from "./components/Header.jsx";
-import Home from "./views/Home.jsx";
-import PageA from "./views/test.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Header from "./component/Header.jsx"
+import Home from "./view/Home.jsx"
+import PageA from "./view/Test.jsx"
 
 function App() {
   return (
     <BrowserRouter>
-      <AppThemeProvider>
-        <Header />
+      <Header />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/test" element={<PageA />} />
-        </Routes>
-
-      </AppThemeProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/test" element={<PageA />} />
+      </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App

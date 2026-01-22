@@ -14,10 +14,12 @@ export const getRandomBackgroundColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-export const generateAvatarUrl = (firstname, lastname) => {
+const generateAvatarUrl = (firstname, lastname) => {
   const initials = `${firstname[0]}${lastname[0]}`;
   const backgroundColor = getRandomBackgroundColor();
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
     initials
   )}&background=${backgroundColor}&color=ffffff`;
 };
+
+export default generateAvatarUrl

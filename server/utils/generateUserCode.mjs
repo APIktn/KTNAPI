@@ -1,4 +1,4 @@
-export const generateUserCode = async (con) => {
+const generateUserCode = async (con) => {
   const today = new Date()
   const ymd =
     today.getFullYear().toString() +
@@ -16,3 +16,5 @@ export const generateUserCode = async (con) => {
 
   return `${prefix}${running}`
 }
+
+export default generateUserCode
