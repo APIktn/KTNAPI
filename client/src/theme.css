@@ -25,7 +25,7 @@
   transition: background-color 0.5s ease;
 }
 
-/* theme bootstrap components smooth */
+/* bootstrap smooth */
 .card,
 .btn,
 .navbar,
@@ -39,12 +39,22 @@
     border-color 0.5s ease;
 }
 
+/* mui smooth */
+.MuiButton-root,
+.MuiBottomNavigation-root,
+.MuiBottomNavigationAction-root,
+.MuiPaper-root {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease;
+}
+
 div,
 .card i,
 .navbar i {
-  transition: color 0.35s ease;
+  transition: color 0.5s ease;
 }
-
 
 /* theme-switch navbar */
 .theme-switch {
