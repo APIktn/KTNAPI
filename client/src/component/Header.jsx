@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./Nav/Navbar";
 import Sidebar from "./Nav/Sidebar.jsx";
 import { useTheme } from "../context/Theme";
@@ -9,6 +9,21 @@ import lightVideo from "../assets/design/video/bg_light_video.mp4";
 export default function Header({ children }) {
   const { theme } = useTheme();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNavbarSticky, setIsNavbarSticky] = useState(false);
+
+  // reset sidebar เมื่อเข้า mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 992) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const bgVideo = theme === "dark" ? darkVideo : lightVideo;
 
@@ -17,6 +32,7 @@ export default function Header({ children }) {
       className="Header container-fluid position-relative"
       style={{ minHeight: "100vh" }}
     >
+      {/* background video */}
       <video
         key={bgVideo}
         autoPlay
@@ -29,25 +45,43 @@ export default function Header({ children }) {
         <source src={bgVideo} type="video/mp4" />
       </video>
 
+      {/* navbar */}
       <div className="navbar-layer">
-        <Navbar onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
+        <Navbar
+          onToggleSidebar={() => setIsSidebarOpen((p) => !p)}
+          onStickyChange={setIsNavbarSticky}
+        />
       </div>
 
-      <div className="row p-3">
+      <div className="row p-3 d-none d-lg-flex desktop-layout">
+        {/* ===== desktop ===== */}
         <div
-          className={`mt-3 transition-all ${
-            isSidebarOpen ? "col-lg-3" : "col-lg-1"
-          }`}
+          className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"} transition-all`}
         >
-          <Sidebar isOpen={isSidebarOpen} />
+          <Sidebar isOpen={isSidebarOpen} isNavbarSticky={isNavbarSticky} />
         </div>
 
         <div
-          className={`mt-3 transition-all ${
-            isSidebarOpen ? "col-lg-9" : "col-lg-11"
-          }`}
+          className={`desktop-content ${isSidebarOpen ? "shrink" : "expand"}`}
         >
           {children}
+        </div>
+
+        {/* ===== mobile ===== */}
+        <div className="d-block d-lg-none position-relative">
+          {/* backdrop */}
+          {isSidebarOpen && (
+            <div
+              className="mobile-backdrop"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
+          <div className={`mobile-sidebar ${isSidebarOpen ? "open" : ""}`}>
+            <Sidebar isOpen />
+          </div>
+
+          <div className="mobile-content mt-3">{children}</div>
         </div>
       </div>
     </div>

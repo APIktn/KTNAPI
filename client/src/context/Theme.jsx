@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
+import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles"
+import CssBaseline from "@mui/material/CssBaseline"
 
 const ThemeContext = createContext()
 
@@ -22,11 +24,26 @@ export function ThemeProvider({ children }) {
     localStorage.setItem("theme", theme)
   }, [theme])
 
+  const muiTheme = createTheme({
+    palette: {
+      mode: theme,
+      primary: {
+        main: theme === "dark" ? "#91c8f2" : "#1976d2",
+      },
+      background: {
+        default: "transparent",
+      },
+    },
+  })
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div data-bs-theme={theme} className="min-vh-100">
-        {children}
-      </div>
+      <MuiThemeProvider theme={muiTheme}>
+        <CssBaseline />
+        <div data-bs-theme={theme} className="min-vh-100">
+          {children}
+        </div>
+      </MuiThemeProvider>
     </ThemeContext.Provider>
   )
 }
