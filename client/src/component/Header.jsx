@@ -14,11 +14,8 @@ export default function Header({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
-
-  // ใช้สำหรับ animate border ชั่วคราว
   const [animateSidebarBorder, setAnimateSidebarBorder] = useState(false);
 
-  // ตรวจ footer
   const footerRef = useRef(null);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
@@ -50,7 +47,7 @@ export default function Header({ children }) {
     return () => observer.disconnect();
   }, []);
 
-  // trigger border animation (300ms)
+  // trigger border animation
   useEffect(() => {
     setAnimateSidebarBorder(true);
     const t = setTimeout(() => {
@@ -84,7 +81,7 @@ export default function Header({ children }) {
         />
       </div>
 
-      {/* ===== desktop ===== */}
+      {/* desktop */}
       {!isMobile && (
         <div className="row p-3 desktop-layout d-flex">
           <div className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
@@ -102,7 +99,7 @@ export default function Header({ children }) {
         </div>
       )}
 
-      {/* ===== mobile ===== */}
+      {/* mobile */}
       {isMobile && (
         <>
           <SidebarMobile
