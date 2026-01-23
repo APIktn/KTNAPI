@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "./Nav/Navbar";
 import SidebarDesktop from "./Nav/SidebarDesktop";
 import SidebarMobile from "./Nav/SidebarMobile";
+import Footer from "./Footer";
 import { useTheme } from "../context/Theme";
 
 import darkVideo from "../assets/design/video/bg_dark_video.mp4";
@@ -14,27 +15,54 @@ export default function Header({ children }) {
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
 
+  // ใช้สำหรับ animate border ชั่วคราว
+  const [animateSidebarBorder, setAnimateSidebarBorder] = useState(false);
+
+  // ตรวจ footer
+  const footerRef = useRef(null);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  // resize handler
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 992;
       setIsMobile(mobile);
-
       setIsSidebarOpen(false);
     };
 
     handleResize();
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // observe footer
+  useEffect(() => {
+    if (!footerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(footerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // trigger border animation (300ms)
+  useEffect(() => {
+    setAnimateSidebarBorder(true);
+    const t = setTimeout(() => {
+      setAnimateSidebarBorder(false);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [isSidebarOpen, isNavbarSticky, isFooterVisible]);
+
   const bgVideo = theme === "dark" ? darkVideo : lightVideo;
 
   return (
-    <div
-      className="Header container-fluid position-relative"
-      style={{ minHeight: "100vh" }}
-    >
+    <div className="Header container-fluid position-relative" style={{ minHeight: "100vh" }}>
       {/* background video */}
       <video
         key={bgVideo}
@@ -63,6 +91,8 @@ export default function Header({ children }) {
             <SidebarDesktop
               isOpen={isSidebarOpen}
               isNavbarSticky={isNavbarSticky}
+              isFooterVisible={isFooterVisible}
+              animateBorder={animateSidebarBorder}
             />
           </div>
 
@@ -82,6 +112,11 @@ export default function Header({ children }) {
           <div className="mobile-content">{children}</div>
         </>
       )}
+
+      {/* footer */}
+      <div className="footer-layer" ref={footerRef}>
+        <Footer />
+      </div>
     </div>
   );
 }

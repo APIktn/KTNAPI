@@ -14,26 +14,74 @@ const closedMixin = (theme) => ({
   overflowX: "hidden",
 });
 
+// เช็ค open sticky footer animate
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "isNavbarSticky",
-})(({ theme, open, isNavbarSticky }) => ({
-  "& .MuiDrawer-paper": {
-    top: isNavbarSticky ? "80px" : "100px",
-    left: "1.5rem",
-    bottom: "1rem",
-    height: "auto",
-    borderRadius: "16px",
-    transition: theme.transitions.create(["top", "width"], {
-      duration: 300,
-      easing: theme.transitions.easing.easeInOut,
-    }),
-    ...(open ? openedMixin(theme) : closedMixin(theme)),
-  },
-}));
+  shouldForwardProp: (prop) =>
+    prop !== "open" &&
+    prop !== "isNavbarSticky" &&
+    prop !== "isFooterVisible" &&
+    prop !== "animateBorder",
+})(
+  ({ theme, open, isNavbarSticky, isFooterVisible, animateBorder }) => {
+    const isDark = theme.palette.mode === "dark";
 
-export default function SidebarDesktop({ isOpen, isNavbarSticky }) {
+    // default
+    const baseBorderColor = isDark
+      ? "rgba(255,255,255,0.15)"
+      : "rgba(0,0,0,0.15)";
+
+    // animate
+    const activeBorderColor = isDark
+      ? "rgba(255,255,255,0.5)"
+      : "rgba(0,0,0,0.35)";
+
+    return {
+      "& .MuiDrawer-paper": {
+        top: isNavbarSticky ? "80px" : "100px",
+        bottom: isFooterVisible ? "80px" : "1rem",
+        left: "1.5rem",
+        height: "auto",
+
+        backgroundColor: isDark
+          ? "rgb(33, 37, 41)"
+          : theme.palette.background.paper,
+
+        border: "1px solid transparent",
+        borderRadius: "16px",
+
+        borderColor: animateBorder
+          ? activeBorderColor
+          : baseBorderColor,
+
+        transition: theme.transitions.create(
+          ["top", "width", "bottom", "border-color"],
+          {
+            duration: 300,
+            easing: theme.transitions.easing.easeInOut,
+          }
+        ),
+
+        ...(open ? openedMixin(theme) : closedMixin(theme)),
+      },
+    };
+  }
+);
+
+
+export default function SidebarDesktop({
+  isOpen,
+  isNavbarSticky,
+  isFooterVisible,
+  animateBorder,
+}) {
   return (
-    <Drawer variant="permanent" open={isOpen} isNavbarSticky={isNavbarSticky}>
+    <Drawer
+      variant="permanent"
+      open={isOpen}
+      isNavbarSticky={isNavbarSticky}
+      isFooterVisible={isFooterVisible}
+      animateBorder={animateBorder}
+    >
       <SidebarMenu showText={isOpen} />
     </Drawer>
   );
