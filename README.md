@@ -3,6 +3,8 @@
 client
 npm create vite@latest client -- --template react
 npm install bootstrap
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material 
+npm install @dnd-kit/core
 npm install axios
 
 server

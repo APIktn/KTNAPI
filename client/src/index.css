@@ -73,7 +73,56 @@ body {
   padding-top: 70px;
 }
 
-/* sidebar */
+/* sidebar */ /* desktop layout  */
 .transition-all {
   transition: all 0.3s ease;
+}
+
+.desktop-layout {
+  gap: 1rem;
+}
+
+/* sidebar */
+.desktop-sidebar {
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+ /* full */
+.desktop-sidebar.open {
+  width: 240px;
+}
+
+/* mini */
+.desktop-sidebar.closed {
+  width: 64px;
+}
+
+/* content */
+.desktop-content {
+  transition: all 0.3s ease;
+  min-width: 0;
+}
+
+.desktop-content {
+  transition: width 0.3s ease, margin-left 0.3s ease;
+  min-width: 0;
+}
+
+.desktop-content.expand {
+  width: calc(100% - 64px);
+  margin-left: 64px;
+}
+
+.desktop-content.shrink {
+  width: calc(100% - 248px);
+  margin-left: 248px;
+}
+
+/* sidebar */ /* mobile layout  */
+
+.mobile-content {
+  padding-top: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
