@@ -1,6 +1,6 @@
 function Home() {
   return (
-    <div className="home">
+    <div className="home" style={{ minHeight: 1800 }}>
       <div className="card">
         <div className="card-body">
           bootstrap auto theme

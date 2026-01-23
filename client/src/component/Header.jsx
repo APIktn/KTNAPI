@@ -14,7 +14,7 @@ export default function Header({ children }) {
 
   return (
     <div
-      className="container-fluid position-relative"
+      className="Header container-fluid position-relative"
       style={{ minHeight: "100vh" }}
     >
       <video
@@ -29,18 +29,24 @@ export default function Header({ children }) {
         <source src={bgVideo} type="video/mp4" />
       </video>
 
+      <div className="navbar-layer">
+        <Navbar onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
+      </div>
+
       <div className="row p-3">
-        <div className="col-lg-12">
-          <Navbar onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
+        <div
+          className={`mt-3 transition-all ${
+            isSidebarOpen ? "col-lg-3" : "col-lg-1"
+          }`}
+        >
+          <Sidebar isOpen={isSidebarOpen} />
         </div>
 
-        {isSidebarOpen && (
-          <div className="col-lg-3 mt-3">
-            <Sidebar />
-          </div>
-        )}
-
-        <div className={`${isSidebarOpen ? "col-lg-9" : "col-lg-12"} mt-3`}>
+        <div
+          className={`mt-3 transition-all ${
+            isSidebarOpen ? "col-lg-9" : "col-lg-11"
+          }`}
+        >
           {children}
         </div>
       </div>

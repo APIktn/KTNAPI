@@ -44,13 +44,36 @@ body {
   font-weight: 400;
 }
 
-/* sidebar */
-.sidebar {
-  width: 260px;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
+/* navbar */
+.navbar-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-.sidebar.open {
-  transform: translateX(0);
+.navbar {
+  transition: all 5s ease;
+}
+
+.navbar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-placeholder {
+  height: 70px;
+}
+
+.Header {
+  padding-top: 70px;
+}
+
+/* sidebar */
+.transition-all {
+  transition: all 0.3s ease;
 }
