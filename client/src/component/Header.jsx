@@ -12,10 +12,11 @@ export default function Header({ children }) {
   const { theme } = useTheme();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+  const isSidebarActive = isSidebarOpen || isSidebarHovered;
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
   const [animateSidebarBorder, setAnimateSidebarBorder] = useState(false);
-
   const footerRef = useRef(null);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
@@ -40,7 +41,7 @@ export default function Header({ children }) {
       ([entry]) => {
         setIsFooterVisible(entry.isIntersecting);
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(footerRef.current);
@@ -54,12 +55,15 @@ export default function Header({ children }) {
       setAnimateSidebarBorder(false);
     }, 300);
     return () => clearTimeout(t);
-  }, [isSidebarOpen, isNavbarSticky, isFooterVisible]);
+  }, [isSidebarOpen, isNavbarSticky, isFooterVisible, isSidebarHovered,]);
 
   const bgVideo = theme === "dark" ? darkVideo : lightVideo;
 
   return (
-    <div className="Header container-fluid position-relative" style={{ minHeight: "100vh" }}>
+    <div
+      className="Header container-fluid position-relative"
+      style={{ minHeight: "100vh" }}
+    >
       {/* background video */}
       <video
         key={bgVideo}
@@ -76,7 +80,7 @@ export default function Header({ children }) {
       {/* navbar */}
       <div className="navbar-layer">
         <Navbar
-          onToggleSidebar={() => setIsSidebarOpen(p => !p)}
+          onToggleSidebar={() => setIsSidebarOpen((p) => !p)}
           onStickyChange={setIsNavbarSticky}
         />
       </div>
@@ -84,16 +88,22 @@ export default function Header({ children }) {
       {/* desktop */}
       {!isMobile && (
         <div className="row p-3 desktop-layout d-flex">
-          <div className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+          <div
+            className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
+          >
             <SidebarDesktop
-              isOpen={isSidebarOpen}
+              isOpen={isSidebarActive}
               isNavbarSticky={isNavbarSticky}
               isFooterVisible={isFooterVisible}
               animateBorder={animateSidebarBorder}
+              onMouseEnter={() => setIsSidebarHovered(true)}
+              onMouseLeave={() => setIsSidebarHovered(false)}
             />
           </div>
 
-          <div className={`desktop-content ${isSidebarOpen ? "shrink" : "expand"}`}>
+          <div
+            className={`desktop-content ${isSidebarActive ? "shrink" : "expand"}`}
+          >
             {children}
           </div>
         </div>
