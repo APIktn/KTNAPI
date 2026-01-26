@@ -148,3 +148,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.footer-layer {
+  margin-top: auto;
+}

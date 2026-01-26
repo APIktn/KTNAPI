@@ -62,7 +62,7 @@ export default function Header({ children }) {
 
   return (
     <div
-      className="Header container-fluid position-relative"
+      className="Header container-fluid position-relative d-flex flex-column"
       style={{ minHeight: "100vh" }}
     >
       {/* background video */}
@@ -89,53 +89,55 @@ export default function Header({ children }) {
         />
       </div>
 
-      {/* desktop */}
-      {!isMobile && (
-        <div className="row p-3 desktop-layout d-flex ">
-          <div
-            className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
-          >
-            {isSidebarOpen && (
-              <div className="desktop-sidebar open">
-                <SidebarDesktop
-                  isOpen={isSidebarExpanded}
-                  isNavbarSticky={isNavbarSticky}
-                  isFooterVisible={isFooterVisible}
-                  animateBorder={animateSidebarBorder}
-                  onMouseEnter={() => setIsSidebarHovered(true)}
-                  onMouseLeave={() => setIsSidebarHovered(false)}
-                />
-              </div>
-            )}
-          </div>
+      <div className="flex-grow-1">
+        {/* desktop */}
+        {!isMobile && (
+          <div className="row p-3 desktop-layout d-flex ">
+            <div
+              className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
+            >
+              {isSidebarOpen && (
+                <div className="desktop-sidebar open">
+                  <SidebarDesktop
+                    isOpen={isSidebarExpanded}
+                    isNavbarSticky={isNavbarSticky}
+                    isFooterVisible={isFooterVisible}
+                    animateBorder={animateSidebarBorder}
+                    onMouseEnter={() => setIsSidebarHovered(true)}
+                    onMouseLeave={() => setIsSidebarHovered(false)}
+                  />
+                </div>
+              )}
+            </div>
 
-          <div
-            className={`desktop-content ${
-              isSidebarExpanded
-                ? "shrink"
-                : isSidebarOpen
-                  ? "expand"
-                  : "expand-full"
-            }`}
-          >
-            {children}
+            <div
+              className={`desktop-content ${
+                isSidebarExpanded
+                  ? "shrink"
+                  : isSidebarOpen
+                    ? "expand"
+                    : "expand-full"
+              }`}
+            >
+              {children}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* mobile */}
-      {isMobile && (
-        <>
-          <SidebarMobile
-            open={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-          <div className="mobile-content">{children}</div>
-        </>
-      )}
+        {/* mobile */}
+        {isMobile && (
+          <>
+            <SidebarMobile
+              open={isSidebarOpen}
+              onClose={() => setIsSidebarOpen(false)}
+            />
+            <div className="mobile-content">{children}</div>
+          </>
+        )}
+      </div>
 
       {/* footer */}
-      <div className="footer-layer" ref={footerRef}>
+      <div className="footer-layer mt-auto" ref={footerRef}>
         <Footer />
       </div>
     </div>
