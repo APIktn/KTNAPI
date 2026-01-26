@@ -13,6 +13,7 @@ export default function Header({ children }) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+  const isSidebarExpanded = isSidebarOpen && isSidebarHovered;
   const isSidebarActive = isSidebarOpen || isSidebarHovered;
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
@@ -55,7 +56,7 @@ export default function Header({ children }) {
       setAnimateSidebarBorder(false);
     }, 300);
     return () => clearTimeout(t);
-  }, [isSidebarOpen, isNavbarSticky, isFooterVisible, isSidebarHovered,]);
+  }, [isSidebarOpen, isNavbarSticky, isFooterVisible, isSidebarHovered]);
 
   const bgVideo = theme === "dark" ? darkVideo : lightVideo;
 
@@ -80,29 +81,42 @@ export default function Header({ children }) {
       {/* navbar */}
       <div className="navbar-layer">
         <Navbar
-          onToggleSidebar={() => setIsSidebarOpen((p) => !p)}
+          onToggleSidebar={() => {
+            setIsSidebarOpen((p) => !p);
+            setIsSidebarHovered(false);
+          }}
           onStickyChange={setIsNavbarSticky}
         />
       </div>
 
       {/* desktop */}
       {!isMobile && (
-        <div className="row p-3 desktop-layout d-flex">
+        <div className="row p-3 desktop-layout d-flex ">
           <div
             className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
           >
-            <SidebarDesktop
-              isOpen={isSidebarActive}
-              isNavbarSticky={isNavbarSticky}
-              isFooterVisible={isFooterVisible}
-              animateBorder={animateSidebarBorder}
-              onMouseEnter={() => setIsSidebarHovered(true)}
-              onMouseLeave={() => setIsSidebarHovered(false)}
-            />
+            {isSidebarOpen && (
+              <div className="desktop-sidebar open">
+                <SidebarDesktop
+                  isOpen={isSidebarExpanded}
+                  isNavbarSticky={isNavbarSticky}
+                  isFooterVisible={isFooterVisible}
+                  animateBorder={animateSidebarBorder}
+                  onMouseEnter={() => setIsSidebarHovered(true)}
+                  onMouseLeave={() => setIsSidebarHovered(false)}
+                />
+              </div>
+            )}
           </div>
 
           <div
-            className={`desktop-content ${isSidebarActive ? "shrink" : "expand"}`}
+            className={`desktop-content ${
+              isSidebarExpanded
+                ? "shrink"
+                : isSidebarOpen
+                  ? "expand"
+                  : "expand-full"
+            }`}
           >
             {children}
           </div>
