@@ -9,7 +9,7 @@ import { Outlet } from "react-router-dom";
 import darkVideo from "../assets/design/video/bg_dark_video.mp4";
 import lightVideo from "../assets/design/video/bg_light_video.mp4";
 
-export default function Header({ children }) {
+export default function Header() {
   const { theme } = useTheme();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
