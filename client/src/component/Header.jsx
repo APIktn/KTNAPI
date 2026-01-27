@@ -4,6 +4,7 @@ import SidebarDesktop from "./Nav/SidebarDesktop";
 import SidebarMobile from "./Nav/SidebarMobile";
 import Footer from "./Footer";
 import { useTheme } from "../context/Theme";
+import { Outlet } from "react-router-dom";
 
 import darkVideo from "../assets/design/video/bg_dark_video.mp4";
 import lightVideo from "../assets/design/video/bg_light_video.mp4";
@@ -65,7 +66,7 @@ export default function Header({ children }) {
       className="Header container-fluid position-relative d-flex flex-column"
       style={{ minHeight: "100vh" }}
     >
-      {/* background video */}
+      {/* bg video */}
       <video
         key={bgVideo}
         autoPlay
@@ -119,7 +120,7 @@ export default function Header({ children }) {
                     : "expand-full"
               }`}
             >
-              {children}
+              <Outlet />
             </div>
           </div>
         )}
@@ -131,7 +132,10 @@ export default function Header({ children }) {
               open={isSidebarOpen}
               onClose={() => setIsSidebarOpen(false)}
             />
-            <div className="mobile-content">{children}</div>
+            <div className="mobile-content">
+              {" "}
+              <Outlet />
+            </div>
           </>
         )}
       </div>

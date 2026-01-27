@@ -3,7 +3,7 @@ export default function Footer() {
     <div className="Footer pb-3">
       <div className="card">
         <div className="card-body">
-          Footer bootstrap auto theme
+          © 2026 Rights Reserved by Kittanun Apisitamorn
         </div>
       </div>
     </div>

@@ -56,6 +56,8 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
             }}
           >
             <BottomNavigationAction
+              component={Link}
+              to="/"
               label="Home"
               value="Home"
               icon={<HomeIcon />}
