@@ -29,7 +29,6 @@ authRouter.post("/register", validateRegister, async (req, res) => {
         lastName,
         userEmail,
         hashedPassword,
-        userName,
         profileImage,
         userCode,
         new Date(),
