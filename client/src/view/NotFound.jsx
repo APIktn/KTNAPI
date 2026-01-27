@@ -15,7 +15,7 @@ function NotFound() {
           Your URL was not found anywhere in this universe
         </div>
 
-        <Link to="/" className="notfound-btn">
+        <Link to="/" className="btn-glass">
           but don’t worry, we can go back to home page
         </Link>
       </div>

@@ -13,6 +13,7 @@ dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 5000
+const BASE_URL = process.env.BASE_URL || 'http://localhost'
 
 app.use(cors())
 app.use(express.json())
@@ -22,7 +23,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Server running on ${BASE_URL}:${PORT}`)
 })
 
 // /dbtest

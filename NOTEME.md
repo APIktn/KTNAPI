@@ -1,3 +1,21 @@
+// แก้ vs code
+C:\Users\<username>\AppData\Roaming\Code\User\settings.json
+
+// connection pool
+.env
+PORT=5000
+
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASS=
+DB_NAME=ktnapi
+DB_PORT=3306
+BASE_URL=http://localhost  // local dev uat production
+
+// db ktnapi sql
+
+CREATE DATABASE `ktnapi` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
 -- ktnapi.tbl_mas_users definition
 
 CREATE TABLE `tbl_mas_users` (
@@ -21,10 +39,3 @@ CREATE TABLE `tbl_mas_users` (
   UNIQUE KEY `uq_username` (`UserName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-PORT=5000
-
-DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASS=
-DB_NAME=ktnapi
-DB_PORT=3306

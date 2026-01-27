@@ -152,3 +152,9 @@ body {
 .footer-layer {
   margin-top: auto;
 }
+
+/* แก้บัค animate triger scoll bar */
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
