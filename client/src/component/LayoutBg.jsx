@@ -11,7 +11,7 @@ export default function LayoutBg() {
   return (
     <div
       className="layout-bg position-relative"
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100dvh" }}
     >
       <video
         key={bgVideo}

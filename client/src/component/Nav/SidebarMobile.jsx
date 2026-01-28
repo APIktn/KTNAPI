@@ -13,7 +13,8 @@ export default function SidebarMobile({ open, onClose }) {
         disableScrollLock: true,
       }}
     >
-      <SidebarMenu showText />
+      <SidebarMenu showText isMobile />
     </Drawer>
   );
 }
+

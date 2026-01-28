@@ -10,6 +10,7 @@ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 npm install @dnd-kit/core
 npm install framer-motion
 npm install axios
+npm install jwt-decode
 
 ////////////////////////////////////////////////////
 server

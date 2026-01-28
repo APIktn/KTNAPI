@@ -1,10 +1,6 @@
 import con from "../db.mjs";
 
 export const validateRegister = async (req, res, next) => {
-  // if (req.method === "OPTIONS") {
-  //   return next();
-  // }
-
   const { userEmail } = req.body;
 
   if (!userEmail) {
@@ -35,16 +31,22 @@ export const validateRegister = async (req, res, next) => {
 
 export const validateLogin = (req, res, next) => {
   const { userName, password } = req.body;
-  const errors = [];
+  const errors = {};
 
-  if (!userName) errors.push({ message: "กรุณากรอกอีเมล หรือ Username" });
-  if (!password) errors.push({ message: "กรุณากรอกรหัสผ่าน" });
+  if (!userName) {
+    errors.userName = "username or email is required";
+  }
 
-  if (errors.length > 0) {
+  if (!password) {
+    errors.password = "password is required";
+  }
+
+  if (Object.keys(errors).length > 0) {
     return res.status(400).json({ errors });
   }
 
   next();
 };
+
 
 

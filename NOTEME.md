@@ -21,7 +21,7 @@ CREATE TABLE `tbl_mas_users` (
   `Address` text NOT NULL,
   `Tel` varchar(20) NOT NULL,
   `VerifyEmail` text NOT NULL,
-  `Profile_Image` blob NOT NULL,
+  `Profile_Image` text NOT NULL,
   `CreateBy` varchar(20) NOT NULL,
   `CreateDateTime` datetime NOT NULL,
   `UpdateBy` varchar(20) NOT NULL,
@@ -29,5 +29,5 @@ CREATE TABLE `tbl_mas_users` (
   PRIMARY KEY (`Id`),
   UNIQUE KEY `uq_usercode` (`UserCode`),
   UNIQUE KEY `uq_username` (`UserName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

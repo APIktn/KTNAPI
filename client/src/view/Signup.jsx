@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageWrapper from "../context/animate";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
+import AppModal from "../component/Modal/AppModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +17,28 @@ export default function Signup() {
     firstName: "",
     lastName: "",
   });
+  const navigate = useNavigate();
+
+  // modal state
+  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState({
+    type: "success", // success | error
+    title: "",
+    message: "",
+  });
+
+  const openModal = (type, title, message) => {
+    setModal({ type, title, message });
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+
+    if (modal.type === "success") {
+      navigate("/login");
+    }
+  };
 
   const handleChange = (e) => {
     setForm({
@@ -42,9 +65,15 @@ export default function Signup() {
     try {
       const res = await axios.post(`${API_URL}/auth/register`, payload);
 
-      alert(res.data.message);
+      if (res.status === 201) {
+        openModal("success", "registration successful", res.data.message);
+      }
     } catch (err) {
-      alert(err.response?.data?.error || "error");
+      openModal(
+        "error",
+        "registration failed",
+        err.response?.data?.error || "something went wrong",
+      );
     }
   };
 
@@ -83,7 +112,7 @@ export default function Signup() {
         style={{ minHeight: "100vh" }}
       >
         <div className="card p-4" style={{ width: "420px" }}>
-          <h4 className="text-center mb-3">Sign up</h4>
+          <h4 className="text-center mb-3">sign up</h4>
 
           <form onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
@@ -97,6 +126,7 @@ export default function Signup() {
                 error={!!errors.firstName}
                 helperText={errors.firstName}
               />
+
               <TextField
                 label="last name"
                 name="lastName"
@@ -107,6 +137,7 @@ export default function Signup() {
                 error={!!errors.lastName}
                 helperText={errors.lastName}
               />
+
               <TextField
                 label="email"
                 name="userEmail"
@@ -118,6 +149,7 @@ export default function Signup() {
                 error={!!errors.userEmail}
                 helperText={errors.userEmail}
               />
+
               <TextField
                 label="password"
                 name="password"
@@ -130,12 +162,7 @@ export default function Signup() {
                 helperText={errors.password}
               />
 
-              <Button
-                type="submit"
-                variant="contained"
-                value="register"
-                fullWidth
-              >
+              <Button type="submit" variant="contained" fullWidth>
                 register
               </Button>
 
@@ -153,6 +180,15 @@ export default function Signup() {
           back to home
         </Link>
       </div>
+
+      {/* modal */}
+      <AppModal
+        open={open}
+        onClose={closeModal}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
     </PageWrapper>
   );
 }

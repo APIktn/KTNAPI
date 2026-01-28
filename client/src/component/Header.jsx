@@ -37,12 +37,18 @@ export default function Header() {
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsFooterVisible(entry.isIntersecting),
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(footerRef.current);
+
     return () => observer.disconnect();
-  }, []);
+  }, [isMobile]);
+
+  useEffect(() => {
+    setIsSidebarOpen(false);
+    setIsSidebarHovered(false);
+  }, [isMobile]);
 
   /* sidebar border animation */
   useEffect(() => {
@@ -69,7 +75,9 @@ export default function Header() {
         {/* desktop */}
         {!isMobile && (
           <div className="row p-3 desktop-layout d-flex">
-            <div className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+            <div
+              className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
+            >
               {isSidebarOpen && (
                 <SidebarDesktop
                   isOpen={isSidebarExpanded}
@@ -87,8 +95,8 @@ export default function Header() {
                 isSidebarExpanded
                   ? "shrink"
                   : isSidebarOpen
-                  ? "expand"
-                  : "expand-full"
+                    ? "expand"
+                    : "expand-full"
               }`}
             >
               <Outlet />

@@ -73,6 +73,30 @@ body {
   padding-top: 70px;
 }
 
+.navbar .container {
+  max-width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+  .navbar .MuiBottomNavigation-root {
+    display: none;
+  }
+
+  .navbar .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .navbar .btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+  
+}
+
 /* sidebar */ /* desktop layout  */
 
 .desktop-content.expand-full {
@@ -158,3 +182,11 @@ body {
   overflow-x: hidden;
   overflow-y: hidden;
 }
+
+/* * {
+  outline: 1px solid red;
+} */
+
+
+
+

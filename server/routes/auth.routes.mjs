@@ -58,7 +58,7 @@ authRouter.post("/register", validateRegister, async (req, res) => {
 ////////////////////////////////////////////////// login
 
 authRouter.post("/login", validateLogin, async (req, res) => {
-  const { userName, password } = req.body;
+  const { username, password } = req.body;
 
   try {
     const [rows] = await con.query(
@@ -66,12 +66,12 @@ authRouter.post("/login", validateLogin, async (req, res) => {
        from tbl_mas_users
        where UserEmail = ? OR UserName = ?
        limit 1`,
-      [userName, userName]
+      [username, username]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({
-        error: "ไม่พบผู้ใช้งานในระบบ"
+        error: "user not found"
       });
     }
 
@@ -80,7 +80,7 @@ authRouter.post("/login", validateLogin, async (req, res) => {
     const ok = await bcrypt.compare(password, user.Password);
     if (!ok) {
       return res.status(400).json({
-        error: "รหัสผ่านไม่ถูกต้อง"
+        error: "invalid password"
       });
     }
 
@@ -97,7 +97,7 @@ authRouter.post("/login", validateLogin, async (req, res) => {
 
     // แจก token
     res.json({
-      message: "เข้าสู่ระบบสำเร็จ",
+      message: "login successful",
       token,
       user: {
         userCode: user.UserCode,
