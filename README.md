@@ -21,7 +21,7 @@ DB_USER=root
 DB_PASS=
 DB_NAME=ktnapi
 DB_PORT=3306
-
+JWT_SECRET=
 
 npm init -y
 npm install express cors dotenv

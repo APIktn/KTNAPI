@@ -30,11 +30,11 @@ export const validateRegister = async (req, res, next) => {
 };
 
 export const validateLogin = (req, res, next) => {
-  const { userName, password } = req.body;
+  const { username, password } = req.body;
   const errors = {};
 
-  if (!userName) {
-    errors.userName = "username or email is required";
+  if (!username) {
+    errors.username = "username or email is required";
   }
 
   if (!password) {

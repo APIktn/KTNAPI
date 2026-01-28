@@ -74,22 +74,25 @@ export default function Login() {
 
     try {
       const res = await axios.post(`${API_URL}/auth/login`, {
-        userName: form.username,
+        username: form.username,
         password: form.password,
       });
 
       if (res.status === 200) {
         setIsLogin(true);
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
 
         openModal("success", "login successful", res.data.message);
       }
     } catch (err) {
-      openModal(
-        "error",
-        "login failed",
-        err.response?.data?.error || "something went wrong",
-      );
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.errors?.userName ||
+        err.response?.data?.errors?.password ||
+        "something went wrong";
+
+      openModal("error", "login failed", msg);
     }
   };
 

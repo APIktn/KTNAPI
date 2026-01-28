@@ -3,13 +3,16 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/Home";
 import SupportAgent from "@mui/icons-material/SupportAgent";
 import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
 
 import { useTheme } from "../../context/Theme";
+import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Navbar({ onToggleSidebar, onStickyChange }) {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const isDark = theme === "dark";
 
   const [isSticky, setIsSticky] = useState(false);
@@ -25,19 +28,17 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
     };
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [onStickyChange]);
 
   return (
     <div className={isSticky ? "navbar-placeholder" : "pt-3 mx-4"}>
       <nav
-        className={`
-          navbar
-          bg-body-tertiary
-          ${isSticky ? "navbar-fixed" : "border rounded-4"}
-        `}
+        className={`navbar bg-body-tertiary ${
+          isSticky ? "navbar-fixed" : "border rounded-4"
+        }`}
       >
         <div className="container d-flex align-items-center justify-content-between">
-          {/* L */}
+          {/* left */}
           <button
             className="btn btn-outline-secondary"
             onClick={onToggleSidebar}
@@ -45,7 +46,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
             <i className="fa-solid fa-bars"></i>
           </button>
 
-          {/* C */}
+          {/* center */}
           <BottomNavigation
             value={value}
             onChange={(e, newValue) => setValue(newValue)}
@@ -69,8 +70,9 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
             />
           </BottomNavigation>
 
-          {/* R */}
+          {/* right */}
           <div className="d-flex align-items-center gap-2">
+            {/* theme */}
             <div
               onClick={toggleTheme}
               className={`theme-switch ${isDark ? "dark" : ""}`}
@@ -85,23 +87,41 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
               </div>
             </div>
 
-            <Button
-              component={Link}
-              to="/login"
-              variant="outlined"
-              size="small"
-            >
-              Login
-            </Button>
-
-            <Button
-              component={Link}
-              to="/signup"
-              variant="contained"
-              size="small"
-            >
-              Sign up
-            </Button>
+            {/* auth */}
+            {user ? (
+              <div className="d-flex align-items-center gap-2">
+                <Avatar
+                  src={user.imageProfile}
+                  alt={user.displayName}
+                  sx={{ width: 32, height: 32 }}
+                />
+                <span className="fw-medium d-none d-md-inline">
+                  {user.displayName}
+                </span>
+                <Button size="small" onClick={logout}>
+                  logout
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outlined"
+                  size="small"
+                >
+                  Login
+                </Button>
+                <Button
+                  component={Link}
+                  to="/signup"
+                  variant="contained"
+                  size="small"
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </nav>

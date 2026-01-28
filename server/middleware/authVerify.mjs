@@ -10,7 +10,7 @@ export const authenticateToken = (req, res, next) => {
       .json({ error: "access denied. please login again." });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res
         .status(403)
