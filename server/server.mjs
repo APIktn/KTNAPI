@@ -31,5 +31,5 @@ app.use('/test', authenticateToken, testRoute)
 
 ////////////////////////////////////////////////// 
 
-// /Register /Login
-app.use('/', authRouter)
+// /register /login
+app.use('/auth', authRouter)

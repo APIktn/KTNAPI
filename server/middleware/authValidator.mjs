@@ -1,11 +1,15 @@
 import con from "../db.mjs";
 
 export const validateRegister = async (req, res, next) => {
+  // if (req.method === "OPTIONS") {
+  //   return next();
+  // }
+
   const { userEmail } = req.body;
 
   if (!userEmail) {
     return res.status(400).json({
-      error: "กรุณากรอกอีเมล"
+      error: "email is required"
     });
   }
 
@@ -17,7 +21,7 @@ export const validateRegister = async (req, res, next) => {
 
     if (rows.length > 0) {
       return res.status(400).json({
-        error: "อีเมลนี้มีผู้ใช้งานอยู่แล้ว"
+        error: "this email is already registered. please try another one."
       });
     }
 

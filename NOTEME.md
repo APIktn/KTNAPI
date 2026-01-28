@@ -1,16 +1,8 @@
 // แก้ vs code
 C:\Users\<username>\AppData\Roaming\Code\User\settings.json
 
-// connection pool
-.env
-PORT=5000
-
-DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASS=
-DB_NAME=ktnapi
-DB_PORT=3306
-BASE_URL=http://localhost  // local dev uat production
+// service mail
+apiktnwebapp@gmail.com
 
 // db ktnapi sql
 
@@ -30,9 +22,9 @@ CREATE TABLE `tbl_mas_users` (
   `Tel` varchar(20) NOT NULL,
   `VerifyEmail` text NOT NULL,
   `Profile_Image` blob NOT NULL,
-  `CreateBy` varchar(10) NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
   `CreateDateTime` datetime NOT NULL,
-  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
   `UpdateDateTime` datetime NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `uq_usercode` (`UserCode`),

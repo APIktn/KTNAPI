@@ -10,46 +10,48 @@ const authRouter = Router();
 ////////////////////////////////////////////////// register
 
 authRouter.post("/register", validateRegister, async (req, res) => {
-  const { firstName, lastName, userEmail, password, userName } = req.body
+  const { firstName, lastName, userEmail, password, status } = req.body
 
-  try {
-    const userCode = await generateUserCode(con); // gen code
-    const hashedPassword = await bcrypt.hash(password, 10); // encryp
-    const profileImage = generateAvatarUrl(firstName, lastName); // gen pic
+  if (status == "register") {
+    try {
+      const userCode = await generateUserCode(con); // gen code
+      const hashedPassword = await bcrypt.hash(password, 10); // encryp
+      const profileImage = generateAvatarUrl(firstName, lastName); // gen pic
 
-    await con.query(
-      `INSERT INTO tbl_mas_users (
-        UserCode, FirstName, LastName, UserEmail, Password, UserName,
-        Profile_Image, create_by, create_datetime, update_by, update_datetime
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        userCode,
-        firstName,
-        lastName,
-        userEmail,
-        hashedPassword,
-        profileImage,
-        userCode,
-        new Date(),
-        userCode,
-        new Date()
-      ]
-    );
+      await con.query(
+        `INSERT INTO tbl_mas_users (
+    UserCode, UserEmail, Password, FirstName, LastName,
+    Profile_Image, CreateBy, CreateDateTime, UpdateBy, UpdateDateTime
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          userCode,
+          userEmail,
+          hashedPassword,
+          firstName,
+          lastName,
+          profileImage,
+          userCode,
+          new Date(),
+          userCode,
+          new Date()
+        ]
+      );
 
-    res.status(201).json({ message: "ลงทะเบียนสำเร็จ" });
+      res.status(201).json({ message: "registration successful" });
 
-  } catch (error) {
-    // unique ซ้ำ
-    if (error.code === "ER_DUP_ENTRY") {
-      return res.status(409).json({
-        error: "มีผู้ลงทะเบียนมากเกินไป กรุณาลองใหม่อีกครั้ง"
+    } catch (error) {
+      // unique ซ้ำ
+      if (error.code === "ER_DUP_ENTRY") {
+        return res.status(409).json({
+          error: "we're experiencing high registration traffic. please try again later."
+        });
+      }
+
+      res.status(500).json({
+        error: "server error"
       });
     }
-
-    res.status(500).json({
-      error: "เกิดข้อผิดพลาดในการลงทะเบียน"
-    });
   }
 });
 
