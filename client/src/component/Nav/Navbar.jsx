@@ -111,7 +111,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
             {/* auth */}
             {user ? (
               <>
-                {/* avatar + name (clickable together) */}
+                {/* avatar displayname */}
                 <ButtonBase
                   onClick={handleOpenMenu}
                   sx={{
