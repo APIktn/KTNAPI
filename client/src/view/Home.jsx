@@ -6,16 +6,16 @@ function Home() {
       <div className="home">
         <div className="card">
           <div className="card-body">
-            bootstrap auto theme
+            Home
             <i className="fa-solid fa-user"></i>
             <i className="fa-regular fa-sun"></i>
             <i className="fa-solid fa-sun"></i>
-            <p>ข้อความปกติ (Regular)</p>
-            <h6>หัวข้อเล็ก (Regular)</h6>
-            <p className="fw-light">Light</p>
-            <p className="fw-medium">Medium</p>
-            <p className="fw-semibold">SemiBold</p>
-            <p className="fw-bold">Bold</p>
+            <p>Home (Regular)</p>
+            <h6>Home (Regular)</h6>
+            <p className="fw-light">Light Home</p>
+            <p className="fw-medium">Medium Home</p>
+            <p className="fw-semibold">SemiBold Home</p>
+            <p className="fw-bold">Bold Home</p>
           </div>
         </div>
       </div>

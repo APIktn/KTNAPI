@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
 import AppModal from "../component/Modal/AppModal";
+import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -24,6 +25,7 @@ export default function Login() {
     message: "",
   });
 
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const openModal = (type, title, message) => {
@@ -81,7 +83,7 @@ export default function Login() {
       if (res.status === 200) {
         setIsLogin(true);
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        login(res.data.user);
 
         openModal("success", "login successful", res.data.message);
       }

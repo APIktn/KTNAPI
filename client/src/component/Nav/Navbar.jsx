@@ -4,11 +4,19 @@ import HomeIcon from "@mui/icons-material/Home";
 import SupportAgent from "@mui/icons-material/SupportAgent";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
+import ButtonBase from "@mui/material/ButtonBase";
 
 import { useTheme } from "../../context/Theme";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import AppModal from "../Modal/AppModal";
 
 function Navbar({ onToggleSidebar, onStickyChange }) {
   const { theme, toggleTheme } = useTheme();
@@ -17,6 +25,11 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
 
   const [isSticky, setIsSticky] = useState(false);
   const [value, setValue] = useState("Home");
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
+  const [openLogout, setOpenLogout] = useState(false);
 
   const STICKY_OFFSET = 80;
 
@@ -29,6 +42,14 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [onStickyChange]);
+
+  const handleOpenMenu = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div className={isSticky ? "navbar-placeholder" : "pt-3 mx-4"}>
@@ -89,19 +110,68 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
 
             {/* auth */}
             {user ? (
-              <div className="d-flex align-items-center gap-2">
-                <Avatar
-                  src={user.imageProfile}
-                  alt={user.displayName}
-                  sx={{ width: 32, height: 32 }}
-                />
-                <span className="fw-medium d-none d-md-inline">
-                  {user.displayName}
-                </span>
-                <Button size="small" onClick={logout}>
-                  logout
-                </Button>
-              </div>
+              <>
+                {/* avatar + name (clickable together) */}
+                <ButtonBase
+                  onClick={handleOpenMenu}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    borderRadius: 2,
+                    px: 0.5,
+                  }}
+                >
+                  <Avatar
+                    src={user.imageProfile}
+                    alt={user.displayName}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                  <span className="fw-medium d-none d-md-inline">
+                    {user.displayName}
+                  </span>
+                </ButtonBase>
+
+                {/* dropdown */}
+                <Menu
+                  anchorEl={anchorEl}
+                  open={openMenu}
+                  onClose={handleCloseMenu}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <MenuItem
+                    component={Link}
+                    to="/profile"
+                    onClick={handleCloseMenu}
+                  >
+                    <ListItemIcon>
+                      <PersonIcon fontSize="small" />
+                    </ListItemIcon>
+                    profile
+                  </MenuItem>
+
+                  <Divider />
+
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseMenu();
+                      setOpenLogout(true);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    logout
+                  </MenuItem>
+                </Menu>
+              </>
             ) : (
               <>
                 <Button
@@ -110,7 +180,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
                   variant="outlined"
                   size="small"
                 >
-                  Login
+                  login
                 </Button>
                 <Button
                   component={Link}
@@ -118,13 +188,25 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
                   variant="contained"
                   size="small"
                 >
-                  Sign up
+                  sign up
                 </Button>
               </>
             )}
           </div>
         </div>
       </nav>
+
+      {/* logout modal */}
+      <AppModal
+        open={openLogout}
+        onClose={() => {
+          setOpenLogout(false);
+          logout();
+        }}
+        type="success"
+        title="logout"
+        message="you have been logged out successfully"
+      />
     </div>
   );
 }
