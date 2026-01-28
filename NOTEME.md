@@ -1,3 +1,13 @@
+// แก้ vs code
+C:\Users\<username>\AppData\Roaming\Code\User\settings.json
+
+// service mail
+apiktnwebapp@gmail.com
+
+// db ktnapi sql
+
+CREATE DATABASE `ktnapi` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
 -- ktnapi.tbl_mas_users definition
 
 CREATE TABLE `tbl_mas_users` (
@@ -11,20 +21,13 @@ CREATE TABLE `tbl_mas_users` (
   `Address` text NOT NULL,
   `Tel` varchar(20) NOT NULL,
   `VerifyEmail` text NOT NULL,
-  `Profile_Image` blob NOT NULL,
-  `CreateBy` varchar(10) NOT NULL,
+  `Profile_Image` text NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
   `CreateDateTime` datetime NOT NULL,
-  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
   `UpdateDateTime` datetime NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `uq_usercode` (`UserCode`),
   UNIQUE KEY `uq_username` (`UserName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-PORT=5000
-
-DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASS=
-DB_NAME=ktnapi
-DB_PORT=3306

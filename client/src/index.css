@@ -73,7 +73,37 @@ body {
   padding-top: 70px;
 }
 
+.navbar .container {
+  max-width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+  .navbar .MuiBottomNavigation-root {
+    display: none;
+  }
+
+  .navbar .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .navbar .btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+  
+}
+
 /* sidebar */ /* desktop layout  */
+
+.desktop-content.expand-full {
+  width: 100%;
+  margin-left: 0;
+}
+
 .transition-all {
   transition: all 0.3s ease;
 }
@@ -105,7 +135,7 @@ body {
 }
 
 .desktop-content {
-  transition: width 0.3s ease, margin-left 0.3s ease;
+  transition: width 0.2s ease, margin-left 0.2s ease;
   min-width: 0;
 }
 
@@ -142,3 +172,21 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.footer-layer {
+  margin-top: auto;
+}
+
+/* แก้บัค animate triger scoll bar */
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* * {
+  outline: 1px solid red;
+} */
+
+
+
+

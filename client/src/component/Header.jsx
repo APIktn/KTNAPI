@@ -1,29 +1,28 @@
 import { useState, useEffect, useRef } from "react";
+import { Outlet } from "react-router-dom";
+
 import Navbar from "./Nav/Navbar";
 import SidebarDesktop from "./Nav/SidebarDesktop";
 import SidebarMobile from "./Nav/SidebarMobile";
 import Footer from "./Footer";
-import { useTheme } from "../context/Theme";
 
-import darkVideo from "../assets/design/video/bg_dark_video.mp4";
-import lightVideo from "../assets/design/video/bg_light_video.mp4";
-
-export default function Header({ children }) {
-  const { theme } = useTheme();
-
+export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+  const isSidebarExpanded = isSidebarOpen && isSidebarHovered;
+
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+
   const [animateSidebarBorder, setAnimateSidebarBorder] = useState(false);
 
   const footerRef = useRef(null);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
-  // resize handler
+  /* resize */
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 992;
-      setIsMobile(mobile);
+      setIsMobile(window.innerWidth < 992);
       setIsSidebarOpen(false);
     };
 
@@ -32,86 +31,95 @@ export default function Header({ children }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // observe footer
+  /* footer observer */
   useEffect(() => {
     if (!footerRef.current) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsFooterVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
+      ([entry]) => setIsFooterVisible(entry.isIntersecting),
+      { threshold: 0.1 },
     );
 
     observer.observe(footerRef.current);
-    return () => observer.disconnect();
-  }, []);
 
-  // trigger border animation
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  useEffect(() => {
+    setIsSidebarOpen(false);
+    setIsSidebarHovered(false);
+  }, [isMobile]);
+
+  /* sidebar border animation */
   useEffect(() => {
     setAnimateSidebarBorder(true);
-    const t = setTimeout(() => {
-      setAnimateSidebarBorder(false);
-    }, 300);
+    const t = setTimeout(() => setAnimateSidebarBorder(false), 300);
     return () => clearTimeout(t);
-  }, [isSidebarOpen, isNavbarSticky, isFooterVisible]);
-
-  const bgVideo = theme === "dark" ? darkVideo : lightVideo;
+  }, [isSidebarOpen, isNavbarSticky, isFooterVisible, isSidebarHovered]);
 
   return (
-    <div className="Header container-fluid position-relative" style={{ minHeight: "100vh" }}>
-      {/* background video */}
-      <video
-        key={bgVideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="position-absolute top-0 start-0 w-100 h-100"
-        style={{ objectFit: "cover", zIndex: -1 }}
-      >
-        <source src={bgVideo} type="video/mp4" />
-      </video>
-
+    <div className="Header container-fluid d-flex flex-column min-vh-100">
       {/* navbar */}
       <div className="navbar-layer">
         <Navbar
-          onToggleSidebar={() => setIsSidebarOpen(p => !p)}
+          onToggleSidebar={() => {
+            setIsSidebarOpen((p) => !p);
+            setIsSidebarHovered(false);
+          }}
           onStickyChange={setIsNavbarSticky}
         />
       </div>
 
-      {/* desktop */}
-      {!isMobile && (
-        <div className="row p-3 desktop-layout d-flex">
-          <div className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
-            <SidebarDesktop
-              isOpen={isSidebarOpen}
-              isNavbarSticky={isNavbarSticky}
-              isFooterVisible={isFooterVisible}
-              animateBorder={animateSidebarBorder}
+      {/* content */}
+      <div className="flex-grow-1">
+        {/* desktop */}
+        {!isMobile && (
+          <div className="row p-3 desktop-layout d-flex">
+            <div
+              className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
+            >
+              {isSidebarOpen && (
+                <SidebarDesktop
+                  isOpen={isSidebarExpanded}
+                  isNavbarSticky={isNavbarSticky}
+                  isFooterVisible={isFooterVisible}
+                  animateBorder={animateSidebarBorder}
+                  onMouseEnter={() => setIsSidebarHovered(true)}
+                  onMouseLeave={() => setIsSidebarHovered(false)}
+                />
+              )}
+            </div>
+
+            <div
+              className={`desktop-content ${
+                isSidebarExpanded
+                  ? "shrink"
+                  : isSidebarOpen
+                    ? "expand"
+                    : "expand-full"
+              }`}
+            >
+              <Outlet />
+            </div>
+          </div>
+        )}
+
+        {/* mobile */}
+        {isMobile && (
+          <>
+            <SidebarMobile
+              open={isSidebarOpen}
+              onClose={() => setIsSidebarOpen(false)}
             />
-          </div>
-
-          <div className={`desktop-content ${isSidebarOpen ? "shrink" : "expand"}`}>
-            {children}
-          </div>
-        </div>
-      )}
-
-      {/* mobile */}
-      {isMobile && (
-        <>
-          <SidebarMobile
-            open={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-          <div className="mobile-content">{children}</div>
-        </>
-      )}
+            <div className="mobile-content">
+              <Outlet />
+            </div>
+          </>
+        )}
+      </div>
 
       {/* footer */}
-      <div className="footer-layer" ref={footerRef}>
+      <div className="footer-layer mt-auto" ref={footerRef}>
         <Footer />
       </div>
     </div>

@@ -1,24 +1,52 @@
+import PageWrapper from "../context/animate";
+import "../css/Home.css";
+
 function Home() {
   return (
-    <div className="home" style={{ minHeight: 1800 }}>
-    {/* <div className="home"> */}
-      <div className="card">
-        <div className="card-body">
-          bootstrap auto theme
-          <i className="fa-solid fa-user"></i>
-          <i className="fa-regular fa-sun"></i>
-          <i className="fa-solid fa-sun"></i>
+<PageWrapper>
+  <div className="home">
+    <div className="home-container">
 
-          <p>ข้อความปกติ (Regular)</p>
-          <h6>หัวข้อเล็ก (Regular)</h6>
-          <p className="fw-light">Light</p>
-          <p className="fw-medium">Medium</p>
-          <p className="fw-semibold">SemiBold</p>
-          <p className="fw-bold">Bold</p>
+      <div className="card feature-card card-1 mb-4">
+        <div className="card-body text-white">
+          <h5 className="fw-bold">daily planner</h5>
+          <p className="fw-light">plan your day easily</p>
         </div>
       </div>
+
+      <div className="card feature-card card-2 mb-4">
+        <div className="card-body text-white">
+          <h5 className="fw-bold">expense tracker</h5>
+          <p className="fw-light">manage daily expenses</p>
+        </div>
+      </div>
+
+      <div className="card feature-card card-3 mb-4">
+        <div className="card-body text-white">
+          <h5 className="fw-bold">personal notes</h5>
+          <p className="fw-light">keep notes safely</p>
+        </div>
+      </div>
+
     </div>
+  </div>
+</PageWrapper>
   );
 }
+
+
+// function Home() {
+//   return (
+//     <PageWrapper>
+//       <div className="home">
+//         <div className="card">
+//           <div className="card-body">
+//             Home
+//           </div>
+//         </div>
+//       </div>
+//     </PageWrapper>
+//   );
+// }
 
 export default Home;

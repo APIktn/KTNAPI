@@ -67,12 +67,13 @@ const Drawer = styled(MuiDrawer, {
   }
 );
 
-
 export default function SidebarDesktop({
   isOpen,
   isNavbarSticky,
   isFooterVisible,
   animateBorder,
+  onMouseEnter,
+  onMouseLeave,
 }) {
   return (
     <Drawer
@@ -81,8 +82,11 @@ export default function SidebarDesktop({
       isNavbarSticky={isNavbarSticky}
       isFooterVisible={isFooterVisible}
       animateBorder={animateBorder}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <SidebarMenu showText={isOpen} />
     </Drawer>
   );
 }
+

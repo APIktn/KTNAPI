@@ -7,14 +7,14 @@ export const authenticateToken = (req, res, next) => {
   if (!token) {
     return res
       .status(401)
-      .json({ error: "การเข้าถึงถูกปฏิเสธกรุณา login ใหม่" });
+      .json({ error: "access denied. please login again." });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res
         .status(403)
-        .json({ error: "Token ไม่ถูกต้องกรุณา login ใหม่" });
+        .json({ error: "invalid or expired token. please login again." });
     }
     req.user = user;
     next();

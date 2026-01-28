@@ -5,7 +5,7 @@ export const validateRegister = async (req, res, next) => {
 
   if (!userEmail) {
     return res.status(400).json({
-      error: "กรุณากรอกอีเมล"
+      error: "email is required"
     });
   }
 
@@ -17,7 +17,7 @@ export const validateRegister = async (req, res, next) => {
 
     if (rows.length > 0) {
       return res.status(400).json({
-        error: "อีเมลนี้มีผู้ใช้งานอยู่แล้ว"
+        error: "this email is already registered. please try another one."
       });
     }
 
@@ -30,17 +30,23 @@ export const validateRegister = async (req, res, next) => {
 };
 
 export const validateLogin = (req, res, next) => {
-  const { userName, password } = req.body;
-  const errors = [];
+  const { username, password } = req.body;
+  const errors = {};
 
-  if (!userName) errors.push({ message: "กรุณากรอกอีเมล หรือ Username" });
-  if (!password) errors.push({ message: "กรุณากรอกรหัสผ่าน" });
+  if (!username) {
+    errors.username = "username or email is required";
+  }
 
-  if (errors.length > 0) {
+  if (!password) {
+    errors.password = "password is required";
+  }
+
+  if (Object.keys(errors).length > 0) {
     return res.status(400).json({ errors });
   }
 
   next();
 };
+
 
 

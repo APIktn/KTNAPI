@@ -1,0 +1,36 @@
+
+
+.feature-card {
+  height: 220px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* overlay ให้ตัวหนังสืออ่านง่าย */
+.feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.feature-card .card-body {
+  position: relative;
+  z-index: 2;
+}
+
+/* background image */
+.card-1 {
+  background-image: url("../assets/design/image/land_1.png");
+}
+
+.card-2 {
+  background-image: url("../assets/design/image/land_2.png");
+}
+
+.card-3 {
+  background-image: url("../assets/design/image/land_3.png");
+}
