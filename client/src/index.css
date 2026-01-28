@@ -180,7 +180,7 @@ body {
 /* แก้บัค animate triger scoll bar */
 body {
   overflow-x: hidden;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 
 /* * {

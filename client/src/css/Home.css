@@ -1,4 +1,15 @@
+/* initial state */
+.scroll-fade {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
 
+/* when visible */
+.scroll-fade.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .feature-card {
   height: 220px;
@@ -17,6 +28,11 @@
   background: rgba(0,0,0,0.4);
 }
 
+.card-2::before {
+  pointer-events: none;
+}
+
+
 .feature-card .card-body {
   position: relative;
   z-index: 2;
@@ -31,6 +47,452 @@
   background-image: url("../assets/design/image/land_2.png");
 }
 
-.card-3 {
+.card-4 {
   background-image: url("../assets/design/image/land_3.png");
+}
+
+/* hero */
+.home-hero h2 {
+  font-size: 2rem;
+}
+
+.text-animate {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.text-animate-delay {
+  animation: fadeUp 0.6s ease forwards;
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 6px;
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.feature-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #fff;
+  font-weight: bold;
+}
+
+.card-1 h1 {
+  font-size: 5rem; 
+  letter-spacing: 0.5px;
+}
+
+.card-1 p {
+  max-width: 620px;
+  font-size: 2rem;
+}
+
+.card-1 .feature-list li {
+  font-size: 0.95rem;
+}
+
+.hero-logo {
+  max-width: 450px;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+@media (max-width: 991px) {
+  .hero-logo {
+    margin-top: 2rem;
+  }
+}
+
+/* desktop only */
+@media (min-width: 992px) {
+  .card-1 .col-lg-8 {
+    padding-left: 3rem;
+  }
+}
+
+.slide-list li {
+  opacity: 0;
+  animation: slideInFromRight 0.4s ease forwards;
+}
+
+/* ทำ delay ทีละบรรทัด */
+.slide-list li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.slide-list li:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.slide-list li:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.slide-list li:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.slide-list li:nth-child(5) {
+  animation-delay: 0.3s;
+}
+.slide-list li:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+/* card 2 */
+.mrbone-img {
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+/* รูปกลาง */
+.mrbone-img.center {
+  width: 300px;
+  height: 300px;
+  transform: scale(1);
+}
+
+/* รูปข้าง */
+.mrbone-img.side {
+  width: 120px;
+  height: 120px;
+  opacity: 0.6;
+  transform: scale(0.9);
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .mrbone-img.center {
+    width: 160px;
+    height: 160px;
+  }
+
+  .mrbone-img.side {
+display: none;
+  }
+}
+
+/* รูปกลางเข้า */
+.slide-in-right {
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* รูปข้าง */
+.slide-left,
+.slide-right {
+  animation: fadeSide 0.3s ease;
+}
+
+@keyframes fadeSide {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
+
+.card-2-title,
+.card-2-title2 {
+  font-size: 5rem;
+  letter-spacing: 1px;
+  line-height: 1.3;
+  padding: 0.5rem 0;
+
+  color: rgba(255, 255, 255, 0.15);
+
+  -webkit-text-stroke: 3px rgba(0, 0, 0, 0.85);
+
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* title ยังไม่ animate */
+.card-2-title,
+.card-2-title2 {
+  opacity: 0;
+}
+
+/* animate บนลงล่าง */
+.card-2-title.animate {
+  animation: fadeDown 0.6s ease forwards;
+}
+
+/* animate ล่างขึ้นบน */
+.card-2-title2.animate {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+
+@media (min-width: 992px) {
+  .card-2-title,
+  .card-2-title2 {
+    line-height: 1.35;
+  }
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.card-2 {
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.card-2 .MuiIconButton-root {
+  position: relative;
+  z-index: 50;
+}
+
+
+/* card 3 */
+
+.feature-card.video-card {
+  position: relative;
+  height: 800px;
+  overflow: hidden;
+}
+
+.bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.video-card .card-body {
+  z-index: 2;
+}
+
+.big-title {
+  font-size: 4.5rem;
+  line-height: 1.05;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .big-title {
+    font-size: 2.5rem;
+  }
+}
+.video-top-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%; /* ปรับได้ */
+  background: linear-gradient(
+    to bottom,
+    rgb(0, 0, 0),
+    rgba(0, 0, 0, 0)
+  );
+  z-index: 1;
+}
+
+/* card 4 */
+.card-4 .split-left {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* card container */
+.card-4.split-card {
+  height: 320px;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-4 .row > [class*="col-"] {
+  padding: 0;
+}
+
+.card-4 .split-left {
+  background: #11111120;
+  display: flex;
+  align-items: center;
+}
+
+.card-4 .split-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d65f10b9; /* หรือสีที่ใช้ */
+  overflow: hidden;
+}
+
+.card-4 .pack-img {
+  width: 450px;
+  height: 450px;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: contain;
+  z-index: 2;
+}
+
+.card-4.split-card {
+  height: 450px; /* หรือ 360px */
+}
+
+.card-4 .split-left {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.card-4 .split-right {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+@media (max-width: 991px) {
+  .card-4.split-card {
+    height: auto;
+  }
+
+  .card-4 .split-right {
+    height: 220px;
+  }
+
+  .card-4 .pack-img {
+    width: 100%;
+    height: auto;
+    max-width: 280px;
+  }
+}
+
+@media (min-width: 992px) {
+  .card-4 .split-left h3 {
+    font-size: 3.5rem;
+  }
+
+  .card-4 .split-left p {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-4 .split-left h3 {
+    font-size: 2rem;
+  }
+
+  .card-4 .split-left p {
+    font-size: 1rem;
+  }
+}
+
+/* card 5 */
+
+.card-5.video-card {
+  height: 320px;
+}
+
+.card-5 h3 {
+  font-size: 3rem;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.card-5 p {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .card-5 h3 {
+    font-size: 1.6rem;
+  }
+
+  .card-5 p {
+    font-size: 0.95rem;
+  }
 }

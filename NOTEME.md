@@ -27,7 +27,6 @@ CREATE TABLE `tbl_mas_users` (
   `UpdateBy` varchar(20) NOT NULL,
   `UpdateDateTime` datetime NOT NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE KEY `uq_usercode` (`UserCode`),
-  UNIQUE KEY `uq_username` (`UserName`)
+  UNIQUE KEY `uq_usercode` (`UserCode`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
