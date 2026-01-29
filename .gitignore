@@ -9,6 +9,9 @@ build/
 .env
 */.env
 
+# asset server
+server/asset/Image/*
+
 # Logs
 *.log
 npm-debug.log*

@@ -9,6 +9,9 @@ import Login from "./view/Login.jsx";
 import Signup from "./view/Signup.jsx";
 import NotFound from "./view/NotFound.jsx";
 import Profile from "./view/Profile.jsx";
+import Contact from "./view/Contact.jsx";
+import AddProduct from "./view/AdminAddProduct.jsx";
+import AdminInventory from "./view/AdminInventory.jsx";
 
 function AppRoutes() {
   return (
@@ -16,9 +19,12 @@ function AppRoutes() {
       <Route element={<LayoutBg />}>
         <Route element={<Header />}>
           <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
+            <Route path="/AdminAddProduct" element={<AddProduct />} />
+            <Route path="/AdminInventory" element={<AdminInventory />} />
           </Route>
         </Route>
 

@@ -1,7 +1,11 @@
 import con from "../db.mjs";
 
 export const validateRegister = async (req, res, next) => {
-  const { userEmail } = req.body;
+  const { userEmail, status } = req.body;
+
+  if (status !== "register") {
+    return res.status(403).json({ error: "access denied" });
+  }
 
   if (!userEmail) {
     return res.status(400).json({
@@ -30,7 +34,12 @@ export const validateRegister = async (req, res, next) => {
 };
 
 export const validateLogin = (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password, status } = req.body;
+
+  if (status !== "LoginUser") {
+    return res.status(403).json({ error: "access denied" });
+  }
+
   const errors = {};
 
   if (!username) {

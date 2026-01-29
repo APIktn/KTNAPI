@@ -29,6 +29,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
 
+  /* ---------- logout confirm ---------- */
   const [openLogout, setOpenLogout] = useState(false);
 
   const STICKY_OFFSET = 80;
@@ -85,6 +86,8 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
               icon={<HomeIcon />}
             />
             <BottomNavigationAction
+              component={Link}
+              to="/contact"
               label="Contact"
               value="Contact"
               icon={<SupportAgent />}
@@ -111,7 +114,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
             {/* auth */}
             {user ? (
               <>
-                {/* avatar displayname */}
+                {/* avatar + name */}
                 <ButtonBase
                   onClick={handleOpenMenu}
                   sx={{
@@ -196,16 +199,21 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
         </div>
       </nav>
 
-      {/* logout modal */}
+      {/* modal*/}
       <AppModal
         open={openLogout}
-        onClose={() => {
+        mode="confirm"
+        type="warning"
+        title="logout"
+        message="are you sure you want to logout?"
+        confirmText="logout"
+        cancelText="cancel"
+        onConfirm={() => {
           setOpenLogout(false);
           logout();
         }}
-        type="success"
-        title="logout"
-        message="you have been logged out successfully"
+        onCancel={() => setOpenLogout(false)}
+        onClose={() => setOpenLogout(false)}
       />
     </div>
   );

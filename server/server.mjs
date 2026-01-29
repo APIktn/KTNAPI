@@ -6,10 +6,11 @@ import authenticateToken from "./middleware/authVerify.mjs"
 // routes
 import testRoute from "./routes/test.routes.mjs"
 import authRouter from "./routes/auth.routes.mjs"
+import productRoute from "./routes/prod.routes.mjs"
+import inventoryRoute from "./routes/inventory.roustes.mjs"
 //////////////////////////////////////////////////
 
 dotenv.config()
-// console.log("db host:", process.env.DB_HOST)
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -33,3 +34,8 @@ app.use('/test', authenticateToken, testRoute)
 
 // /register /login
 app.use('/auth', authRouter)
+
+// /createprod
+app.use("/asset", express.static("asset"));
+app.use('/Product', authenticateToken, productRoute)
+app.use('/inventory', authenticateToken, inventoryRoute)

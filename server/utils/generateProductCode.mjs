@@ -1,4 +1,4 @@
-export default async function generateUserCode(con) {
+export default async function generateProductCode(con) {
   const now = new Date();
 
   const yyyy = now.getFullYear();
@@ -6,14 +6,14 @@ export default async function generateUserCode(con) {
   const dd = String(now.getDate()).padStart(2, "0");
 
   const datePart = `${yyyy}${mm}${dd}`; // 20261031
-  const prefix = `USR${datePart}`;
+  const prefix = `PRD${datePart}`;
 
   const [rows] = await con.query(
     `
-    SELECT UserCode
-    FROM tbl_mas_users
-    WHERE UserCode LIKE ?
-    ORDER BY UserCode DESC
+    SELECT ProductCode
+    FROM tbl_trs_product_header
+    WHERE ProductCode LIKE ?
+    ORDER BY ProductCode DESC
     LIMIT 1
     `,
     [`${prefix}%`]
@@ -22,11 +22,11 @@ export default async function generateUserCode(con) {
   let running = 1;
 
   if (rows.length > 0) {
-    const lastCode = rows[0].UserCode;
-    running = parseInt(lastCode.slice(-4), 10) + 1;
+    const lastCode = rows[0].ProductCode;
+    running = parseInt(lastCode.slice(-6), 10) + 1;
   }
 
-  const runningStr = String(running).padStart(4, "0");
+  const runningStr = String(running).padStart(6, "0");
 
   return `${prefix}${runningStr}`;
 }

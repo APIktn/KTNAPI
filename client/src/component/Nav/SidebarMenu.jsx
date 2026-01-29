@@ -6,8 +6,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
 import { Link } from "react-router-dom";
 
 export default function SidebarMenu({ showText, isMobile }) {
@@ -27,7 +27,7 @@ export default function SidebarMenu({ showText, isMobile }) {
             </ListItem>
 
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton component={Link} to="/Contact">
                 <ListItemIcon>
                   <SupportAgentIcon />
                 </ListItemIcon>
@@ -40,18 +40,24 @@ export default function SidebarMenu({ showText, isMobile }) {
         </>
       )}
 
-      {/* shared menu */}
+      {/* shared menu (mobile + desktop) */}
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              {showText && <ListItemText primary={text} />}
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/AdminAddProduct">
+            <ListItemIcon>
+              <AddBoxIcon />
+            </ListItemIcon>
+            {showText && <ListItemText primary="Add Product" />}
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/AdminInventory">
+            <ListItemIcon>
+              <WarehouseIcon />
+            </ListItemIcon>
+            {showText && <ListItemText primary="Inventory" />}
+          </ListItemButton>{" "}
+        </ListItem>
       </List>
     </>
   );

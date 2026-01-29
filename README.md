@@ -7,10 +7,11 @@ VITE_API_URL=http://localhost:5000
 npm create vite@latest client -- --template react
 npm install bootstrap
 npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
-npm install @dnd-kit/core
+npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
 npm install framer-motion
 npm install axios
 npm install jwt-decode
+npm install sweetalert2
 
 ////////////////////////////////////////////////////
 server
@@ -26,3 +27,4 @@ JWT_SECRET=
 npm init -y
 npm install express cors dotenv
 npm install --save-dev nodemon
+npm install multer

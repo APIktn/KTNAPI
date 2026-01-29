@@ -78,6 +78,7 @@ export default function Login() {
       const res = await axios.post(`${API_URL}/auth/login`, {
         username: form.username,
         password: form.password,
+        status: "LoginUser"
       });
 
       if (res.status === 200) {
