@@ -1,0 +1,116 @@
+ALTER TABLE tbl_log_history
+MODIFY COLUMN LogData_002 TEXT;
+
+ALTER TABLE tbl_log_history
+MODIFY COLUMN LogData_007 TEXT;
+
+-- chaosuawebapp.tbl_trs_timestamp_header definition
+
+CREATE TABLE `tbl_trs_timestamp_header` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `NumberDoc` varchar(20) NOT NULL,
+  `NumberPairDoc` varchar(20) NOT NULL,
+  `DocDate` date NOT NULL,
+  `StatusDoc` int(1) NOT NULL,
+  `DocHdNote` text NOT NULL,
+  `CategoryCode` varchar(20) NOT NULL,
+  `LocationCode` varchar(30) NOT NULL,
+  `CompanyCode` varchar(10) NOT NULL,
+  `MenuDeptCode` varchar(10) NOT NULL,
+  `TotalHour` int(11) DEFAULT '0',
+  `TotalMinute` int(11) DEFAULT '0',
+  `TotalSecond` int(11) DEFAULT '0',
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_timestamp_line definition
+
+CREATE TABLE `tbl_trs_timestamp_line` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `RefId` int(150) NOT NULL,
+  `NumberDoc` varchar(20) NOT NULL,
+  `LineNo` int(150) NOT NULL,
+  `StartTime` datetime DEFAULT NULL,
+  `EndTime` datetime DEFAULT NULL,
+  `OperatorUser` text NOT NULL,
+  `TeamName` varchar(255) DEFAULT NULL,
+  `TeamMember` text,
+  `Note` text NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_timestamp_ref_header` (`RefId`),
+  CONSTRAINT `fk_timestamp_ref_header` FOREIGN KEY (`RefId`) REFERENCES `tbl_trs_timestamp_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_timestamp_shift definition
+
+CREATE TABLE `tbl_trs_timestamp_shift` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `LineNo` text NOT NULL,
+  `DateShift` date NOT NULL,
+  `EmCode` varchar(20) NOT NULL,
+  `ShiftSelect` varchar(150) NOT NULL,
+  `ShiftStart` time NOT NULL,
+  `ShiftEnd` time NOT NULL,
+  `BreakTime` text NOT NULL,
+  `MenuDeptCode` varchar(20) NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_timestamp_team definition
+
+CREATE TABLE `tbl_trs_timestamp_team` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `TeamName` varchar(150) NOT NULL,
+  `MenuDeptCode` varchar(20) NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_timestamp_team_member definition
+
+CREATE TABLE `tbl_trs_timestamp_team_member` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `IdRef` int(150) NOT NULL,
+  `EmCode` varchar(20) NOT NULL,
+  `Leader` int(1) NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_team_member_team` (`IdRef`),
+  CONSTRAINT `fk_team_member_team` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_timestamp_team` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_mas_timestamp definition
+
+CREATE TABLE `tbl_mas_timestamp` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `ShiftType` varchar(150) NOT NULL,
+  `StartTime` time NOT NULL,
+  `EndTime` time NOT NULL,
+  `BreakTime` text,
+  `Details` text NOT NULL,
+  `MenuDeptCode` varchar(20) NOT NULL,
+  `Active` int(1) NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

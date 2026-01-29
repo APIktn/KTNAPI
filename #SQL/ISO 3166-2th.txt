@@ -1,0 +1,84 @@
+-- chaosuawebapp.tbl_mas_province definition
+
+CREATE TABLE `tbl_mas_province` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `Province` text NOT NULL,
+  `Sector` text NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- INSERT chaosuawebapp.tbl_mas_province
+
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'กรุงเทพมหานคร', 'กรุงเทพฯและปริมณฑล');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นนทบุรี', 'กรุงเทพฯและปริมณฑล');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ปทุมธานี', 'กรุงเทพฯและปริมณฑล');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'พระนครศรีอยุธยา', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'อ่างทอง', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ลพบุรี', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สิงห์บุรี', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ชัยนาท', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สระบุรี', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สมุทรปราการ', 'กรุงเทพฯและปริมณฑล');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ชลบุรี', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ระยอง', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'จันทบุรี', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ตราด', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ฉะเชิงเทรา', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ปราจีนบุรี', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นครนายก', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สระแก้ว', 'ตะวันออก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นครราชสีมา', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'บุรีรัมย์', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สุรินทร์', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ศรีสะเกษ', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'อุบลราชธานี', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ยโสธร', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ชัยภูมิ', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'อำนาจเจริญ', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'หนองบัวลำภู', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ขอนแก่น', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'อุดรธานี', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'เลย', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'หนองคาย', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'มหาสารคาม', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ร้อยเอ็ด', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'กาฬสินธุ์', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สกลนคร', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นครพนม', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'มุกดาหาร', 'อีสาน');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'เชียงใหม่', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ลำพูน', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ลำปาง', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'อุตรดิตถ์', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'แพร่', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'น่าน', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'พะเยา', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'เชียงราย', 'เหนือ');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นครสวรรค์', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'อุทัยธานี', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'กำแพงเพชร', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ตาก', 'ตะวันตก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'พิษณุโลก', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'พิจิตร', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'เพชรบูรณ์', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ราชบุรี', 'ตะวันตก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'กาญจนบุรี', 'ตะวันตก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สุพรรณบุรี', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นครปฐม', 'กรุงเทพฯและปริมณฑล');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สมุทรสาคร', 'กรุงเทพฯและปริมณฑล');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สมุทรสงคราม', 'กลาง');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'เพชรบุรี', 'ตะวันตก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ประจวบคีรีขันธ์', 'ตะวันตก');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นครศรีธรรมราช', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'กระบี่', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'พังงา', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ภูเก็ต', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สุราษฎร์ธานี', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ระนอง', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ชุมพร', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สงขลา', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'สตูล', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ตรัง', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'ยะลา', 'ใต้');
+INSERT INTO tbl_mas_province (Id, Province, Sector) VALUES(NULL, 'นราธิวาส', 'ใต้');
+

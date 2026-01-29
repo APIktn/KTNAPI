@@ -1,0 +1,19 @@
+-- chaosuawebapp.tbl_mas_mail definition
+
+CREATE TABLE `tbl_mas_mail` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `SetFromEmail` varchar(150) NOT NULL,
+  `SetFromName` varchar(150) NOT NULL,
+  `Host` varchar(150) NOT NULL,
+  `EmailUserName` varchar(150) NOT NULL,
+  `EmailUserPassword` varchar(150) NOT NULL,
+  `SMTP` varchar(10) NOT NULL,
+  `Port` int(10) NOT NULL,
+  `Details` text NOT NULL,
+  `Active` int(1) NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

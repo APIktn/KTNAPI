@@ -1,0 +1,14 @@
+US0000
+Chaosua@123
+คุณ ชัยรัตน์
+CEO US
+
+US0001
+Chaosua@123
+คุณ ธนพงศ์
+Sale Manager
+
+US0002
+Chaosua@123
+คุณ จงรักษ์
+Sale Manager

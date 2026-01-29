@@ -1,0 +1,16 @@
+chaosuawebapp
+|
+|-js-
+|    |-ListAuthorization.js
+|    |-ReportUserPermission.js
+|
+|-Process-
+          |-GetData-
+          |         |-ListAuthorization-
+          |         |                   |-GetListAuthorization.php
+          |         |
+          |         |-ReportUserPermission-
+          |                                |-GetReportUserPermission.php
+          |-View-
+                |-ListAuthorization.php
+                |-ReportUserPermission.php

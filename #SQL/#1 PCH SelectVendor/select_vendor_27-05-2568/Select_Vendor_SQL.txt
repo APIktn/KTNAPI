@@ -1,0 +1,99 @@
+-- chaosuawebapp.tbl_mas_select_vendor_topic definition
+
+CREATE TABLE `tbl_mas_select_vendor_topic` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `LineNo` int(10) NOT NULL,
+  `TopicName` varchar(150) NOT NULL,
+  `TopicMaxScore` decimal(10,2) NOT NULL,
+  `CreateBy` varchar(150) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(150) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  `CategoryCode` varchar(10) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_mas_select_vendor_subtopic definition
+
+CREATE TABLE `tbl_mas_select_vendor_subtopic` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `SubLineNo` text NOT NULL,
+  `SubTopicName` varchar(150) NOT NULL,
+  `SubTopicMaxScore` decimal(10,2) NOT NULL,
+  `CreateBy` varchar(150) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(150) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  `Topic_Id` int(150) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_subtopic_to_topic` (`Topic_Id`),
+  CONSTRAINT `fk_subtopic_to_topic` FOREIGN KEY (`Topic_Id`) REFERENCES `tbl_mas_select_vendor_topic` (`Id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_select_vendor_doc definition
+
+CREATE TABLE `tbl_trs_select_vendor_doc` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `NumberDoc` varchar(20) NOT NULL,
+  `DocDate` text NOT NULL,
+  `VendorCode` varchar(150) NOT NULL,
+  `CompanyVendor` varchar(150) NOT NULL,
+  `VendorType` varchar(150) NOT NULL,
+  `VendorTypeNote` varchar(150) NOT NULL,
+  `CompanyVendorType` varchar(150) NOT NULL,
+  `TotalScore` decimal(10,2) NOT NULL,
+  `TotalNote` text NOT NULL,
+  `ResultVendor` varchar(150) NOT NULL,
+  `ResultNote` text NOT NULL,
+  `CompanyCode` varchar(10) NOT NULL,
+  `MenuDeptCode` varchar(10) NOT NULL,
+  `CategoryCode` varchar(10) NOT NULL,
+  `StatusDoc` int(1) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  `IdPairDoc` int(150) DEFAULT NULL,
+  `CopyStatus` varchar(150) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_select_vendor_score definition
+
+CREATE TABLE `tbl_trs_select_vendor_score` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `Doc_Id` int(150) NOT NULL,
+  `SubTopic_Id` int(150) NOT NULL,
+  `Topic_Id` int(150) NOT NULL,
+  `Score` decimal(10,2) DEFAULT NULL,
+  `Note` varchar(100) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `uq_score` (`Doc_Id`,`Topic_Id`,`SubTopic_Id`),
+  KEY `fk_score_subtopic` (`SubTopic_Id`),
+  KEY `fk_topic_id` (`Topic_Id`),
+  CONSTRAINT `fk_score_doc` FOREIGN KEY (`Doc_Id`) REFERENCES `tbl_trs_select_vendor_doc` (`Id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_score_subtopic` FOREIGN KEY (`SubTopic_Id`) REFERENCES `tbl_mas_select_vendor_subtopic` (`Id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_topic_id` FOREIGN KEY (`Topic_Id`) REFERENCES `tbl_mas_select_vendor_topic` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_select_vendor_note definition
+
+CREATE TABLE `tbl_trs_select_vendor_note` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `Doc_Id` int(150) NOT NULL,
+  `Topic_Id` int(150) NOT NULL,
+  `Note` varchar(100) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `uq_note` (`Doc_Id`,`Topic_Id`),
+  KEY `fk_note_topic` (`Topic_Id`),
+  CONSTRAINT `fk_note_doc` FOREIGN KEY (`Doc_Id`) REFERENCES `tbl_trs_select_vendor_doc` (`Id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_note_topic` FOREIGN KEY (`Topic_Id`) REFERENCES `tbl_mas_select_vendor_topic` (`Id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

@@ -1,0 +1,20 @@
+chaosuawebapp
+|
+|-js-
+|    |-SelectVendor-
+|                   |-SelectVendors.js
+|                   |-SelectVendorsEdit.js
+|
+|-Process-
+         |-Create-
+         |        |-SelectVendor-
+         |                       |-CreateSelectVendorsEdit.php
+         |-GetData-
+         |         |-SelectVendor-
+         |                        |-GetSelectVendorsEdit.php
+         |-Report-
+         |        |-SelectVendorDoc-
+         |                          |-SelectVendorReportRev4.php
+         |-View-
+               |-SelectVendors.php
+               |-SelectVendorsEdit.php

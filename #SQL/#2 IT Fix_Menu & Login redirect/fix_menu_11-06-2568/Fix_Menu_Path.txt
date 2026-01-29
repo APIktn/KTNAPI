@@ -1,0 +1,16 @@
+chaosuawebapp
+|
+|-js-
+|    |-ManageMenu.js
+|
+|-Process-
+|         |-Create-
+|         |        |-ManageMenu-
+|         |                     |-CreateMenu.php
+|         |-Update-
+|         |        |-ManageMenu-
+|         |                     |-UpdateMenu.php
+|         |-View-
+|               |-ManageMenu.php
+|-Template-
+          |-Header.php

@@ -1,0 +1,97 @@
+/* -----  To Do list  -----*/
+// arrow for pin list
+<-------------- *on work* 
+<-------------- *wait*
+<-------------- *DONE* 
+
+#############################
+
+/* ----- Checklist Create menu -----*/
+menu department
+category
+Doc No
+
+#############################
+
+/* ----- Checklist -----*/
+line noti Off
+status Doc Update On click
+Log
+Approve Email
+Only User in Approve loop can view
+
+#############################
+
+/* ----- DB -----*/
+
+tbl_mas_category 
+tbl_trs_select_vendor_doc <-------------- *DONE*
+tbl_trs_select_vendor_topic <-------------- *DONE*
+tbl_trs_select_vendor_subtopic <-------------- *DONE*
+tbl_trs_select_vendor_score <-------------- *DONE*
+tbl_trs_select_vendor_note <-------------- *DONE*
+
+#############################
+
+/* ----- Page -----*/ 
+
+SelectVendors.php <-------------- *DONE*
+SelectVendorsHistory.php <-------------- *DONE*
+SelectVendorsEdit.php <-------------- *DONE*
+
+#############################
+
+/* ----- review -----*/
+
+#############################
+
+/* ----- working -----*/ 
+
+- ขอแบบฟอร์มทั้งหมด
+- รายชื่อผู้อนุมัติ
+- วันที่ใช้งานจริง
+
+#############################
+/* ----------*//* ----- 100% -----*//* ----------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

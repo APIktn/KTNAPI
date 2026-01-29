@@ -1,0 +1,30 @@
+-- แก้ให้เก็บ sub หลายตัวครับ
+ALTER TABLE tbl_trs_maintenance
+MODIFY MtnSubCategory VARCHAR(150);
+
+-- chaosuawebapp.tbl_trs_legal_advisor definition
+
+CREATE TABLE `tbl_trs_legal_advisor` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `IdRef` int(150) NOT NULL,
+  `H1_Pother` text NOT NULL,
+  `H1_Cname` text NOT NULL,
+  `H1_CType` text NOT NULL,
+  `H1_Caddress` text NOT NULL,
+  `H1_Ccost` decimal(12,2) NOT NULL,
+  `H1_Capprove` varchar(150) NOT NULL,
+  `H1_Cstart` date NOT NULL,
+  `H1_Cend` date NOT NULL,
+  `H1_Clanguage` varchar(100) NOT NULL,
+  `H1_Clantext` text NOT NULL,
+  `H1_Note` text NOT NULL,
+  `H2_P` int(1) NOT NULL,
+  `H2_Pother` text NOT NULL,
+  `CreateBy` varchar(20) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(20) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_legaladvisor_mtn` (`IdRef`),
+  CONSTRAINT `fk_legaladvisor_mtn` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_maintenance` (`MtnId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

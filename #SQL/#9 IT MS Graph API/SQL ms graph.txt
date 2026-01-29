@@ -1,0 +1,22 @@
+-- chaosuawebapp.tbl_mas_msgraph definition
+
+CREATE TABLE `tbl_mas_msgraph` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `TokenName` varchar(150) NOT NULL,
+  `TenantId` varchar(150) NOT NULL,
+  `ClientId` varchar(150) NOT NULL,
+  `ClientSecret` varchar(150) NOT NULL,
+  `Scope` varchar(200) NOT NULL,
+  `Details` text NOT NULL,
+  `Active` int(1) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_mas_license definition
+
+ALTER TABLE tbl_mas_license
+ADD COLUMN `MSId` text NOT NULL AFTER `LicenseActive`

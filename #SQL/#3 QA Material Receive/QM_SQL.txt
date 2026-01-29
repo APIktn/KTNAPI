@@ -1,0 +1,58 @@
+-- chaosuawebapp.tbl_trs_material_receive_doc_header definition
+
+CREATE TABLE `tbl_trs_material_receive_doc_header` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `NumberDoc` varchar(20) NOT NULL,
+  `DocDate` text NOT NULL,
+  `StatusDoc` int(1) NOT NULL,
+  `PO` varchar(150) NOT NULL,
+  `CategoryCode` varchar(10) NOT NULL,
+  `MenuDeptCode` varchar(10) NOT NULL,
+  `CompanyCode` varchar(10) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` int(11) NOT NULL,
+  `VendorCode` varchar(150) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+-- chaosuawebapp.tbl_trs_material_receive_doc definition
+
+CREATE TABLE `tbl_trs_material_receive_doc` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `CompanyCode` varchar(10) NOT NULL,
+  `MatCode` varchar(150) NOT NULL,
+  `MatDescription` varchar(150) NOT NULL,
+  `MatReceiveDate` text NOT NULL,
+  `ShelfLife` int(150) NOT NULL,
+  `Supplier` varchar(150) NOT NULL,
+  `Amount1` decimal(10,2) NOT NULL,
+  `Amount2` decimal(10,2) NOT NULL,
+  `Amount3` decimal(10,2) NOT NULL,
+  `Amount4` decimal(10,2) NOT NULL,
+  `Unit1` varchar(150) NOT NULL,
+  `Unit2` varchar(150) NOT NULL,
+  `Unit3` varchar(150) NOT NULL,
+  `Unit4` varchar(150) NOT NULL,
+  `MFD` text NOT NULL,
+  `EXP` text NOT NULL,
+  `MatWL` decimal(10,2) NOT NULL,
+  `MatT` decimal(10,2) NOT NULL,
+  `MatWeight` decimal(10,2) NOT NULL,
+  `MatAmount` decimal(10,2) NOT NULL,
+  `MatMois` decimal(10,2) NOT NULL,
+  `CheckTransport` text NOT NULL,
+  `CheckPest` text NOT NULL,
+  `CheckQuality` text NOT NULL,
+  `CheckCOA` text NOT NULL,
+  `CheckProcess` text NOT NULL,
+  `HeaderId` int(150) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_material_receive_header` (`HeaderId`),
+  CONSTRAINT `fk_material_receive_header` FOREIGN KEY (`HeaderId`) REFERENCES `tbl_trs_material_receive_doc_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

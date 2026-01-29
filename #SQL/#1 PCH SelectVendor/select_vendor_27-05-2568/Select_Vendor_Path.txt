@@ -1,0 +1,41 @@
+chaosuawebapp
+|
+|-js-
+|    |-SelectVendor-
+|                   |-SelectVendors.js
+|                   |-SelectVendorsEdit.js
+|                   |-SelectVendorsHistory.js
+|
+|-Process-
+|         |-Create-
+|         |        |-SelectVendor-
+|         |                       |-CreateSelectVendors.php
+|         |                       |-CreateSelectVendorsEdit.php
+|         |-Delete-
+|         |        |-SelectVendor-
+|         |                       |-DelSelectVendors.php
+|         |                       |-DelSelectVendorsEdit.php
+|         |-Function-
+|         |          |-SelectVendor-
+|         |                         |-FnMailSelectVendors.php
+|         |                         |-FnSelectVendors.php
+|         |-GetData-
+|         |         |-SelectVendor-
+|         |                        |-GetSelectVendors.php
+|         |                        |-GetSelectVendorsEdit.php
+|         |                        |-GetSelectVendorsHistory.php
+|         |-Report-
+|         |        |-SelectVendorDoc-
+|         |                          |-SelectVendorReport.php
+|         |-Update-
+|         |        |-SelectVendor-
+|         |                       |-UpdateSelectVendors.php
+|         |                       |-UpdateSelectVendorsEdit.php
+|         |-View-
+|               |-SelectVendors.php
+|               |-SelectVendorsEdit.php
+|               |-SelectVendorsHistory.php
+|-Vendor-
+         |-phpEmail-
+                    |-AlertSelectVendors.php
+                    |-SendEmailSelectVendors.php

@@ -1,0 +1,19 @@
+-- chaosuawebapp.tbl_trs_locationqr_doc definition
+
+CREATE TABLE `tbl_trs_locationqr_doc` (
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
+  `NumberDoc` varchar(20) NOT NULL,
+  `DocDate` text NOT NULL,
+  `ReportNote` text NOT NULL,
+  `DocHdNote` text NOT NULL,
+  `CompanyCode` varchar(10) NOT NULL,
+  `MenuDeptCode` varchar(10) NOT NULL,
+  `CategoryCode` varchar(20) NOT NULL,
+  `LocationCode` varchar(20) NOT NULL,
+  `StatusDoc` int(1) NOT NULL,
+  `CreateBy` varchar(10) NOT NULL,
+  `CreateDateTime` datetime NOT NULL,
+  `UpdateBy` varchar(10) NOT NULL,
+  `UpdateDateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
