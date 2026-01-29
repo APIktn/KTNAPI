@@ -99,7 +99,9 @@ function AdminAddProduct() {
   /* ================= dnd ================= */
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    }),
   );
 
   /* ================= reset when new ================= */
@@ -130,7 +132,7 @@ function AdminAddProduct() {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
 
         setProductName(res.data.productName);
@@ -144,7 +146,7 @@ function AdminAddProduct() {
             price: l.price,
             amount: l.amount,
             note: l.note,
-          }))
+          })),
         );
         setTempCounter(res.data.items.length);
       } catch (err) {
@@ -187,44 +189,54 @@ function AdminAddProduct() {
   };
 
   /* ===== delete row (confirm + api, no success modal) ===== */
-  const handleAskDeleteLine = (index, row) => {
-    openModal({
-      mode: "confirm",
-      type: "warning",
-      title: "delete line",
-      message: "are you sure you want to delete this line?",
-      confirmText: "delete",
-      onConfirm: async () => {
-        try {
-          if (!row.lineKey.startsWith("new")) {
-            await axios.post(
-              `${API_URL}/Product/line`,
-              { status: "deleteprodline", lineId: row.lineKey },
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              }
-            );
+const handleAskDeleteLine = (index, row) => {
+  // temp row → ลบทันที ไม่ต้อง modal
+  if (row.lineKey.startsWith("new")) {
+    setRows((prev) =>
+      prev
+        .filter((_, i) => i !== index)
+        .map((r, i) => ({ ...r, lineNo: i + 1 }))
+    );
+    return;
+  }
+
+  // row จริง → ค่อยถาม confirm
+  openModal({
+    mode: "confirm",
+    type: "warning",
+    title: "delete line",
+    message: "are you sure you want to delete this line?",
+    confirmText: "delete",
+    onConfirm: async () => {
+      try {
+        await axios.post(
+          `${API_URL}/Product/line`,
+          { status: "deleteprodline", lineId: row.lineKey },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           }
+        );
 
-          setRows((prev) =>
-            prev
-              .filter((_, i) => i !== index)
-              .map((r, i) => ({ ...r, lineNo: i + 1 }))
-          );
+        setRows((prev) =>
+          prev
+            .filter((_, i) => i !== index)
+            .map((r, i) => ({ ...r, lineNo: i + 1 }))
+        );
 
-          setModalOpen(false);
-        } catch (err) {
-          openModal({
-            type: "error",
-            title: "delete failed",
-            message: "cannot delete line",
-          });
-        }
-      },
-    });
-  };
+        setModalOpen(false);
+      } catch (err) {
+        openModal({
+          type: "error",
+          title: "delete failed",
+          message: "cannot delete line",
+        });
+      }
+    },
+  });
+};
+
 
   /* ===== drag reorder (api only, no modal success) ===== */
   const handleDragEnd = async ({ active, over }) => {
@@ -233,7 +245,7 @@ function AdminAddProduct() {
     const newRows = arrayMove(
       rows,
       rows.findIndex((r) => r.lineKey === active.id),
-      rows.findIndex((r) => r.lineKey === over.id)
+      rows.findIndex((r) => r.lineKey === over.id),
     ).map((r, i) => ({ ...r, lineNo: i + 1 }));
 
     setRows(newRows);
@@ -249,7 +261,7 @@ function AdminAddProduct() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
     } catch (err) {
       openModal({
@@ -281,6 +293,7 @@ function AdminAddProduct() {
         type: "success",
         title: "save success",
         message: "product saved successfully",
+        onClose: () => navigate(`/AdminProduct?prd=${res.data.productCode}`),
       });
     } catch (err) {
       openModal({
@@ -308,7 +321,7 @@ function AdminAddProduct() {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
-            }
+            },
           );
 
           openModal({
@@ -329,10 +342,15 @@ function AdminAddProduct() {
   };
 
   /* ================= UI ================= */
+  /* ================= UI ================= */
+  /* ================= UI ================= */
+  /* ================= UI ================= */
+  /* ================= UI ================= */
   return (
     <>
       <Box
         sx={{
+          minHeight: "78vh",
           backgroundColor: theme === "dark" ? "#1e1e1e" : "#ffffff",
           borderRadius: 2,
           p: 3,
@@ -340,7 +358,7 @@ function AdminAddProduct() {
       >
         {/* header */}
         <Box display="flex" justifyContent="space-between" mb={2}>
-          <Typography variant="h6">product</Typography>
+          <Typography variant="h6">new product</Typography>
 
           <Box display="flex" gap={1}>
             <Button
@@ -419,7 +437,7 @@ function AdminAddProduct() {
                     : `${API_URL}${imagePreview}`
                 }
                 alt="preview"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
               />
             ) : (
               <Typography variant="h4" sx={{ color: "#aaa" }}>
@@ -439,7 +457,8 @@ function AdminAddProduct() {
             items={rows.map((r) => r.lineKey)}
             strategy={verticalListSortingStrategy}
           >
-            <Table size="small">
+            <Box sx={{ width: "100%", overflowX: "auto" }}>
+            <Table size="small" sx={{ minWidth: 800 }}>
               <TableHead>
                 <TableRow>
                   <TableCell />
@@ -563,7 +582,7 @@ function AdminAddProduct() {
                   );
                 })}
               </TableBody>
-            </Table>
+            </Table></Box>
           </SortableContext>
         </DndContext>
 
@@ -580,4 +599,4 @@ function AdminAddProduct() {
   );
 }
 
-export default AdminAddProduct
+export default AdminAddProduct;

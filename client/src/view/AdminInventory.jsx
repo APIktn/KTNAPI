@@ -146,7 +146,7 @@ function AdminInventory() {
                     sx={{
                       width: 250,
                       height: 250,
-                      objectFit: "cover",
+                      objectFit: "contain",
                       mx: "auto",
                     }}
                     image={`${API_URL}${p.image}`}
