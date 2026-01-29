@@ -292,34 +292,31 @@ function Home() {
               </div>
             </div>
 
-{/* card 5 */}
-<div className="col-lg-12">
-  <div className="card feature-card card-5 video-card scroll-fade">
-    {/* background video */}
-    <video
-      className="bg-video"
-      src={video2}
-      autoPlay
-      loop
-      muted
-      playsInline
-    />
+            {/* card 5 */}
+            <div className="col-lg-12 mb-3">
+              <div className="card feature-card card-5 video-card scroll-fade">
+                {/* background video */}
+                <video
+                  className="bg-video"
+                  src={video2}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
 
-    {/* backdrop */}
-    <div className="video-overlay" />
+                {/* backdrop */}
+                <div className="video-overlay" />
 
-    {/* content */}
-    <div className="card-body text-white d-flex align-items-center justify-content-center text-center">
-      <div>
-        <h3 className="fw-bold mb-2">contact me</h3>
-        <p className="fw-light mb-0">
-          apisitamornktn@gmail.com
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
+                {/* content */}
+                <div className="card-body text-white d-flex align-items-center justify-content-center text-center">
+                  <div>
+                    <h3 className="fw-bold mb-2">contact me</h3>
+                    <p className="fw-light mb-0">apisitamornktn@gmail.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

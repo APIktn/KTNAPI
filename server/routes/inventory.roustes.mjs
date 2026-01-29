@@ -8,7 +8,7 @@ inventoryRoute.post("/getinventory", validateInventory, async (req, res) => {
     const {
         search = "",
         priceMin = 0,
-        priceMax = 500000,
+        priceMax = 100000,
     } = req.body;
 
     try {

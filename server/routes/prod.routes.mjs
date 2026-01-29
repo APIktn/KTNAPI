@@ -58,9 +58,7 @@ productRoute.post(
       if (status === "createprod") {
         prdCode = await generateProductCode(conn);
 
-        const imagePath = req.file
-          ? `/asset/Image/${req.file.filename}`
-          : null;
+        const imagePath = req.file ? `/asset/Image/${req.file.filename}` : null;
 
         const [header] = await conn.query(
           `
@@ -78,7 +76,7 @@ productRoute.post(
             new Date(),
             userCode,
             new Date(),
-          ]
+          ],
         );
 
         headerId = header.insertId;
@@ -88,7 +86,7 @@ productRoute.post(
       if (status === "updateprod") {
         const [headers] = await conn.query(
           `select Id from tbl_trs_product_header where ProductCode = ?`,
-          [productCode]
+          [productCode],
         );
 
         if (headers.length === 0) {
@@ -103,25 +101,24 @@ productRoute.post(
           set ProductName=?, ProductDes=?, UpdateBy=?, UpdateDateTime=?
           where ProductCode=?
           `,
-          [productName, description, userCode, new Date(), productCode]
+          [productName, description, userCode, new Date(), productCode],
         );
       }
 
       // ===== insert new lines =====
       for (const item of items.filter((i) =>
-        String(i.lineKey).startsWith("new")
+        String(i.lineKey).startsWith("new"),
       )) {
         await conn.query(
           `
           insert into tbl_trs_product_line
-          (IdRef, LineNo, Status, Size, Price, Amount, Note,
+          (IdRef, LineNo, Size, Price, Amount, Note,
            CreateBy, CreateDateTime, UpdateBy, UpdateDateTime)
-          values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `,
           [
             headerId,
             item.lineNo,
-            Number(item.amount) === 0 ? "sold" : "available",
             item.size,
             item.price,
             item.amount,
@@ -130,7 +127,32 @@ productRoute.post(
             new Date(),
             userCode,
             new Date(),
-          ]
+          ],
+        );
+      }
+
+      // ===== update exist lines =====
+      for (const item of items.filter(
+        (i) => !String(i.lineKey).startsWith("new"),
+      )) {
+        await conn.query(
+          `
+    update tbl_trs_product_line
+    set LineNo=?, Size=?, Price=?, Amount=?, Note=?,
+    UpdateBy=?, UpdateDateTime=?
+    where Id=? and IdRef=?
+    `,
+          [
+            item.lineNo,
+            item.size,
+            item.price,
+            item.amount,
+            item.note || "",
+            userCode,
+            new Date(),
+            item.lineKey,
+            headerId,
+          ],
         );
       }
 
@@ -152,7 +174,7 @@ productRoute.post(
     } finally {
       conn.release();
     }
-  }
+  },
 );
 
 //////////////////////////////////////////////////
@@ -190,26 +212,84 @@ productRoute.post("/line", validateProduct, async (req, res) => {
             userCode,
             new Date(),
             l.lineKey,
-          ]
+          ],
         );
       }
+
+      return res.json({
+        success: true,
+        message: "line updated successfully",
+      });
     }
 
     // ===== delete line =====
     if (status === "deleteprodline") {
-      await con.query(
-        `delete from tbl_trs_product_line where Id = ?`,
-        [lineId]
-      );
+      const conn = await con.getConnection();
+
+      try {
+        await conn.beginTransaction();
+
+        const [[line]] = await conn.query(
+          `select IdRef from tbl_trs_product_line where Id = ?`,
+          [lineId],
+        );
+
+        if (!line) {
+          await conn.rollback();
+          return res.status(404).json({
+            success: false,
+            error: "line not found",
+          });
+        }
+
+        const headerId = line.IdRef;
+
+        await conn.query(`delete from tbl_trs_product_line where Id = ?`, [
+          lineId,
+        ]);
+
+        const [rows] = await conn.query(
+          `
+          select Id
+          from tbl_trs_product_line
+          where IdRef = ?
+          order by LineNo
+          `,
+          [headerId],
+        );
+
+        let no = 1;
+        for (const r of rows) {
+          await conn.query(
+            `
+            update tbl_trs_product_line
+            set LineNo=?, UpdateBy=?, UpdateDateTime=?
+            where Id=?
+            `,
+            [no++, userCode, new Date(), r.Id],
+          );
+        }
+
+        await conn.commit();
+
+        return res.json({
+          success: true,
+          message: "line deleted and reordered",
+        });
+      } catch (err) {
+        await conn.rollback();
+        throw err;
+      } finally {
+        conn.release();
+      }
     }
 
-    res.json({
-      success: true,
-      message: "line updated successfully",
+    return res.status(400).json({
+      success: false,
+      error: "invalid status",
     });
   } catch (err) {
     console.error("line error:", err);
-
     res.status(500).json({
       success: false,
       error: "server error",
@@ -237,7 +317,7 @@ productRoute.post("/delete", validateProduct, async (req, res) => {
 
     const [headers] = await conn.query(
       `select Id from tbl_trs_product_header where ProductCode = ?`,
-      [productCode]
+      [productCode],
     );
 
     if (headers.length === 0) {
@@ -246,15 +326,13 @@ productRoute.post("/delete", validateProduct, async (req, res) => {
 
     const headerId = headers[0].Id;
 
-    await conn.query(
-      `delete from tbl_trs_product_line where IdRef = ?`,
-      [headerId]
-    );
+    await conn.query(`delete from tbl_trs_product_line where IdRef = ?`, [
+      headerId,
+    ]);
 
-    await conn.query(
-      `delete from tbl_trs_product_header where Id = ?`,
-      [headerId]
-    );
+    await conn.query(`delete from tbl_trs_product_header where Id = ?`, [
+      headerId,
+    ]);
 
     await conn.commit();
 
@@ -295,7 +373,7 @@ productRoute.post("/getprod", async (req, res) => {
       where ProductCode = ?
       limit 1
       `,
-      [prdcode]
+      [prdcode],
     );
 
     if (headers.length === 0) {
@@ -314,7 +392,7 @@ productRoute.post("/getprod", async (req, res) => {
       where IdRef = ?
       order by LineNo
       `,
-      [header.Id]
+      [header.Id],
     );
 
     res.json({

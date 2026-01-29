@@ -47,11 +47,12 @@ CREATE TABLE `tbl_trs_product_header` (
 
 -- ktnapi.tbl_trs_product_line definition
 
+-- ktnapi.tbl_trs_product_line definition
+
 CREATE TABLE `tbl_trs_product_line` (
   `Id` int(150) NOT NULL AUTO_INCREMENT,
   `IdRef` int(150) NOT NULL,
   `LineNo` int(150) NOT NULL,
-  `Status` varchar(150) NOT NULL,
   `Size` varchar(150) NOT NULL,
   `Price` decimal(10,2) NOT NULL,
   `Amount` int(10) NOT NULL,
@@ -63,4 +64,4 @@ CREATE TABLE `tbl_trs_product_line` (
   PRIMARY KEY (`Id`),
   KEY `fk_product_line_header` (`IdRef`),
   CONSTRAINT `fk_product_line_header` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_product_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

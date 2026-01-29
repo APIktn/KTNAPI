@@ -12,12 +12,14 @@ function jwtInterceptor() {
 
         if (decoded.exp < currentTime) {
           localStorage.removeItem("token");
+          localStorage.removeItem("user");
           window.dispatchEvent(new Event("auth-expired"));
         } else {
           req.headers.Authorization = `Bearer ${token}`;
         }
       } catch {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         window.dispatchEvent(new Event("auth-expired"));
       }
     }
@@ -30,6 +32,7 @@ function jwtInterceptor() {
     (err) => {
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         window.dispatchEvent(new Event("auth-expired"));
       }
       return Promise.reject(err);

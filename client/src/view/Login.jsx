@@ -4,6 +4,10 @@ import PageWrapper from "../context/animate";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import AppModal from "../component/Modal/AppModal";
 import { useAuth } from "../context/AuthContext";
@@ -16,6 +20,7 @@ export default function Login() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -71,21 +76,19 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     try {
       const res = await axios.post(`${API_URL}/auth/login`, {
         username: form.username,
         password: form.password,
-        status: "LoginUser"
+        status: "LoginUser",
       });
 
       if (res.status === 200) {
         setIsLogin(true);
         localStorage.setItem("token", res.data.token);
         login(res.data.user);
-
         openModal("success", "login successful", res.data.message);
       }
     } catch (err) {
@@ -124,13 +127,25 @@ export default function Login() {
               <TextField
                 label="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 size="small"
                 fullWidth
                 value={form.password}
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Button type="submit" variant="contained" fullWidth>
@@ -152,7 +167,6 @@ export default function Login() {
         </Link>
       </div>
 
-      {/* modal */}
       <AppModal
         open={open}
         onClose={closeModal}

@@ -4,6 +4,7 @@ import LayoutBg from "./component/LayoutBg";
 import Header from "./component/Header";
 import AuthExpiredModal from "./component/Modal/AuthExpiredModal";
 import ProtectedRoute from "./context/ProtectedRoute";
+import PublicRoute from "./context/PublicRoute";
 import Home from "./view/Home.jsx";
 import Login from "./view/Login.jsx";
 import Signup from "./view/Signup.jsx";
@@ -18,9 +19,11 @@ function AppRoutes() {
     <Routes>
       <Route element={<LayoutBg />}>
         <Route element={<Header />}>
+          {/* Public */}
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
 
+          {/* login */}
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/AdminAddProduct" element={<AddProduct />} />
@@ -28,8 +31,11 @@ function AppRoutes() {
           </Route>
         </Route>
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* Public only*/}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
       </Route>
 
       <Route path="*" element={<NotFound />} />

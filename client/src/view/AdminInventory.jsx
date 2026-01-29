@@ -34,7 +34,7 @@ function AdminInventory() {
 
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 500000]);
+  const [priceRange, setPriceRange] = useState([0, 100000]);
   const [animateKey, setAnimateKey] = useState(0);
 
   const debouncedSearch = useDebounce(search, 1000);
@@ -95,7 +95,7 @@ function AdminInventory() {
           <Slider
             value={priceRange}
             min={0}
-            max={500000}
+            max={100000}
             onChange={(_, v) => setPriceRange(v)}
             valueLabelDisplay="auto"
             disableSwap
