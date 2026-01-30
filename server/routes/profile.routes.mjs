@@ -127,7 +127,6 @@ profileRoute.post(
           ],
         );
 
-        // ✅ เช็คว่ามีการ update จริง
         if (updateResult.affectedRows === 0) {
           return res.status(404).json({
             success: false,
@@ -135,7 +134,6 @@ profileRoute.post(
           });
         }
 
-        // ✅ select user ใหม่ (source of truth)
         const [[u]] = await con.query(
           `
           select
