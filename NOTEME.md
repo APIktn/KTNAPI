@@ -28,9 +28,8 @@ CREATE TABLE `tbl_mas_users` (
   `UpdateBy` varchar(20) NOT NULL,
   `UpdateDateTime` datetime NOT NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE KEY `uq_usercode` (`UserCode`),
-  UNIQUE KEY `uq_username` (`UserName`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `uq_usercode` (`UserCode`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ktnapi.tbl_trs_product_header definition
 
@@ -49,8 +48,6 @@ CREATE TABLE `tbl_trs_product_header` (
 
 -- ktnapi.tbl_trs_product_line definition
 
--- ktnapi.tbl_trs_product_line definition
-
 CREATE TABLE `tbl_trs_product_line` (
   `Id` int(150) NOT NULL AUTO_INCREMENT,
   `IdRef` int(150) NOT NULL,
@@ -66,4 +63,4 @@ CREATE TABLE `tbl_trs_product_line` (
   PRIMARY KEY (`Id`),
   KEY `fk_product_line_header` (`IdRef`),
   CONSTRAINT `fk_product_line_header` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_product_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
