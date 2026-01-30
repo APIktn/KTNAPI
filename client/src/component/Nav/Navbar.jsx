@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AppModal from "../Modal/AppModal";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Navbar({ onToggleSidebar, onStickyChange }) {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
@@ -53,7 +55,9 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
   };
 
   /* avatarSrc */
-  const avatarSrc = user?.imageUpload || user?.imageProfile;
+  const avatarSrc = user?.imageUpload
+    ? `${API_URL}${user.imageUpload}`
+    : user?.imageProfile;
 
   return (
     <div className={isSticky ? "navbar-placeholder" : "pt-3 mx-4"}>
