@@ -71,7 +71,7 @@ function Profile() {
       },
     });
 
-    // sync user back to localStorage (important)
+    // sync user back to localStorage
     const updatedUser = {
       ...user,
       userName: username,

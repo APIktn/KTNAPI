@@ -35,10 +35,21 @@ function AdminInventory() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [priceRange, setPriceRange] = useState([0, 100000]);
+
+  /* pagination */
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 12;
+
   const [animateKey, setAnimateKey] = useState(0);
 
   const debouncedSearch = useDebounce(search, 1000);
   const debouncedPrice = useDebounce(priceRange, 1000);
+
+  /* reset page when filter change */
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, debouncedPrice]);
 
   /* ================= fetch inventory ================= */
   useEffect(() => {
@@ -51,6 +62,8 @@ function AdminInventory() {
             search: debouncedSearch,
             priceMin: debouncedPrice[0],
             priceMax: debouncedPrice[1],
+            page,
+            limit,
           },
           {
             headers: {
@@ -60,14 +73,15 @@ function AdminInventory() {
         );
 
         setProducts(res.data.items || []);
-        setAnimateKey((k) => k + 1); // trigger re-animate
+        setTotalPages(res.data.totalPages || 1);
+        setAnimateKey((k) => k + 1);
       } catch (err) {
         console.error("fetch inventory error:", err);
       }
     };
 
     fetchInventory();
-  }, [debouncedSearch, debouncedPrice]);
+  }, [debouncedSearch, debouncedPrice, page]);
 
   return (
     <Box>
@@ -103,7 +117,7 @@ function AdminInventory() {
         </Box>
       </Box>
 
-      {/* cards (bootstrap grid) */}
+      {/* cards */}
       <div className="row g-3" key={animateKey}>
         {products.map((p, index) => {
           const isAvailable = p.lines.some(
@@ -121,26 +135,18 @@ function AdminInventory() {
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
-
-                    /* glass effect */
                     background: "rgba(255,255,255,0.15)",
                     backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)",
                     border: "1px solid rgba(255,255,255,0.25)",
                     borderRadius: 3,
-
-                    boxShadow:
-                      "0 8px 32px rgba(0,0,0,0.18)",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
                     transition: "all 0.25s ease",
-
                     "&:hover": {
                       transform: "translateY(-4px)",
-                      boxShadow:
-                        "0 12px 40px rgba(0,0,0,0.25)",
+                      boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
                     },
                   }}
                 >
-                  {/* image */}
                   <CardMedia
                     component="img"
                     sx={{
@@ -153,16 +159,12 @@ function AdminInventory() {
                     alt={p.productName}
                   />
 
-                  {/* content */}
                   <CardContent sx={{ py: 1 }}>
                     <Typography variant="subtitle1" noWrap>
                       {p.productName}
                     </Typography>
 
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                    >
+                    <Typography variant="caption" color="text.secondary">
                       {p.productCode}
                     </Typography>
 
@@ -179,7 +181,6 @@ function AdminInventory() {
                     </Typography>
                   </CardContent>
 
-                  {/* footer */}
                   <div className="p-2 mt-auto">
                     <Button
                       fullWidth
@@ -200,6 +201,35 @@ function AdminInventory() {
           );
         })}
       </div>
+
+      {/* pagination */}
+      <Box
+        sx={{
+          mt: 4,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
+          prev
+        </Button>
+
+        <Typography>
+          {page} / {totalPages}
+        </Typography>
+
+        <Button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          next
+        </Button>
+      </Box>
     </Box>
   );
 }
