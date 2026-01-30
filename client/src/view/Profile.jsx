@@ -100,15 +100,11 @@ function Profile() {
     if (image) formData.append("image", image);
 
     try {
-      const res = await axios.post(
-        `${API_URL}/user/profile`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const res = await axios.post(`${API_URL}/user/profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+      });
 
       openModal({
         type: "success",
@@ -145,6 +141,12 @@ function Profile() {
 
   if (!user) return null;
 
+  /* ================= UI ================= */
+  /* ================= UI ================= */
+  /* ================= UI ================= */
+  /* ================= UI ================= */
+  /* ================= UI ================= */
+
   return (
     <>
       <Slide
@@ -156,14 +158,12 @@ function Profile() {
       >
         <Box
           sx={{
-            minHeight: "77vh",
+            minHeight: "79vh",
             p: 3,
             borderRadius: 2,
             marginBottom: 2,
             background:
-              theme === "dark"
-                ? "rgba(30,30,30,0.6)"
-                : "rgba(255,255,255,0.6)",
+              theme === "dark" ? "rgba(30,30,30,0.6)" : "rgba(255,255,255,0.6)",
             backdropFilter: "blur(14px)",
             WebkitBackdropFilter: "blur(14px)",
             border: "1px solid rgba(255,255,255,0.25)",
@@ -213,10 +213,7 @@ function Profile() {
               />
 
               {preview ? (
-                <Avatar
-                  src={preview}
-                  sx={{ width: "100%", height: "100%" }}
-                />
+                <Avatar src={preview} sx={{ width: "100%", height: "100%" }} />
               ) : (
                 <Typography variant="h3" sx={{ color: "#999" }}>
                   +

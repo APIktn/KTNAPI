@@ -381,7 +381,7 @@ function AdminAddProduct() {
       >
         <Box
           sx={{
-            minHeight: "77vh",
+            minHeight: "79vh",
             p: 3,
             borderRadius: 2,
             marginBottom: 2,
