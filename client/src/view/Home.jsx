@@ -69,26 +69,24 @@ function Home() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const card2 = document.querySelector(".card-2");
-    const titleTop = document.querySelector(".card-2-title");
+useEffect(() => {
+  const title = document.querySelector(".observe-title");
+  if (!title) return;
 
-    if (!card2) return;
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        title.classList.add("animate");
+        observer.unobserve(title);
+      }
+    },
+    { threshold: 0.5 },
+  );
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          titleTop?.classList.add("animate");
-          titleBottom?.classList.add("animate");
-        }
-      },
-      { threshold: 0.3 },
-    );
+  observer.observe(title);
 
-    observer.observe(card2);
-
-    return () => observer.disconnect();
-  }, []);
+  return () => observer.disconnect();
+}, []);
 
   useEffect(() => {
     const title2 = document.querySelector(".card-2-title2");
@@ -177,7 +175,7 @@ function Home() {
             {/* card 2 */}
             <div className="col-lg-6 flex-column d-flex justify-content-evenly">
               {/* title อยู่นอก card */}
-              <h2 className="fw-bold text-white mb-3 card-2-title text-center">
+              <h2 className="fw-bold text-white mb-3 card-2-title text-center observe-title">
                 select your style!
               </h2>
 
