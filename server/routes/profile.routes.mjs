@@ -51,6 +51,7 @@ profileRoute.post(
           `
           select
             UserCode,
+            UserEmail,
             UserName,
             FirstName,
             LastName,
@@ -73,36 +74,33 @@ profileRoute.post(
         }
 
         return res.json({
-          userCode: user.UserCode,
-          userName: user.UserName,
-          firstName: user.FirstName,
-          lastName: user.LastName,
-          address: user.Address,
-          tel: user.Tel,
-          imageProfile: user.Profile_Image,
-          imageUpload: user.Upload_Image,
-          displayName:
-            user.FirstName || user.LastName
-              ? `${user.FirstName || ""} ${user.LastName || ""}`.trim()
-              : user.UserName,
+          success: true,
+          user: {
+            userCode: user.UserCode,
+            email: user.UserEmail,
+            userName: user.UserName,
+            firstName: user.FirstName,
+            lastName: user.LastName,
+            address: user.Address,
+            tel: user.Tel,
+            imageProfile: user.Profile_Image,
+            imageUpload: user.Upload_Image,
+            displayName: user.UserName
+              ? user.UserName
+              : `${user.FirstName} ${user.LastName}`,
+          },
         });
       }
 
       /* ================= update profile ================= */
       if (status === "updateprofile") {
-        const {
-          firstName,
-          lastName,
-          userName,
-          address,
-          tel,
-        } = req.body;
+        const { firstName, lastName, userName, address, tel } = req.body;
 
         const imagePath = req.file
           ? `/asset/Profile/${req.file.filename}`
           : null;
 
-        await con.query(
+        const [updateResult] = await con.query(
           `
           update tbl_mas_users
           set
@@ -129,10 +127,47 @@ profileRoute.post(
           ],
         );
 
-        return res.json({
+        // ✅ เช็คว่ามีการ update จริง
+        if (updateResult.affectedRows === 0) {
+          return res.status(404).json({
+            success: false,
+            error: "user not found",
+          });
+        }
+
+        // ✅ select user ใหม่ (source of truth)
+        const [[u]] = await con.query(
+          `
+          select
+            UserCode,
+            UserEmail,
+            UserName,
+            FirstName,
+            LastName,
+            Profile_Image,
+            Upload_Image
+          from tbl_mas_users
+          where UserCode = ?
+          limit 1
+          `,
+          [userCode],
+        );
+
+        return res.status(200).json({
           success: true,
           message: "profile updated",
-          imageUpload: imagePath,
+          user: {
+            userCode: u.UserCode,
+            email: u.UserEmail,
+            userName: u.UserName,
+            firstName: u.FirstName,
+            lastName: u.LastName,
+            imageProfile: u.Profile_Image,
+            imageUpload: u.Upload_Image,
+            displayName: u.UserName
+              ? u.UserName
+              : `${u.FirstName} ${u.LastName}`,
+          },
         });
       }
 

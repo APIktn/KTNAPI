@@ -15,12 +15,13 @@ import ButtonBase from "@mui/material/ButtonBase";
 import { useTheme } from "../../context/Theme";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import AppModal from "../Modal/AppModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Navbar({ onToggleSidebar, onStickyChange }) {
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const isDark = theme === "dark";
@@ -218,6 +219,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
         onConfirm={() => {
           setOpenLogout(false);
           logout();
+          navigate("/");
         }}
         onCancel={() => setOpenLogout(false)}
         onClose={() => setOpenLogout(false)}

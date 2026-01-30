@@ -13,10 +13,12 @@ import {
 import SaveIcon from "@mui/icons-material/Save";
 import { useTheme } from "../context/Theme";
 import AppModal from "../component/Modal/AppModal";
+import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Profile() {
+  const { updateUser } = useAuth();
   const { theme } = useTheme();
   const isMobile = useMediaQuery("(max-width:768px)");
 
@@ -35,6 +37,28 @@ function Profile() {
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+
+  /* validate */
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!firstName.trim()) {
+      newErrors.firstName = "first name is required";
+    }
+
+    if (!lastName.trim()) {
+      newErrors.lastName = "last name is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   /* ================= modal ================= */
   const [modalOpen, setModalOpen] = useState(false);
@@ -64,7 +88,7 @@ function Profile() {
         },
       )
       .then((res) => {
-        const d = res.data;
+        const d = res.data.user;
 
         setUser(d);
         setFirstName(d.firstName || "");
@@ -87,6 +111,7 @@ function Profile() {
 
   /* ================= save ================= */
   const handleSave = async () => {
+    if (!validate()) return;
     if (!user) return;
 
     const formData = new FormData();
@@ -106,23 +131,32 @@ function Profile() {
         },
       });
 
+      if (!res.data?.success) {
+        openModal({
+          type: "error",
+          title: "update failed",
+          message: res.data?.message || "update failed",
+        });
+        return;
+      }
+
       openModal({
         type: "success",
         title: "update success",
-        message: res.data?.message || "profile updated",
+        message: res.data.message || "profile updated",
         onClose: () => {
           const updatedUser = {
             ...user,
             firstName,
             lastName,
             userName: username,
-            displayName: `${firstName} ${lastName}`,
+            displayName: username ? username : `${firstName} ${lastName}`,
             address,
             tel,
-            imageUpload: image ? preview : user.imageUpload,
+            imageUpload: res.data.imageUpload ?? user.imageUpload,
           };
 
-          localStorage.setItem("user", JSON.stringify(updatedUser));
+          updateUser(res.data.user);
           setUser(updatedUser);
           setModalOpen(false);
         },
@@ -233,13 +267,31 @@ function Profile() {
                 <TextField
                   label="first name"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  error={!!errors.firstName}
+                  helperText={errors.firstName}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFirstName(value);
+
+                    if (errors.firstName && value.trim()) {
+                      setErrors((prev) => ({ ...prev, firstName: "" }));
+                    }
+                  }}
                 />
 
                 <TextField
                   label="last name"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  error={!!errors.lastName}
+                  helperText={errors.lastName}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setLastName(value);
+
+                    if (errors.lastName && value.trim()) {
+                      setErrors((prev) => ({ ...prev, lastName: "" }));
+                    }
+                  }}
                 />
 
                 <TextField

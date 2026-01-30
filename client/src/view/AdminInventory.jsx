@@ -84,7 +84,13 @@ function AdminInventory() {
   }, [debouncedSearch, debouncedPrice, page]);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        minHeight: "80vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {/* search + filter */}
       <Box
         sx={{
@@ -205,7 +211,8 @@ function AdminInventory() {
       {/* pagination */}
       <Box
         sx={{
-          mt: 4,
+          mt: "auto",
+          pt: 4,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
