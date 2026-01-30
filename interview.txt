@@ -1,0 +1,61 @@
+1. tech stack
+npm create vite@latest client -- --template react
+npm install bootstrap
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
+npm install framer-motion
+npm install axios
+npm install jwt-decode
+
+npm init -y
+npm install express cors dotenv
+npm install --save-dev nodemon
+npm install multer
+
+2.Landing page
+- theme
+- navbar sticky
+- sidebar animate hover
+- responsive
+
+3.signup
+- validate
+- payload
+- server.mjs
+- validate backend 
+- auth routes
+
+4.login
+- auth routes 
+- token
+- set storage
+- jwtintercep axios
+
+5.logout 
+- auth context
+- navbar statelogin
+
+6.app.jsx
+- layout
+- header
+- public
+- protect
+
+7.addproduct
+- image to server
+- query header & line
+- url prd?=
+- notfound
+
+8.inventory
+- search filter debonce
+- paginate
+- query where limit offset
+- link to product
+
+9.profile
+- setcontext
+- update nav
+
+
+

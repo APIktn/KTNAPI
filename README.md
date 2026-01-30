@@ -11,7 +11,6 @@ npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
 npm install framer-motion
 npm install axios
 npm install jwt-decode
-npm install sweetalert2
 
 ////////////////////////////////////////////////////
 server

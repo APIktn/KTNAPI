@@ -15,7 +15,7 @@ import ButtonBase from "@mui/material/ButtonBase";
 import { useTheme } from "../../context/Theme";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
-import { Link , useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppModal from "../Modal/AppModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -148,6 +148,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
                   anchorEl={anchorEl}
                   open={openMenu}
                   onClose={handleCloseMenu}
+                  disableScrollLock
                   anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "right",
@@ -155,6 +156,13 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
                   transformOrigin={{
                     vertical: "top",
                     horizontal: "right",
+                  }}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        maxWidth: "calc(100vw - 8px)",
+                      },
+                    },
                   }}
                 >
                   <MenuItem
