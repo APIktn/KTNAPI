@@ -1,55 +1,87 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Box,
   TextField,
   Button,
   Avatar,
   Typography,
+  Divider,
+  Slide,
+  useMediaQuery,
 } from "@mui/material";
-import axios from "axios";
+import SaveIcon from "@mui/icons-material/Save";
+import { useTheme } from "../context/Theme";
+import AppModal from "../component/Modal/AppModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Profile() {
+  const { theme } = useTheme();
+  const isMobile = useMediaQuery("(max-width:768px)");
+
+  const [animateKey, setAnimateKey] = useState(0);
+  useEffect(() => {
+    setAnimateKey((k) => k + 1);
+  }, []);
+
   const [user, setUser] = useState(null);
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [tel, setTel] = useState("");
+
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+
+  /* ================= modal ================= */
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({});
+
+  const openModal = (config) => {
+    setModalConfig({
+      ...config,
+      onClose: config.onClose || (() => setModalOpen(false)),
+    });
+    setModalOpen(true);
+  };
 
   /* ================= load profile ================= */
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const localUser = JSON.parse(localStorage.getItem("user"));
-
-    if (!token || !localUser?.userCode) return;
+    if (!token) return;
 
     axios
       .post(
         `${API_URL}/user/profile`,
-        {
-          status: "getprofile",
-          userCode: localUser.userCode,
-        },
+        { status: "getprofile" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       )
       .then((res) => {
-        setUser(res.data);
+        const d = res.data;
 
-        setUsername(
-          res.data.userName
-            ? res.data.userName
-            : res.data.displayName
-        );
+        setUser(d);
+        setFirstName(d.firstName || "");
+        setLastName(d.lastName || "");
+        setUsername(d.userName || "");
+        setAddress(d.address || "");
+        setTel(d.tel || "");
 
-        setPreview(res.data.imageProfile);
+        // image server url
+        setPreview(`${API_URL}${d.imageUpload}` || null);
       })
       .catch(() => {
-        // optional: handle error
+        openModal({
+          type: "error",
+          title: "load failed",
+          message: "cannot load profile",
+        });
       });
   }, []);
 
@@ -59,114 +91,199 @@ function Profile() {
 
     const formData = new FormData();
     formData.append("status", "updateprofile");
-    formData.append("userCode", user.userCode);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
     formData.append("userName", username);
+    formData.append("address", address);
+    formData.append("tel", tel);
 
-    if (password) formData.append("password", password);
     if (image) formData.append("image", image);
 
-    await axios.post(`${API_URL}/user/update`, formData, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    try {
+      const res = await axios.post(
+        `${API_URL}/user/profile`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
 
-    // sync user back to localStorage
-    const updatedUser = {
-      ...user,
-      userName: username,
-      displayName: username,
-      imageProfile: image ? preview : user.imageProfile,
-    };
+      openModal({
+        type: "success",
+        title: "update success",
+        message: res.data?.message || "profile updated",
+        onClose: () => {
+          const updatedUser = {
+            ...user,
+            firstName,
+            lastName,
+            userName: username,
+            displayName: `${firstName} ${lastName}`,
+            address,
+            tel,
+            imageUpload: image ? preview : user.imageUpload,
+          };
 
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    setUser(updatedUser);
-    setPassword("");
-
-    alert("profile updated");
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          setUser(updatedUser);
+          setModalOpen(false);
+        },
+      });
+    } catch (err) {
+      openModal({
+        type: "error",
+        title: "update failed",
+        message:
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          "cannot update profile",
+      });
+    }
   };
 
   if (!user) return null;
 
   return (
-    <Box
-      sx={{
-        maxWidth: 420,
-        mx: "auto",
-        mt: 4,
-        p: 3,
-        borderRadius: 3,
-        background: "rgba(255,255,255,0.6)",
-        backdropFilter: "blur(14px)",
-        border: "1px solid rgba(255,255,255,0.35)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
-      }}
-    >
-      <Typography variant="h6" mb={2}>
-        profile
-      </Typography>
-
-      {/* profile image */}
-      <Box
-        component="label"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mb: 2,
-          cursor: "pointer",
-        }}
+    <>
+      <Slide
+        in
+        direction="left"
+        timeout={450}
+        key={animateKey}
+        appear={!isMobile}
       >
-        <input
-          type="file"
-          hidden
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            setImage(file);
-            setPreview(URL.createObjectURL(file));
+        <Box
+          sx={{
+            minHeight: "77vh",
+            p: 3,
+            borderRadius: 2,
+            marginBottom: 2,
+            background:
+              theme === "dark"
+                ? "rgba(30,30,30,0.6)"
+                : "rgba(255,255,255,0.6)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
           }}
-        />
-        <Avatar
-          src={preview || ""}
-          sx={{ width: 96, height: 96 }}
-        />
-      </Box>
+        >
+          <Typography variant="h6" mb={2}>
+            profile
+          </Typography>
 
-      <TextField
-        label="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        fullWidth
-        margin="dense"
-      />
+          <Divider sx={{ mb: 3 }} />
 
-      <TextField
-        label="email"
-        value={user.email}
-        disabled
-        fullWidth
-        margin="dense"
-      />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 4,
+            }}
+          >
+            {/* avatar */}
+            <Box
+              component="label"
+              sx={{
+                width: 180,
+                height: 180,
+                borderRadius: "50%",
+                overflow: "hidden",
+                cursor: "pointer",
+                alignSelf: { xs: "center", md: "flex-start" },
+                bgcolor: "action.hover",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: preview ? "none" : "2px dashed #bbb",
+              }}
+            >
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={(e) => {
+                  const f = e.target.files[0];
+                  if (!f) return;
+                  setImage(f);
+                  setPreview(URL.createObjectURL(f));
+                }}
+              />
 
-      <TextField
-        label="new password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        fullWidth
-        margin="dense"
-      />
+              {preview ? (
+                <Avatar
+                  src={preview}
+                  sx={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <Typography variant="h3" sx={{ color: "#999" }}>
+                  +
+                </Typography>
+              )}
+            </Box>
 
-      <Button
-        fullWidth
-        variant="contained"
-        sx={{ mt: 2 }}
-        onClick={handleSave}
-      >
-        save
-      </Button>
-    </Box>
+            {/* form */}
+            <Box sx={{ flex: 1 }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                  gap: 2,
+                }}
+              >
+                <TextField
+                  label="first name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+
+                <TextField
+                  label="last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+
+                <TextField
+                  label="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+
+                <TextField
+                  label="tel"
+                  value={tel}
+                  onChange={(e) => setTel(e.target.value)}
+                />
+
+                <TextField
+                  label="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  fullWidth
+                  multiline
+                  rows={3}
+                />
+              </Box>
+
+              <Box sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<SaveIcon />}
+                  onClick={handleSave}
+                >
+                  save
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Slide>
+
+      <AppModal open={modalOpen} {...modalConfig} />
+    </>
   );
 }
 

@@ -22,13 +22,15 @@ CREATE TABLE `tbl_mas_users` (
   `Tel` varchar(20) NOT NULL,
   `VerifyEmail` text NOT NULL,
   `Profile_Image` text NOT NULL,
+  `Upload_Image` text,
   `CreateBy` varchar(20) NOT NULL,
   `CreateDateTime` datetime NOT NULL,
   `UpdateBy` varchar(20) NOT NULL,
   `UpdateDateTime` datetime NOT NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE KEY `uq_usercode` (`UserCode`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `uq_usercode` (`UserCode`),
+  UNIQUE KEY `uq_username` (`UserName`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ktnapi.tbl_trs_product_header definition
 

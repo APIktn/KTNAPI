@@ -52,6 +52,9 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
     setAnchorEl(null);
   };
 
+  /* avatarSrc */
+  const avatarSrc = user?.imageUpload || user?.imageProfile;
+
   return (
     <div className={isSticky ? "navbar-placeholder" : "pt-3 mx-4"}>
       <nav
@@ -126,7 +129,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
                   }}
                 >
                   <Avatar
-                    src={user.imageProfile}
+                    src={avatarSrc}
                     alt={user.displayName}
                     sx={{ width: 32, height: 32 }}
                   />

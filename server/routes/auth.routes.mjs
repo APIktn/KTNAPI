@@ -64,7 +64,7 @@ authRouter.post("/login", validateLogin, async (req, res) => {
     const [rows] = await con.query(
       `
       select Id, UserCode, UserEmail, UserName, Password,
-             FirstName, LastName, Profile_Image
+      FirstName, LastName, Profile_Image, Upload_Image
       from tbl_mas_users
       where lower(trim(UserEmail)) = lower(trim(?))
          or lower(trim(UserName))  = lower(trim(?))
@@ -100,6 +100,7 @@ authRouter.post("/login", validateLogin, async (req, res) => {
         firstName: user.FirstName,
         lastName: user.LastName,
         imageProfile: user.Profile_Image,
+        imageUpload: user.Upload_Image,
         displayName: user.UserName
           ? user.UserName
           : `${user.FirstName} ${user.LastName}`,

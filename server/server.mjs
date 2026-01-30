@@ -8,6 +8,7 @@ import testRoute from "./routes/test.routes.mjs"
 import authRouter from "./routes/auth.routes.mjs"
 import productRoute from "./routes/prod.routes.mjs"
 import inventoryRoute from "./routes/inventory.roustes.mjs"
+import profileRoute from "./routes/profile.routes.mjs"
 //////////////////////////////////////////////////
 
 dotenv.config()
@@ -35,7 +36,10 @@ app.use('/test', authenticateToken, testRoute)
 // /register /login
 app.use('/auth', authRouter)
 
-// /createprod
+// /asset/Image  |  /asset/Profile
 app.use("/asset", express.static("asset"));
+
+// menu 
 app.use('/Product', authenticateToken, productRoute)
 app.use('/inventory', authenticateToken, inventoryRoute)
+app.use('/user', authenticateToken, profileRoute)
