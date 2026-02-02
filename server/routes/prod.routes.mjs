@@ -295,7 +295,6 @@ productRoute.post(
   }
 );
 
-
 //////////////////////////////////////////////////
 // line update / delete
 productRoute.post("/line", validateProduct, async (req, res) => {
@@ -434,24 +433,40 @@ productRoute.post("/delete", validateProduct, async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    const [headers] = await conn.query(
+    // ===== header =====
+    const [[header]] = await conn.query(
       `select Id from tbl_trs_product_header where ProductCode = ?`,
-      [productCode],
+      [productCode]
     );
 
-    if (headers.length === 0) {
+    if (!header) {
       throw new Error("product not found");
     }
 
-    const headerId = headers[0].Id;
+    const headerId = header.Id;
 
-    await conn.query(`delete from tbl_trs_product_line where IdRef = ?`, [
-      headerId,
-    ]);
+    // ===== get images =====
+    const [images] = await conn.query(
+      `
+      select ProductImageId
+      from tbl_trs_product_image
+      where IdRef = ?
+      `,
+      [headerId]
+    );
 
-    await conn.query(`delete from tbl_trs_product_header where Id = ?`, [
-      headerId,
-    ]);
+    // ===== delete cloudinary =====
+    for (const img of images) {
+      if (img.ProductImageId) {
+        await cloudinary.uploader.destroy(img.ProductImageId);
+      }
+    }
+
+    // ===== delete header (cascade line + image) =====
+    await conn.query(
+      `delete from tbl_trs_product_header where Id = ?`,
+      [headerId]
+    );
 
     await conn.commit();
 
