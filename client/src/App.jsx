@@ -14,7 +14,7 @@ import Contact from "./view/Contact.jsx";
 import AddProduct from "./view/AdminAddProduct.jsx";
 import AdminInventory from "./view/AdminInventory.jsx";
 
-function AppRoutes() {
+export function AppRoutes() {
   return (
     <Routes>
       <Route element={<LayoutBg />}>

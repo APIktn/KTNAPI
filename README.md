@@ -1,6 +1,7 @@
 #tech stack ja
 ////////////////////////////////////////////////////
-client 
+client npm run dev
+clienttest npx vitest
 
 npm create vite@latest client -- --template react
 npm install bootstrap
@@ -9,17 +10,17 @@ npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
 npm install framer-motion
 npm install axios
 npm install jwt-decode
-npm install -D vitest jsdom
+npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
 
 ////////////////////////////////////////////////////
-server
+server npm run start
+servertest npm run test
 
 npm init -y
 npm install express cors dotenv
 npm install --save-dev nodemon
 npm install cloudinary multer
-npm install --save-dev jest supertest
-
+npm install -D vitest
 
 ////////////////////////////////////////////////////
 client
