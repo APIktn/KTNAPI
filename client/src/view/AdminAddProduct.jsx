@@ -43,6 +43,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTheme } from "../context/Theme";
 import NotFound from "./NotFound";
 import AppModal from "../component/Modal/AppModal";
+import SavingBackdrop from "../component/SavingBackdrop";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const SIZE_OPTIONS = ["100%", "200%", "300%", "400%", "800%", "1200%"];
@@ -199,9 +200,9 @@ function AdminAddProduct() {
     setTempCounter(next);
   };
 
-  /* ===== delete row (confirm + api, no success modal) ===== */
+  /* ===== delete row  ===== */
   const handleAskDeleteLine = (index, row) => {
-    // temp row → ลบทันที ไม่ต้อง modal
+    // temp row ลบทันที
     if (row.lineKey.startsWith("new")) {
       setRows((prev) =>
         prev
@@ -211,7 +212,7 @@ function AdminAddProduct() {
       return;
     }
 
-    // row จริง → ค่อยถาม confirm
+    // row จริง ถาม confirm
     openModal({
       mode: "confirm",
       type: "warning",
@@ -288,6 +289,10 @@ function AdminAddProduct() {
     }
   };
 
+  /* ================= loading ================= */
+  const [saving, setSaving] = useState(false);
+  const [progress, setProgress] = useState(0);
+
   /* ================= SAVE ================= */
   const handleSave = async () => {
     const formData = new FormData();
@@ -296,9 +301,19 @@ function AdminAddProduct() {
     formData.append("productName", productName);
     formData.append("description", description);
     formData.append("items", JSON.stringify(rows));
+
     if (image) {
       formData.append("image", image);
       formData.append("imageType", "MAIN");
+    }
+
+    // start loading
+    setProgress(0);
+    setSaving(true);
+
+    // ถ้าไม่มีรูป ให้ progress ขยับก่อน
+    if (!image) {
+      setProgress(80);
     }
 
     try {
@@ -306,22 +321,32 @@ function AdminAddProduct() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-
-      openModal({
-        type: "success",
-        title: "save success",
-        message: "product saved successfully",
-        onClose: async () => {
-          setModalOpen(false);
-
-          const code = res.data.productCode;
-          navigate(`/AdminAddProduct?prd=${code}`);
-
-          await fetchProduct(code);
+        onUploadProgress: (e) => {
+          if (!e.total) return;
+          const percent = Math.round((e.loaded * 100) / e.total);
+          setProgress(percent);
         },
       });
+
+      // backend response = 100
+      setProgress(100);
+
+      // delay display 100%
+      setTimeout(() => {
+        setSaving(false);
+        setProgress(0);
+        openModal({
+          type: "success",
+          title: "save success",
+          message: "product saved successfully",
+          onClose: () => {
+            navigate(`/AdminAddProduct?prd=${res.data.productCode}`);
+          },
+        });
+      }, 300);
     } catch (err) {
+      setSaving(false);
+      setProgress(0);
       openModal({
         type: "error",
         title: "save failed",
@@ -444,6 +469,7 @@ function AdminAddProduct() {
                 color="success"
                 startIcon={<SaveIcon />}
                 onClick={handleSave}
+                disabled={saving}
               >
                 save
               </Button>
@@ -671,6 +697,13 @@ function AdminAddProduct() {
 
       {/* modal */}
       <AppModal open={modalOpen} {...modalConfig} />
+
+      {/* loading */}
+      <SavingBackdrop
+        open={saving}
+        progress={progress}
+        text="saving product..."
+      />
     </>
   );
 }
