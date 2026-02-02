@@ -57,7 +57,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
 
   /* avatarSrc */
   const avatarSrc = user?.imageUpload
-    ? `${API_URL}${user.imageUpload}`
+    ? `${user.imageUpload}`
     : user?.imageProfile;
 
   return (

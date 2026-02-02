@@ -94,14 +94,9 @@ profileRoute.post(
             });
           }
 
-          // get old image id
           const [[old]] = await con.query(
-            `
-            select Upload_Image_Id
-            from tbl_mas_users
-            where UserCode = ?
-            `,
-            [userCode],
+            `select Upload_Image_Id from tbl_mas_users where UserCode = ?`,
+            [userCode]
           );
 
           if (old?.Upload_Image_Id) {
@@ -109,15 +104,16 @@ profileRoute.post(
           }
 
           const uploadResult = await cloudinary.uploader.upload(
-            `data:${req.file.mimetype};base64,${req.file.buffer.toString(
-              "base64",
-            )}`,
-            { folder: "profiles" },
+            `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+            {
+              folder: "bone_chop/profile",
+            }
           );
 
           imageUrl = uploadResult.secure_url;
           imagePublicId = uploadResult.public_id;
         }
+
 
         await con.query(
           `
@@ -174,7 +170,7 @@ Profile_Image,
             userName: u.UserName,
             firstName: u.FirstName,
             lastName: u.LastName,
-imageProfile: u.Profile_Image,
+            imageProfile: u.Profile_Image,
             imageUpload: u.Upload_Image,
             displayName: u.UserName
               ? u.UserName

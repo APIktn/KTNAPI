@@ -56,12 +56,12 @@ productRoute.post(
     if (req.file) {
       try {
         const uploadResult = await cloudinary.uploader.upload(
-          `data:${req.file.mimetype};base64,${req.file.buffer.toString(
-            "base64"
-          )}`,
+          `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
           {
-            folder: "products",
-            context: { imageType: imgType },
+            folder: "bone_chop/product",
+            context: {
+              imageType: imgType,
+            },
           }
         );
 

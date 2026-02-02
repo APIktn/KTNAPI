@@ -40,6 +40,9 @@ CLOUD_API_KEY=
 CLOUD_API_SECRET=
 
 ////////////////////////////////////////////////////
-service mail
+cloudianary
 
-apiktnwebapp@gmail.com
+Home/bone_chop
+
+/profile
+/product
