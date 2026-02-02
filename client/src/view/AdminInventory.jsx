@@ -69,7 +69,7 @@ function AdminInventory() {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
 
         setProducts(res.data.items || []);
@@ -126,9 +126,7 @@ function AdminInventory() {
       {/* cards */}
       <div className="row g-3" key={animateKey}>
         {products.map((p, index) => {
-          const isAvailable = p.lines.some(
-            (l) => Number(l.amount) > 0
-          );
+          const isAvailable = p.lines.some((l) => Number(l.amount) > 0);
 
           return (
             <div
@@ -161,7 +159,7 @@ function AdminInventory() {
                       objectFit: "contain",
                       mx: "auto",
                     }}
-                    image={`${API_URL}${p.image}`}
+                    image={p.image || ""}
                     alt={p.productName}
                   />
 
@@ -178,9 +176,7 @@ function AdminInventory() {
                       sx={{
                         mt: 1,
                         fontWeight: 600,
-                        color: isAvailable
-                          ? "success.main"
-                          : "error.main",
+                        color: isAvailable ? "success.main" : "error.main",
                       }}
                     >
                       {isAvailable ? "available" : "sold"}
@@ -193,9 +189,7 @@ function AdminInventory() {
                       size="small"
                       variant="contained"
                       onClick={() =>
-                        navigate(
-                          `/AdminAddProduct?prd=${p.productCode}`
-                        )
+                        navigate(`/AdminAddProduct?prd=${p.productCode}`)
                       }
                     >
                       manage
@@ -219,10 +213,7 @@ function AdminInventory() {
           gap: 2,
         }}
       >
-        <Button
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
+        <Button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
           prev
         </Button>
 

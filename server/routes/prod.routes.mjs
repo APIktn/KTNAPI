@@ -1,31 +1,17 @@
 import express from "express";
 import con from "../db.mjs";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-
+import cloudinary from "../utils/cloudinary.mjs";
 import generateProductCode from "../utils/generateProductCode.mjs";
-import generatePrdImageName from "../utils/generatePrdImageName.mjs";
 import { validateProduct } from "../middleware/prodValidator.mjs";
 
 const productRoute = express.Router();
 
 //////////////////////////////////////////////////
-// upload config
-const uploadDir = path.join("asset", "Image");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, uploadDir),
-  filename: (_, file, cb) =>
-    cb(null, generatePrdImageName(file.originalname, "prd")),
-});
-
+// upload config (memory)
 const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5mb
 });
 
 //////////////////////////////////////////////////
@@ -35,7 +21,14 @@ productRoute.post(
   upload.single("image"),
   validateProduct,
   async (req, res) => {
-    const { status, productCode, productName, description } = req.body;
+    const {
+      status,
+      productCode,
+      productName,
+      description,
+      imageType,
+    } = req.body;
+
     const items = req.parsedItems;
     const userCode = req.user?.userCode;
 
@@ -46,6 +39,42 @@ productRoute.post(
       });
     }
 
+    const imgType = imageType || "MAIN";
+
+    // ===== validate image =====
+    if (req.file && !["image/jpeg", "image/png"].includes(req.file.mimetype)) {
+      return res.status(400).json({
+        success: false,
+        error: "invalid image type",
+      });
+    }
+
+    // ===== upload image =====
+    let imageUrl = null;
+    let imagePublicId = null;
+
+    if (req.file) {
+      try {
+        const uploadResult = await cloudinary.uploader.upload(
+          `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+            "base64"
+          )}`,
+          {
+            folder: "products",
+            context: { imageType: imgType },
+          }
+        );
+
+        imageUrl = uploadResult.secure_url;
+        imagePublicId = uploadResult.public_id;
+      } catch {
+        return res.status(500).json({
+          success: false,
+          error: "image upload failed",
+        });
+      }
+    }
+
     const conn = await con.getConnection();
 
     try {
@@ -54,39 +83,66 @@ productRoute.post(
       let headerId = null;
       let prdCode = productCode;
 
-      // ===== create =====
+      // ==================================================
+      // CREATE PRODUCT
+      // ==================================================
       if (status === "createprod") {
         prdCode = await generateProductCode(conn);
-
-        const imagePath = req.file ? `/asset/Image/${req.file.filename}` : null;
 
         const [header] = await conn.query(
           `
           insert into tbl_trs_product_header
-          (ProductCode, ProductName, ProductDes, ProductImage,
+          (ProductCode, ProductName, ProductDes,
            CreateBy, CreateDateTime, UpdateBy, UpdateDateTime)
-          values (?, ?, ?, ?, ?, ?, ?, ?)
+          values (?, ?, ?, ?, ?, ?, ?)
           `,
           [
             prdCode,
             productName,
             description,
-            imagePath,
             userCode,
             new Date(),
             userCode,
             new Date(),
-          ],
+          ]
         );
 
         headerId = header.insertId;
+
+        if (!headerId) {
+          throw new Error("invalid product header");
+        }
+
+        // insert MAIN image
+        if (imageUrl) {
+          await conn.query(
+            `
+            insert into tbl_trs_product_image
+            (IdRef, ImageType, ProductImage, ProductImageId,
+             CreateBy, CreateDateTime, UpdateBy, UpdateDateTime)
+            values (?, ?, ?, ?, ?, ?, ?, ?)
+            `,
+            [
+              headerId,
+              imgType,
+              imageUrl,
+              imagePublicId,
+              userCode,
+              new Date(),
+              userCode,
+              new Date(),
+            ]
+          );
+        }
       }
 
-      // ===== update =====
+      // ==================================================
+      // UPDATE PRODUCT
+      // ==================================================
       if (status === "updateprod") {
         const [headers] = await conn.query(
           `select Id from tbl_trs_product_header where ProductCode = ?`,
-          [productCode],
+          [productCode]
         );
 
         if (headers.length === 0) {
@@ -95,20 +151,85 @@ productRoute.post(
 
         headerId = headers[0].Id;
 
+        // update header
         await conn.query(
           `
           update tbl_trs_product_header
           set ProductName=?, ProductDes=?, UpdateBy=?, UpdateDateTime=?
           where ProductCode=?
           `,
-          [productName, description, userCode, new Date(), productCode],
+          [productName, description, userCode, new Date(), productCode]
         );
+
+        // ===== update MAIN image =====
+        if (imageUrl) {
+          const [[old]] = await conn.query(
+            `
+            select Id, ProductImageId
+            from tbl_trs_product_image
+            where IdRef=? and ImageType='MAIN'
+            limit 1
+            `,
+            [headerId]
+          );
+
+          // delete old cloudinary image
+          if (old?.ProductImageId) {
+            await cloudinary.uploader.destroy(old.ProductImageId);
+          }
+
+          if (old?.Id) {
+            // update MAIN record
+            await conn.query(
+              `
+              update tbl_trs_product_image
+              set ProductImage=?, ProductImageId=?,
+                  UpdateBy=?, UpdateDateTime=?
+              where Id=?
+              `,
+              [
+                imageUrl,
+                imagePublicId,
+                userCode,
+                new Date(),
+                old.Id,
+              ]
+            );
+          } else {
+            // fallback (ไม่มี MAIN)
+            await conn.query(
+              `
+              insert into tbl_trs_product_image
+              (IdRef, ImageType, ProductImage, ProductImageId,
+               CreateBy, CreateDateTime, UpdateBy, UpdateDateTime)
+              values (?, ?, ?, ?, ?, ?, ?, ?)
+              `,
+              [
+                headerId,
+                "MAIN",
+                imageUrl,
+                imagePublicId,
+                userCode,
+                new Date(),
+                userCode,
+                new Date(),
+              ]
+            );
+          }
+        }
       }
 
-      // ===== insert new lines =====
-      for (const item of items.filter((i) =>
-        String(i.lineKey).startsWith("new"),
-      )) {
+      // ==================================================
+      // PRODUCT LINES
+      // ==================================================
+      const newLines = items.filter((i) =>
+        String(i.lineKey).startsWith("new")
+      );
+      const existLines = items.filter(
+        (i) => !String(i.lineKey).startsWith("new")
+      );
+
+      for (const item of newLines) {
         await conn.query(
           `
           insert into tbl_trs_product_line
@@ -127,21 +248,18 @@ productRoute.post(
             new Date(),
             userCode,
             new Date(),
-          ],
+          ]
         );
       }
 
-      // ===== update exist lines =====
-      for (const item of items.filter(
-        (i) => !String(i.lineKey).startsWith("new"),
-      )) {
+      for (const item of existLines) {
         await conn.query(
           `
-    update tbl_trs_product_line
-    set LineNo=?, Size=?, Price=?, Amount=?, Note=?,
-    UpdateBy=?, UpdateDateTime=?
-    where Id=? and IdRef=?
-    `,
+          update tbl_trs_product_line
+          set LineNo=?, Size=?, Price=?, Amount=?, Note=?,
+              UpdateBy=?, UpdateDateTime=?
+          where Id=? and IdRef=?
+          `,
           [
             item.lineNo,
             item.size,
@@ -152,7 +270,7 @@ productRoute.post(
             new Date(),
             item.lineKey,
             headerId,
-          ],
+          ]
         );
       }
 
@@ -174,11 +292,12 @@ productRoute.post(
     } finally {
       conn.release();
     }
-  },
+  }
 );
 
+
 //////////////////////////////////////////////////
-// line action (update / delete)
+// line update / delete
 productRoute.post("/line", validateProduct, async (req, res) => {
   const { status, lineId, lines } = req.body;
   const userCode = req.user?.userCode;
@@ -366,9 +485,10 @@ productRoute.post("/getprod", async (req, res) => {
   }
 
   try {
+    // ===== header =====
     const [headers] = await con.query(
       `
-      select Id, ProductCode, ProductName, ProductDes, ProductImage
+      select Id, ProductCode, ProductName, ProductDes
       from tbl_trs_product_header
       where ProductCode = ?
       limit 1
@@ -385,6 +505,19 @@ productRoute.post("/getprod", async (req, res) => {
 
     const header = headers[0];
 
+    // ===== main image =====
+    const [[mainImage]] = await con.query(
+      `
+      select ProductImage
+      from tbl_trs_product_image
+      where IdRef = ? and ImageType = 'MAIN'
+      order by CreateDateTime desc
+      limit 1
+      `,
+      [header.Id],
+    );
+
+    // ===== lines =====
     const [lines] = await con.query(
       `
       select Id, LineNo, Size, Price, Amount, Note
@@ -400,7 +533,7 @@ productRoute.post("/getprod", async (req, res) => {
       productCode: header.ProductCode,
       productName: header.ProductName,
       description: header.ProductDes,
-      image: header.ProductImage,
+      mainImage: mainImage?.ProductImage || null,
       items: lines.map((l) => ({
         lineKey: String(l.Id),
         lineNo: l.LineNo,
@@ -412,7 +545,6 @@ productRoute.post("/getprod", async (req, res) => {
     });
   } catch (err) {
     console.error("get product error:", err);
-
     res.status(500).json({
       success: false,
       error: "server error",

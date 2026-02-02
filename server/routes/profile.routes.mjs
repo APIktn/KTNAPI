@@ -1,30 +1,16 @@
 import express from "express";
 import con from "../db.mjs";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-
+import cloudinary from "../utils/cloudinary.mjs";
 import { profileValidator } from "../middleware/profileValidator.mjs";
-import generateAvatarName from "../utils/generateAvatarName.mjs";
 
 const profileRoute = express.Router();
 
 //////////////////////////////////////////////////
-// upload config
-const uploadDir = path.join("asset", "Profile");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, uploadDir),
-  filename: (_, file, cb) =>
-    cb(null, generateAvatarName(file.originalname)),
-});
-
+// upload config (memory)
 const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5mb
 });
 
 //////////////////////////////////////////////////
@@ -96,11 +82,44 @@ profileRoute.post(
       if (status === "updateprofile") {
         const { firstName, lastName, userName, address, tel } = req.body;
 
-        const imagePath = req.file
-          ? `/asset/Profile/${req.file.filename}`
-          : null;
+        let imageUrl = null;
+        let imagePublicId = null;
 
-        const [updateResult] = await con.query(
+        // ===== upload new image =====
+        if (req.file) {
+          if (!["image/jpeg", "image/png"].includes(req.file.mimetype)) {
+            return res.status(400).json({
+              success: false,
+              error: "invalid image type",
+            });
+          }
+
+          // get old image id
+          const [[old]] = await con.query(
+            `
+            select Upload_Image_Id
+            from tbl_mas_users
+            where UserCode = ?
+            `,
+            [userCode],
+          );
+
+          if (old?.Upload_Image_Id) {
+            await cloudinary.uploader.destroy(old.Upload_Image_Id);
+          }
+
+          const uploadResult = await cloudinary.uploader.upload(
+            `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+              "base64",
+            )}`,
+            { folder: "profiles" },
+          );
+
+          imageUrl = uploadResult.secure_url;
+          imagePublicId = uploadResult.public_id;
+        }
+
+        await con.query(
           `
           update tbl_mas_users
           set
@@ -110,6 +129,7 @@ profileRoute.post(
             Address = ?,
             Tel = ?,
             Upload_Image = coalesce(?, Upload_Image),
+            Upload_Image_Id = coalesce(?, Upload_Image_Id),
             UpdateBy = ?,
             UpdateDateTime = ?
           where UserCode = ?
@@ -120,19 +140,13 @@ profileRoute.post(
             userName,
             address,
             tel,
-            imagePath,
+            imageUrl,
+            imagePublicId,
             userCode,
             new Date(),
             userCode,
           ],
         );
-
-        if (updateResult.affectedRows === 0) {
-          return res.status(404).json({
-            success: false,
-            error: "user not found",
-          });
-        }
 
         const [[u]] = await con.query(
           `
@@ -142,7 +156,7 @@ profileRoute.post(
             UserName,
             FirstName,
             LastName,
-            Profile_Image,
+Profile_Image,
             Upload_Image
           from tbl_mas_users
           where UserCode = ?
@@ -151,7 +165,7 @@ profileRoute.post(
           [userCode],
         );
 
-        return res.status(200).json({
+        return res.json({
           success: true,
           message: "profile updated",
           user: {
@@ -160,7 +174,7 @@ profileRoute.post(
             userName: u.UserName,
             firstName: u.FirstName,
             lastName: u.LastName,
-            imageProfile: u.Profile_Image,
+imageProfile: u.Profile_Image,
             imageUpload: u.Upload_Image,
             displayName: u.UserName
               ? u.UserName

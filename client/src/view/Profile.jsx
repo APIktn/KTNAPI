@@ -96,9 +96,7 @@ function Profile() {
         setUsername(d.userName || "");
         setAddress(d.address || "");
         setTel(d.tel || "");
-
-        // image server url
-        setPreview(`${API_URL}${d.imageUpload}` || null);
+       setPreview(d.imageUpload || null);
       })
       .catch(() => {
         openModal({

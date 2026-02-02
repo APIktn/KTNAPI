@@ -3,13 +3,11 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import authenticateToken from "./middleware/authVerify.mjs"
 
-// routes
 import testRoute from "./routes/test.routes.mjs"
 import authRouter from "./routes/auth.routes.mjs"
 import productRoute from "./routes/prod.routes.mjs"
 import inventoryRoute from "./routes/inventory.roustes.mjs"
 import profileRoute from "./routes/profile.routes.mjs"
-//////////////////////////////////////////////////
 
 dotenv.config()
 
@@ -24,22 +22,13 @@ app.get('/', (req, res) => {
   res.send('Server is running 🚀')
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on ${BASE_URL}:${PORT}`)
-})
-
-// /dbtest
+// routes
 app.use('/test', authenticateToken, testRoute)
-
-////////////////////////////////////////////////// 
-
-// /register /login
 app.use('/auth', authRouter)
-
-// /asset/Image  |  /asset/Profile
-app.use("/asset", express.static("asset"));
-
-// menu 
 app.use('/Product', authenticateToken, productRoute)
 app.use('/inventory', authenticateToken, inventoryRoute)
 app.use('/user', authenticateToken, profileRoute)
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${BASE_URL}:${PORT}`)
+})

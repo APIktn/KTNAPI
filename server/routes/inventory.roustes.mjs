@@ -26,10 +26,13 @@ inventoryRoute.post(
           h.Id,
           h.ProductCode,
           h.ProductName,
-          h.ProductImage
+          img.ProductImage
         FROM tbl_trs_product_header h
         JOIN tbl_trs_product_line l
           ON h.Id = l.IdRef
+        LEFT JOIN tbl_trs_product_image img
+          ON img.IdRef = h.Id
+         AND img.ImageType = 'MAIN'
         WHERE
           (h.ProductName LIKE ? OR h.ProductCode LIKE ?)
           AND l.Price BETWEEN ? AND ?
@@ -45,6 +48,7 @@ inventoryRoute.post(
           Number(offset),
         ]
       );
+
 
       if (products.length === 0) {
         return res.json({

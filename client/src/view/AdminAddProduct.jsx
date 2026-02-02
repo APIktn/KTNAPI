@@ -143,7 +143,7 @@ function AdminAddProduct() {
 
         setProductName(res.data.productName);
         setDescription(res.data.description);
-        setImagePreview(res.data.image);
+        setImagePreview(res.data.mainImage || null);
         setRows(
           res.data.items.map((l) => ({
             lineKey: String(l.lineKey),
@@ -294,7 +294,10 @@ function AdminAddProduct() {
     formData.append("productName", productName);
     formData.append("description", description);
     formData.append("items", JSON.stringify(rows));
-    if (image) formData.append("image", image);
+    if (image) {
+      formData.append("image", image);
+      formData.append("imageType", "MAIN");
+    }
 
     try {
       const res = await axios.post(`${API_URL}/Product/saveprod`, formData, {
@@ -491,11 +494,7 @@ function AdminAddProduct() {
 
               {image || imagePreview ? (
                 <img
-                  src={
-                    image
-                      ? URL.createObjectURL(image)
-                      : `${API_URL}${imagePreview}`
-                  }
+                  src={image ? URL.createObjectURL(image) : imagePreview}
                   alt="preview"
                   style={{
                     width: "100%",
