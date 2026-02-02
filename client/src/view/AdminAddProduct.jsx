@@ -126,51 +126,53 @@ function AdminAddProduct() {
   }, [prd]);
 
   /* ================= GET PRODUCT ================= */
+  const fetchProduct = async (code) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/Product/getprod`,
+        { status: "getprod", prdcode: code },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      setProductName(res.data.productName);
+      setDescription(res.data.description);
+      setImagePreview(res.data.mainImage || null);
+
+      setRows(
+        res.data.items.map((l) => ({
+          lineKey: String(l.lineKey),
+          lineNo: l.lineNo,
+          size: l.size,
+          price: l.price,
+          amount: l.amount,
+          note: l.note,
+        })),
+      );
+
+      setTempCounter(res.data.items.length);
+      setNotFound(false);
+    } catch (err) {
+      if (err.response?.status === 404) setNotFound(true);
+      else {
+        openModal({
+          type: "error",
+          title: "load failed",
+          message:
+            err.response?.data?.error ||
+            err.response?.data?.message ||
+            "cannot load product",
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     if (!prd) return;
-
-    const fetchProduct = async () => {
-      try {
-        const res = await axios.post(
-          `${API_URL}/Product/getprod`,
-          { status: "getprod", prdcode: prd },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          },
-        );
-
-        setProductName(res.data.productName);
-        setDescription(res.data.description);
-        setImagePreview(res.data.mainImage || null);
-        setRows(
-          res.data.items.map((l) => ({
-            lineKey: String(l.lineKey),
-            lineNo: l.lineNo,
-            size: l.size,
-            price: l.price,
-            amount: l.amount,
-            note: l.note,
-          })),
-        );
-        setTempCounter(res.data.items.length);
-      } catch (err) {
-        if (err.response?.status === 404) setNotFound(true);
-        else {
-          openModal({
-            type: "error",
-            title: "load failed",
-            message:
-              err.response?.data?.error ||
-              err.response?.data?.message ||
-              "cannot load product",
-          });
-        }
-      }
-    };
-
-    fetchProduct();
+    fetchProduct(prd);
   }, [prd]);
 
   if (notFound)
@@ -310,9 +312,13 @@ function AdminAddProduct() {
         type: "success",
         title: "save success",
         message: "product saved successfully",
-        onClose: () => {
+        onClose: async () => {
           setModalOpen(false);
-          navigate(`/AdminAddProduct?prd=${res.data.productCode}`);
+
+          const code = res.data.productCode;
+          navigate(`/AdminAddProduct?prd=${code}`);
+
+          await fetchProduct(code);
         },
       });
     } catch (err) {
