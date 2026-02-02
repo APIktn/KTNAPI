@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.mjs",
+    "dev": "nodemon server.mjs",
+    "start": "node server.mjs",
     "test": "vitest",
     "test:watch": "vitest --watch"
   },
@@ -24,6 +25,7 @@
     "nodemailer": "^7.0.12"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.18",
     "nodemon": "^3.1.10",
     "supertest": "^7.2.2",
     "vitest": "^4.0.18"

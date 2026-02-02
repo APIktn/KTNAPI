@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import { AppRoutes } from "./App";
-import { renderWithProviders } from "./utils/test-utils";
+import { renderWithProviders } from "./main_test";
 
 describe("App routing", () => {
 
