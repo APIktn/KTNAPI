@@ -6,7 +6,7 @@ clientcheck npx vitest --coverage
 
 clientdocker 
 docker build -t client-app .
-docker run -p 5173:5173 client-app
+docker run -p 5174:5173 client-app
 
 npm create vite@latest client -- --template react
 npm install bootstrap
@@ -25,7 +25,7 @@ servercheck npx vitest --coverage
 
 serverdocker
 docker build -t server-app .
-docker run -p 5000:5000 server-app
+docker run -p 5001:5000 server-app
 
 npm init -y
 npm install express cors dotenv

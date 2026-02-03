@@ -53,7 +53,7 @@ CREATE TABLE `tbl_trs_product_image` (
   PRIMARY KEY (`Id`),
   KEY `fk_product_image_header` (`IdRef`),
   CONSTRAINT `fk_product_image_header` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_product_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB UTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ktnapi.tbl_trs_product_line definition
 
@@ -72,4 +72,4 @@ CREATE TABLE `tbl_trs_product_line` (
   PRIMARY KEY (`Id`),
   KEY `fk_product_line_header` (`IdRef`),
   CONSTRAINT `fk_product_line_header` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_product_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

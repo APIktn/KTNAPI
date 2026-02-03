@@ -14,6 +14,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { useTheme } from "../context/Theme";
 import AppModal from "../component/Modal/AppModal";
 import { useAuth } from "../context/AuthContext";
+import SavingBackdrop from "../component/SavingBackdrop";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -38,6 +39,8 @@ function Profile() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
+  const [saving, setSaving] = useState(false);
+
   /* validate */
   const [errors, setErrors] = useState({
     firstName: "",
@@ -47,20 +50,14 @@ function Profile() {
   const validate = () => {
     const newErrors = {};
 
-    if (!firstName.trim()) {
-      newErrors.firstName = "first name is required";
-    }
-
-    if (!lastName.trim()) {
-      newErrors.lastName = "last name is required";
-    }
+    if (!firstName.trim()) newErrors.firstName = "first name is required";
+    if (!lastName.trim()) newErrors.lastName = "last name is required";
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
-  /* ================= modal ================= */
+  /* modal */
   const [modalOpen, setModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
 
@@ -72,7 +69,7 @@ function Profile() {
     setModalOpen(true);
   };
 
-  /* ================= load profile ================= */
+  /* load profile */
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -96,7 +93,7 @@ function Profile() {
         setUsername(d.userName || "");
         setAddress(d.address || "");
         setTel(d.tel || "");
-       setPreview(d.imageUpload || null);
+        setPreview(d.imageUpload || null);
       })
       .catch(() => {
         openModal({
@@ -107,7 +104,7 @@ function Profile() {
       });
   }, []);
 
-  /* ================= save ================= */
+  /* save */
   const handleSave = async () => {
     if (!validate()) return;
     if (!user) return;
@@ -120,7 +117,12 @@ function Profile() {
     formData.append("address", address);
     formData.append("tel", tel);
 
-    if (image) formData.append("image", image);
+    // append image เฉพาะตอนเลือกใหม่
+    if (image) {
+      formData.append("image", image);
+    }
+
+    setSaving(true);
 
     try {
       const res = await axios.post(`${API_URL}/user/profile`, formData, {
@@ -129,20 +131,18 @@ function Profile() {
         },
       });
 
-      if (!res.data?.success) {
-        openModal({
-          type: "error",
-          title: "update failed",
-          message: res.data?.message || "update failed",
-        });
-        return;
-      }
+      setSaving(false);
 
       openModal({
         type: "success",
         title: "update success",
-        message: res.data.message || "profile updated",
+        message: "profile updated",
         onClose: () => {
+          // clear image payload
+          setImage(null);
+
+          // ใช้รูปจาก backend เป็น preview หลัก
+          setPreview(res.data.user.imageUpload);
           const updatedUser = {
             ...user,
             firstName,
@@ -153,13 +153,14 @@ function Profile() {
             tel,
             imageUpload: res.data.imageUpload ?? user.imageUpload,
           };
-
           updateUser(res.data.user);
           setUser(updatedUser);
+
           setModalOpen(false);
         },
       });
     } catch (err) {
+      setSaving(false);
       openModal({
         type: "error",
         title: "update failed",
@@ -172,12 +173,6 @@ function Profile() {
   };
 
   if (!user) return null;
-
-  /* ================= UI ================= */
-  /* ================= UI ================= */
-  /* ================= UI ================= */
-  /* ================= UI ================= */
-  /* ================= UI ================= */
 
   return (
     <>
@@ -208,13 +203,7 @@ function Profile() {
 
           <Divider sx={{ mb: 3 }} />
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-            }}
-          >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {/* avatar */}
             <Box
               component="label"
@@ -254,7 +243,7 @@ function Profile() {
             </Box>
 
             {/* form */}
-            <Box sx={{ flex: 1 }}>
+            <Box>
               <Box
                 sx={{
                   display: "grid",
@@ -268,11 +257,9 @@ function Profile() {
                   error={!!errors.firstName}
                   helperText={errors.firstName}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    setFirstName(value);
-
-                    if (errors.firstName && value.trim()) {
-                      setErrors((prev) => ({ ...prev, firstName: "" }));
+                    setFirstName(e.target.value);
+                    if (errors.firstName && e.target.value.trim()) {
+                      setErrors((p) => ({ ...p, firstName: "" }));
                     }
                   }}
                 />
@@ -283,11 +270,9 @@ function Profile() {
                   error={!!errors.lastName}
                   helperText={errors.lastName}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    setLastName(value);
-
-                    if (errors.lastName && value.trim()) {
-                      setErrors((prev) => ({ ...prev, lastName: "" }));
+                    setLastName(e.target.value);
+                    if (errors.lastName && e.target.value.trim()) {
+                      setErrors((p) => ({ ...p, lastName: "" }));
                     }
                   }}
                 />
@@ -308,9 +293,9 @@ function Profile() {
                   label="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  fullWidth
                   multiline
                   rows={3}
+                  fullWidth
                 />
               </Box>
 
@@ -320,6 +305,7 @@ function Profile() {
                   color="success"
                   startIcon={<SaveIcon />}
                   onClick={handleSave}
+                  disabled={saving}
                 >
                   save
                 </Button>
@@ -330,6 +316,7 @@ function Profile() {
       </Slide>
 
       <AppModal open={modalOpen} {...modalConfig} />
+      <SavingBackdrop open={saving} text="saving profile..." />
     </>
   );
 }

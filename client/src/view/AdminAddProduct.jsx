@@ -82,13 +82,17 @@ function AdminAddProduct() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
 
-  const openModal = (config) => {
-    setModalConfig({
-      ...config,
-      onClose: config.onClose || (() => setModalOpen(false)),
-    });
-    setModalOpen(true);
-  };
+const openModal = (config) => {
+  setModalConfig({
+    ...config,
+    onClose: () => {
+      config.onClose?.();
+      setModalOpen(false);
+    },
+  });
+  setModalOpen(true);
+};
+
 
   /* ================= product ================= */
   const [productName, setProductName] = useState("");
@@ -291,7 +295,6 @@ function AdminAddProduct() {
 
   /* ================= loading ================= */
   const [saving, setSaving] = useState(false);
-  const [progress, setProgress] = useState(0);
 
   /* ================= SAVE ================= */
   const handleSave = async () => {
@@ -307,46 +310,27 @@ function AdminAddProduct() {
       formData.append("imageType", "MAIN");
     }
 
-    // start loading
-    setProgress(0);
     setSaving(true);
-
-    // ถ้าไม่มีรูป ให้ progress ขยับก่อน
-    if (!image) {
-      setProgress(80);
-    }
 
     try {
       const res = await axios.post(`${API_URL}/Product/saveprod`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        onUploadProgress: (e) => {
-          if (!e.total) return;
-          const percent = Math.round((e.loaded * 100) / e.total);
-          setProgress(percent);
-        },
       });
 
-      // backend response = 100
-      setProgress(100);
-
-      // delay display 100%
-      setTimeout(() => {
-        setSaving(false);
-        setProgress(0);
-        openModal({
-          type: "success",
-          title: "save success",
-          message: "product saved successfully",
-          onClose: () => {
-            navigate(`/AdminAddProduct?prd=${res.data.productCode}`);
-          },
-        });
-      }, 300);
+      setSaving(false);
+      openModal({
+        type: "success",
+        title: "save success",
+        message: "product saved successfully",
+        onClose: () => {
+          setImage(null);
+          navigate(`/AdminAddProduct?prd=${res.data.productCode}`);
+        },
+      });
     } catch (err) {
       setSaving(false);
-      setProgress(0);
       openModal({
         type: "error",
         title: "save failed",
@@ -699,11 +683,7 @@ function AdminAddProduct() {
       <AppModal open={modalOpen} {...modalConfig} />
 
       {/* loading */}
-      <SavingBackdrop
-        open={saving}
-        progress={progress}
-        text="saving product..."
-      />
+      <SavingBackdrop open={saving} text="saving product..." />
     </>
   );
 }
