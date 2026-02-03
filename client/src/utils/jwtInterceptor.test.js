@@ -1,12 +1,25 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import axios from "axios";
-import jwtInterceptor from "./JwtInterceptor";
-import { jwtDecode } from "jwt-decode";
+
+/* =====================
+   mock axios (สำคัญมาก)
+   ===================== */
+vi.mock("axios", () => ({
+  default: {
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
+}));
 
 /* mock jwt-decode */
 vi.mock("jwt-decode", () => ({
   jwtDecode: vi.fn(),
 }));
+
+import axios from "axios";
+import jwtInterceptor from "./JwtInterceptor";
+import { jwtDecode } from "jwt-decode";
 
 describe("jwtInterceptor", () => {
   let requestInterceptor;
@@ -16,12 +29,11 @@ describe("jwtInterceptor", () => {
     localStorage.clear();
     vi.clearAllMocks();
 
-    // mock axios interceptor registration
-    axios.interceptors.request.use = vi.fn((fn) => {
+    axios.interceptors.request.use.mockImplementation((fn) => {
       requestInterceptor = fn;
     });
 
-    axios.interceptors.response.use = vi.fn((success, error) => {
+    axios.interceptors.response.use.mockImplementation((success, error) => {
       responseInterceptor = error;
     });
 

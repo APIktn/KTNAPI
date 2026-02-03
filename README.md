@@ -44,6 +44,8 @@ npm install -D @vitest/coverage-v8
 CI/CD test
 
 step 1 ci test
+npx vitest run
+
 step 2 cd build docker
 step 3 cd run docker
 ////////////////////////////////////////////////////
