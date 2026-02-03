@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # -----------------------------
+  # step 1: test
+  # -----------------------------
+  client-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: install client deps
+        working-directory: client
+        run: npm install
+
+      - name: run client tests
+        working-directory: client
+        run: npx vitest
+
+  server-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: install server deps
+        working-directory: server
+        run: npm install
+
+      - name: run server tests
+        working-directory: server
+        run: npm run test
+
+  # -----------------------------
+  # step 2: docker build
+  # -----------------------------
+  client-docker-build:
+    needs: client-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build client docker image
+        run: docker build -t client-app ./client
+
+  server-docker-build:
+    needs: server-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build server docker image
+        run: docker build -t server-app ./server
+
+  # -------------------
+  # step 3: docker run
+  # -------------------
+  client-docker-run:
+    needs: client-docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: run client container
+        run: |
+          docker run -d --name client_test -p 5174:5173 client-app
+          sleep 10
+          docker ps | grep client_test
+
+      - name: stop client container
+        run: docker rm -f client_test
+
+  server-docker-run:
+    needs: server-docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: run server container
+        run: |
+          docker run -d --name server_test -p 5001:5000 server-app
+          sleep 10
+          docker ps | grep server_test
+
+      - name: stop server container
+        run: docker rm -f server_test

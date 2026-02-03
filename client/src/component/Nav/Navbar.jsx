@@ -15,19 +15,20 @@ import ButtonBase from "@mui/material/ButtonBase";
 import { useTheme } from "../../context/Theme";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AppModal from "../Modal/AppModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Navbar({ onToggleSidebar, onStickyChange }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const isDark = theme === "dark";
 
   const [isSticky, setIsSticky] = useState(false);
-  const [value, setValue] = useState("Home");
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
@@ -37,6 +38,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
 
   const STICKY_OFFSET = 80;
 
+  /* sticky navbar */
   useEffect(() => {
     const onScroll = () => {
       const sticky = window.scrollY >= STICKY_OFFSET;
@@ -46,6 +48,13 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [onStickyChange]);
+
+  /* navbar value sync with url */
+  const currentValue = (() => {
+    if (location.pathname === "/") return "Home";
+    if (location.pathname.startsWith("/contact")) return "Contact";
+    return false;
+  })();
 
   const handleOpenMenu = (e) => {
     setAnchorEl(e.currentTarget);
@@ -78,8 +87,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
 
           {/* center */}
           <BottomNavigation
-            value={value}
-            onChange={(e, newValue) => setValue(newValue)}
+            value={currentValue}
             sx={{
               background: "transparent",
               flex: 1,
@@ -122,7 +130,6 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
             {/* auth */}
             {user ? (
               <>
-                {/* avatar + name */}
                 <ButtonBase
                   onClick={handleOpenMenu}
                   sx={{
@@ -143,7 +150,6 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
                   </span>
                 </ButtonBase>
 
-                {/* dropdown */}
                 <Menu
                   anchorEl={anchorEl}
                   open={openMenu}
@@ -215,7 +221,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
         </div>
       </nav>
 
-      {/* modal*/}
+      {/* modal */}
       <AppModal
         open={openLogout}
         mode="confirm"

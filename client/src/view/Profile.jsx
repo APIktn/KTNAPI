@@ -77,12 +77,7 @@ function Profile() {
     axios
       .post(
         `${API_URL}/user/profile`,
-        { status: "getprofile" },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+        { status: "getprofile" }
       )
       .then((res) => {
         const d = res.data.user;
@@ -125,11 +120,7 @@ function Profile() {
     setSaving(true);
 
     try {
-      const res = await axios.post(`${API_URL}/user/profile`, formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await axios.post(`${API_URL}/user/profile`, formData);
 
       setSaving(false);
 

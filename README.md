@@ -1,8 +1,11 @@
 #tech stack ja
 ////////////////////////////////////////////////////
-client npm run dev
-clienttest npx vitest
-clientcheck npx vitest --coverage
+client 
+npm run dev
+clienttest 
+npx vitest
+clientcheck 
+npx vitest --coverage
 
 clientdocker 
 docker build -t client-app .
@@ -19,9 +22,12 @@ npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
 npm install -D @vitest/coverage-v8
 
 ////////////////////////////////////////////////////
-server npm run start
-servertest npm run test
-servercheck npx vitest --coverage
+server 
+npm run start
+servertest
+npm run test
+servercheck 
+npx vitest --coverage
 
 serverdocker
 docker build -t server-app .
@@ -34,6 +40,12 @@ npm install cloudinary multer
 npm install -D vitest
 npm install -D @vitest/coverage-v8
 
+////////////////////////////////////////////////////
+CI/CD
+
+step 1 ci test
+step 2 cd build docker
+step 3 cd run docker
 ////////////////////////////////////////////////////
 client
 .env

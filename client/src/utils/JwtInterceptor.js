@@ -1,7 +1,12 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+let initialized = false;
+
 function jwtInterceptor() {
+  if (initialized) return;
+  initialized = true;
+
   axios.interceptors.request.use((req) => {
     const token = localStorage.getItem("token");
 
@@ -15,6 +20,7 @@ function jwtInterceptor() {
           localStorage.removeItem("user");
           window.dispatchEvent(new Event("auth-expired"));
         } else {
+          req.headers = req.headers || {};
           req.headers.Authorization = `Bearer ${token}`;
         }
       } catch {
@@ -39,6 +45,5 @@ function jwtInterceptor() {
     }
   );
 }
-
 
 export default jwtInterceptor;
