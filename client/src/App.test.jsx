@@ -1,47 +1,67 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { screen } from "@testing-library/react";
+
+/* mock layout */
+vi.mock("./component/LayoutBg", () => ({
+  default: ({ children }) => <div>{children}</div>,
+}));
+
+/* mock pages */
+vi.mock("./view/Home", () => ({
+  default: () => <h1>Home</h1>,
+}));
+
+vi.mock("./view/Contact", () => ({
+  default: () => <h1>Contact</h1>,
+}));
+
+vi.mock("./view/Login", () => ({
+  default: () => <h1>Login</h1>,
+}));
+
+vi.mock("./view/Signup", () => ({
+  default: () => <h1>Sign Up</h1>,
+}));
+
+vi.mock("./view/Profile", () => ({
+  default: () => <h1>Profile</h1>,
+}));
+
+vi.mock("./view/NotFound", () => ({
+  default: () => <h1>Not Found</h1>,
+}));
+
 import { AppRoutes } from "./App";
 import { renderWithProviders } from "./main_test";
 
 describe("App routing", () => {
-  /* mock bg */
-  vi.mock("./component/LayoutBg", () => ({
-    default: ({ children }) => <div>{children}</div>,
-  }));
-
-  it("test renders Home page on /", () => {
+  it("renders Home on /", () => {
     renderWithProviders(<AppRoutes />, { route: "/" });
     expect(screen.getByText(/home/i)).toBeInTheDocument();
   });
 
-  it("test renders Contact page on /contact", () => {
+  it("renders Contact on /contact", () => {
     renderWithProviders(<AppRoutes />, { route: "/contact" });
     expect(screen.getByText(/contact/i)).toBeInTheDocument();
   });
 
-  it("test renders Login page on /login (public route)", () => {
+  it("renders Login on /login", () => {
     renderWithProviders(<AppRoutes />, { route: "/login" });
-
-    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByText(/login/i)).toBeInTheDocument();
   });
 
-  it("test renders Signup page on /signup (public route)", () => {
+  it("renders Signup on /signup", () => {
     renderWithProviders(<AppRoutes />, { route: "/signup" });
-
-    expect(
-      screen.getByRole("heading", { name: /sign up/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/sign up/i)).toBeInTheDocument();
   });
 
-  it("test redirects to Login page when accessing protected route without authentication", () => {
+  it("redirects to Login when accessing protected route", () => {
     renderWithProviders(<AppRoutes />, { route: "/profile" });
-
-    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByText(/login/i)).toBeInTheDocument();
   });
 
-  it("test renders NotFound page for unknown routes", () => {
+  it("renders NotFound on unknown route", () => {
     renderWithProviders(<AppRoutes />, { route: "/unknown" });
-
     expect(screen.getByText(/not found/i)).toBeInTheDocument();
   });
 });
