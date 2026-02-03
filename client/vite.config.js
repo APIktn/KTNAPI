@@ -8,6 +8,10 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./setupTests.js",
-    exclude: ["node_modules", "dist", "coverage"],
+  },
+  resolve: {
+    alias: {
+      "\\.(png|jpg|jpeg|svg|gif|mp4|webm)$": "/src/__mocks__/fileMock.js",
+    },
   },
 });

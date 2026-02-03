@@ -19,6 +19,7 @@ npm install framer-motion
 npm install axios
 npm install jwt-decode
 npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
+npm install -D jsdom@22.1.0
 npm install -D @vitest/coverage-v8
 
 ////////////////////////////////////////////////////
