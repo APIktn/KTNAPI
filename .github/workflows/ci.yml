@@ -1,4 +1,4 @@
-name: CI
+name: CICD
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
 
 jobs:
   # -----------------------------
-  # step 1: test
+  # client: test + docker
   # -----------------------------
-  client-test:
+  client:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,22 @@ jobs:
         working-directory: client
         run: npx vitest run
 
-  server-test:
+      - name: build client docker image
+        run: docker build -t client-app ./client
+
+      - name: run client container
+        run: |
+          docker run -d --name client_test -p 5174:5173 client-app
+          sleep 5
+          docker ps | grep client_test
+
+      - name: stop client container
+        run: docker rm -f client_test
+
+  # -----------------------------
+  # server: test + docker
+  # -----------------------------
+  server:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,51 +59,9 @@ jobs:
         working-directory: server
         run: npx vitest run
 
-  # -----------------------------
-  # step 2: docker build
-  # -----------------------------
-  client-docker-build:
-    needs: client-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: build client docker image
-        run: docker build -t client-app ./client
-
-  server-docker-build:
-    needs: server-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
       - name: build server docker image
         run: docker build -t server-app ./server
 
-  # -----------------------------
-  # step 3: docker run
-  # -----------------------------
-  client-docker-run:
-    needs: client-docker-build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: run client container
-        run: |
-          docker run -d --name client_test -p 5174:5173 client-app
-          sleep 5
-          docker ps | grep client_test
-
-      - name: stop client container
-        run: docker rm -f client_test
-
-  server-docker-run:
-    needs: server-docker-build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: run server container
         run: |
           docker run -d --name server_test -p 5001:5000 server-app
