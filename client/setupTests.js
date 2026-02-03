@@ -25,14 +25,14 @@ class MockIntersectionObserver {
 window.IntersectionObserver = MockIntersectionObserver;
 
 /* =====================
-   mock assets (explicit)
+   mock videos
    ===================== */
 
-// client\src\component\LayoutBg.jsx
-vi.mock("../src/assets/design/video/bg_dark_video.mp4", () => ({
+// LayoutBg.jsx
+vi.mock("../assets/design/video/bg_dark_video.mp4", () => ({
   default: "mock-dark-video",
 }));
 
-vi.mock("../src/assets/design/video/bg_light_video.mp4", () => ({
+vi.mock("../assets/design/video/bg_light_video.mp4", () => ({
   default: "mock-light-video",
 }));

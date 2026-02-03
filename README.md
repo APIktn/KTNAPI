@@ -73,3 +73,7 @@ Home/bone_chop
 
 /profile
 /product
+
+////////////////////////////////////////////////////
+pin vitest for ci
+npm audit fix --omit=dev
