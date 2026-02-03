@@ -6,11 +6,10 @@ on:
 
 jobs:
   # -----------------------------
-  # client: test + docker
+  # step 1: vitest
   # -----------------------------
-  client:
+  client-test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -22,9 +21,35 @@ jobs:
         working-directory: client
         run: npm install
 
-      - name: run client tests (ci mode)
+      - name: run client vitest
         working-directory: client
         run: npx vitest run
+
+  server-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: install server deps
+        working-directory: server
+        run: npm install
+
+      - name: run server vitest
+        working-directory: server
+        run: npx vitest run
+
+  # -----------------------------
+  # step 2: docker build + run
+  # -----------------------------
+  client-docker:
+    needs: client-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: build client docker image
         run: docker build -t client-app ./client
@@ -38,26 +63,11 @@ jobs:
       - name: stop client container
         run: docker rm -f client_test
 
-  # -----------------------------
-  # server: test + docker
-  # -----------------------------
-  server:
+  server-docker:
+    needs: server-test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: install server deps
-        working-directory: server
-        run: npm install
-
-      - name: run server tests (ci mode)
-        working-directory: server
-        run: npx vitest run
 
       - name: build server docker image
         run: docker build -t server-app ./server

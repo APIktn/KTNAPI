@@ -4,9 +4,9 @@ import { vi } from "vitest";
 /* matchMedia */
 Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation(() => ({
     matches: false,
-    media: query,
+    media: "",
     onchange: null,
     addListener: vi.fn(),
     removeListener: vi.fn(),
@@ -16,12 +16,23 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
-/* IntersectionObserver*/
+/* IntersectionObserver */
 class MockIntersectionObserver {
-  constructor() {}
   observe() {}
   unobserve() {}
   disconnect() {}
 }
-
 window.IntersectionObserver = MockIntersectionObserver;
+
+/* =====================
+   mock assets (explicit)
+   ===================== */
+
+// client\src\component\LayoutBg.jsx
+vi.mock("../src/assets/design/video/bg_dark_video.mp4", () => ({
+  default: "mock-dark-video",
+}));
+
+vi.mock("../src/assets/design/video/bg_light_video.mp4", () => ({
+  default: "mock-light-video",
+}));
