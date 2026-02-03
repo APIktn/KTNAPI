@@ -12,9 +12,12 @@ export default defineConfig({
       "node_modules",
       "dist",
       "coverage",
-      "**/assets/**",
-      "**/view/**",
-      "**/component/**",
     ],
+  },
+  resolve: {
+    alias: {
+      "\\.(css|less|scss)$": "/__mocks__/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|svg|mp4|webm)$": "/__mocks__/fileMock.js",
+    },
   },
 });
