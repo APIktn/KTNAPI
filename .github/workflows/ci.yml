@@ -22,9 +22,9 @@ jobs:
         working-directory: client
         run: npm install
 
-      - name: run client tests
+      - name: run client tests (ci mode)
         working-directory: client
-        run: npx vitest
+        run: npx vitest run
 
   server-test:
     runs-on: ubuntu-latest
@@ -40,9 +40,9 @@ jobs:
         working-directory: server
         run: npm install
 
-      - name: run server tests
+      - name: run server tests (ci mode)
         working-directory: server
-        run: npm run test
+        run: npx vitest run
 
   # -----------------------------
   # step 2: docker build
@@ -67,20 +67,18 @@ jobs:
       - name: build server docker image
         run: docker build -t server-app ./server
 
-  # -------------------
+  # -----------------------------
   # step 3: docker run
-  # -------------------
+  # -----------------------------
   client-docker-run:
     needs: client-docker-build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: run client container
         run: |
           docker run -d --name client_test -p 5174:5173 client-app
-          sleep 10
+          sleep 5
           docker ps | grep client_test
 
       - name: stop client container
@@ -91,12 +89,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: run server container
         run: |
           docker run -d --name server_test -p 5001:5000 server-app
-          sleep 10
+          sleep 5
           docker ps | grep server_test
 
       - name: stop server container
