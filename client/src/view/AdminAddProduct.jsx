@@ -43,6 +43,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTheme } from "../context/Theme";
 import NotFound from "./NotFound";
 import AppModal from "../component/Modal/AppModal";
+import SavingBackdrop from "../component/SavingBackdrop";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const SIZE_OPTIONS = ["100%", "200%", "300%", "400%", "800%", "1200%"];
@@ -81,13 +82,17 @@ function AdminAddProduct() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
 
-  const openModal = (config) => {
-    setModalConfig({
-      ...config,
-      onClose: config.onClose || (() => setModalOpen(false)),
-    });
-    setModalOpen(true);
-  };
+const openModal = (config) => {
+  setModalConfig({
+    ...config,
+    onClose: () => {
+      config.onClose?.();
+      setModalOpen(false);
+    },
+  });
+  setModalOpen(true);
+};
+
 
   /* ================= product ================= */
   const [productName, setProductName] = useState("");
@@ -199,9 +204,9 @@ function AdminAddProduct() {
     setTempCounter(next);
   };
 
-  /* ===== delete row (confirm + api, no success modal) ===== */
+  /* ===== delete row  ===== */
   const handleAskDeleteLine = (index, row) => {
-    // temp row → ลบทันที ไม่ต้อง modal
+    // temp row ลบทันที
     if (row.lineKey.startsWith("new")) {
       setRows((prev) =>
         prev
@@ -211,7 +216,7 @@ function AdminAddProduct() {
       return;
     }
 
-    // row จริง → ค่อยถาม confirm
+    // row จริง ถาม confirm
     openModal({
       mode: "confirm",
       type: "warning",
@@ -288,6 +293,9 @@ function AdminAddProduct() {
     }
   };
 
+  /* ================= loading ================= */
+  const [saving, setSaving] = useState(false);
+
   /* ================= SAVE ================= */
   const handleSave = async () => {
     const formData = new FormData();
@@ -296,10 +304,13 @@ function AdminAddProduct() {
     formData.append("productName", productName);
     formData.append("description", description);
     formData.append("items", JSON.stringify(rows));
+
     if (image) {
       formData.append("image", image);
       formData.append("imageType", "MAIN");
     }
+
+    setSaving(true);
 
     try {
       const res = await axios.post(`${API_URL}/Product/saveprod`, formData, {
@@ -308,20 +319,18 @@ function AdminAddProduct() {
         },
       });
 
+      setSaving(false);
       openModal({
         type: "success",
         title: "save success",
         message: "product saved successfully",
-        onClose: async () => {
-          setModalOpen(false);
-
-          const code = res.data.productCode;
-          navigate(`/AdminAddProduct?prd=${code}`);
-
-          await fetchProduct(code);
+        onClose: () => {
+          setImage(null);
+          navigate(`/AdminAddProduct?prd=${res.data.productCode}`);
         },
       });
     } catch (err) {
+      setSaving(false);
       openModal({
         type: "error",
         title: "save failed",
@@ -444,6 +453,7 @@ function AdminAddProduct() {
                 color="success"
                 startIcon={<SaveIcon />}
                 onClick={handleSave}
+                disabled={saving}
               >
                 save
               </Button>
@@ -671,6 +681,9 @@ function AdminAddProduct() {
 
       {/* modal */}
       <AppModal open={modalOpen} {...modalConfig} />
+
+      {/* loading */}
+      <SavingBackdrop open={saving} text="saving product..." />
     </>
   );
 }

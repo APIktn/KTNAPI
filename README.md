@@ -1,12 +1,15 @@
 #tech stack ja
 ////////////////////////////////////////////////////
-client npm run dev
-clienttest npx vitest
-clientcheck npx vitest --coverage
+client 
+npm run dev
+clienttest 
+npx vitest
+clientcheck 
+npx vitest --coverage
 
 clientdocker 
 docker build -t client-app .
-docker run -p 5173:5173 client-app
+docker run -p 5174:5173 client-app
 
 npm create vite@latest client -- --template react
 npm install bootstrap
@@ -19,13 +22,16 @@ npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
 npm install -D @vitest/coverage-v8
 
 ////////////////////////////////////////////////////
-server npm run start
-servertest npm run test
-servercheck npx vitest --coverage
+server 
+npm run start
+servertest
+npm run test
+servercheck 
+npx vitest --coverage
 
 serverdocker
 docker build -t server-app .
-docker run -p 5000:5000 server-app
+docker run -p 5001:5000 server-app
 
 npm init -y
 npm install express cors dotenv
@@ -34,6 +40,12 @@ npm install cloudinary multer
 npm install -D vitest
 npm install -D @vitest/coverage-v8
 
+////////////////////////////////////////////////////
+CI/CD
+
+step 1 ci test
+step 2 cd build docker
+step 3 cd run docker
 ////////////////////////////////////////////////////
 client
 .env

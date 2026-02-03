@@ -29,24 +29,22 @@ productRoute.post(
       imageType,
     } = req.body;
 
-    const items = req.parsedItems;
+    const items = req.parsedItems || [];
     const userCode = req.user?.userCode;
 
     if (!userCode) {
-      return res.status(401).json({
-        success: false,
-        error: "unauthorized",
-      });
+      return res.status(401).json({ error: "unauthorized" });
+    }
+
+    if (!productName?.trim()) {
+      return res.status(400).json({ error: "product name required" });
     }
 
     const imgType = imageType || "MAIN";
 
     // ===== validate image =====
     if (req.file && !["image/jpeg", "image/png"].includes(req.file.mimetype)) {
-      return res.status(400).json({
-        success: false,
-        error: "invalid image type",
-      });
+      return res.status(400).json({ error: "invalid image type" });
     }
 
     // ===== upload image =====
@@ -59,32 +57,28 @@ productRoute.post(
           `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
           {
             folder: "bone_chop/product",
-            context: {
-              imageType: imgType,
-            },
+            context: { imageType: imgType },
           }
         );
 
         imageUrl = uploadResult.secure_url;
         imagePublicId = uploadResult.public_id;
       } catch {
-        return res.status(500).json({
-          success: false,
-          error: "image upload failed",
-        });
+        return res.status(500).json({ error: "image upload failed" });
       }
     }
 
     const conn = await con.getConnection();
+    let oldImagePublicId = null;
 
     try {
       await conn.beginTransaction();
 
-      let headerId = null;
+      let headerId;
       let prdCode = productCode;
 
       // ==================================================
-      // CREATE PRODUCT
+      // CREATE
       // ==================================================
       if (status === "createprod") {
         prdCode = await generateProductCode(conn);
@@ -109,11 +103,6 @@ productRoute.post(
 
         headerId = header.insertId;
 
-        if (!headerId) {
-          throw new Error("invalid product header");
-        }
-
-        // insert MAIN image
         if (imageUrl) {
           await conn.query(
             `
@@ -137,21 +126,18 @@ productRoute.post(
       }
 
       // ==================================================
-      // UPDATE PRODUCT
+      // UPDATE
       // ==================================================
       if (status === "updateprod") {
-        const [headers] = await conn.query(
-          `select Id from tbl_trs_product_header where ProductCode = ?`,
+        const [[header]] = await conn.query(
+          `select Id from tbl_trs_product_header where ProductCode=?`,
           [productCode]
         );
 
-        if (headers.length === 0) {
-          throw new Error("product not found");
-        }
+        if (!header) throw new Error("product not found");
 
-        headerId = headers[0].Id;
+        headerId = header.Id;
 
-        // update header
         await conn.query(
           `
           update tbl_trs_product_header
@@ -161,7 +147,6 @@ productRoute.post(
           [productName, description, userCode, new Date(), productCode]
         );
 
-        // ===== update MAIN image =====
         if (imageUrl) {
           const [[old]] = await conn.query(
             `
@@ -173,13 +158,9 @@ productRoute.post(
             [headerId]
           );
 
-          // delete old cloudinary image
-          if (old?.ProductImageId) {
-            await cloudinary.uploader.destroy(old.ProductImageId);
-          }
+          oldImagePublicId = old?.ProductImageId || null;
 
           if (old?.Id) {
-            // update MAIN record
             await conn.query(
               `
               update tbl_trs_product_image
@@ -196,17 +177,15 @@ productRoute.post(
               ]
             );
           } else {
-            // fallback (ไม่มี MAIN)
             await conn.query(
               `
               insert into tbl_trs_product_image
               (IdRef, ImageType, ProductImage, ProductImageId,
                CreateBy, CreateDateTime, UpdateBy, UpdateDateTime)
-              values (?, ?, ?, ?, ?, ?, ?, ?)
+              values (?, 'MAIN', ?, ?, ?, ?, ?, ?)
               `,
               [
                 headerId,
-                "MAIN",
                 imageUrl,
                 imagePublicId,
                 userCode,
@@ -220,16 +199,12 @@ productRoute.post(
       }
 
       // ==================================================
-      // PRODUCT LINES
+      // LINES
       // ==================================================
-      const newLines = items.filter((i) =>
-        String(i.lineKey).startsWith("new")
-      );
-      const existLines = items.filter(
-        (i) => !String(i.lineKey).startsWith("new")
-      );
+      const newLines = items.filter(i => String(i.lineKey).startsWith("new"));
+      const existLines = items.filter(i => !String(i.lineKey).startsWith("new"));
 
-      for (const item of newLines) {
+      for (const i of newLines) {
         await conn.query(
           `
           insert into tbl_trs_product_line
@@ -239,11 +214,11 @@ productRoute.post(
           `,
           [
             headerId,
-            item.lineNo,
-            item.size,
-            item.price,
-            item.amount,
-            item.note || "",
+            Number(i.lineNo),
+            i.size,
+            Number(i.price),
+            Number(i.amount),
+            i.note || "",
             userCode,
             new Date(),
             userCode,
@@ -252,7 +227,7 @@ productRoute.post(
         );
       }
 
-      for (const item of existLines) {
+      for (const i of existLines) {
         await conn.query(
           `
           update tbl_trs_product_line
@@ -261,14 +236,14 @@ productRoute.post(
           where Id=? and IdRef=?
           `,
           [
-            item.lineNo,
-            item.size,
-            item.price,
-            item.amount,
-            item.note || "",
+            Number(i.lineNo),
+            i.size,
+            Number(i.price),
+            Number(i.amount),
+            i.note || "",
             userCode,
             new Date(),
-            item.lineKey,
+            i.lineKey,
             headerId,
           ]
         );
@@ -276,24 +251,27 @@ productRoute.post(
 
       await conn.commit();
 
+      // ===== delete old cloudinary AFTER commit =====
+      if (oldImagePublicId) {
+        await cloudinary.uploader.destroy(oldImagePublicId);
+      }
+
       res.json({
         success: true,
-        message: "product saved successfully",
         productCode: prdCode,
       });
+
     } catch (err) {
       await conn.rollback();
       console.error("save product error:", err);
 
-      res.status(500).json({
-        success: false,
-        error: "server error",
-      });
+      res.status(500).json({ error: "server error" });
     } finally {
       conn.release();
     }
   }
 );
+
 
 //////////////////////////////////////////////////
 // line update / delete

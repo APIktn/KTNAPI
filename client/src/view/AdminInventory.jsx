@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,7 @@ import {
 
 import TextField from "@mui/material/TextField";
 import Slider from "@mui/material/Slider";
+import SavingBackdrop from "../component/SavingBackdrop";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -42,14 +43,35 @@ function AdminInventory() {
   const limit = 12;
 
   const [animateKey, setAnimateKey] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const debouncedSearch = useDebounce(search, 1000);
   const debouncedPrice = useDebounce(priceRange, 1000);
+
+  /* ===== delayed loading (0.5s) ===== */
+  const loadingTimer = useRef(null);
+
+  useEffect(() => {
+    clearTimeout(loadingTimer.current);
+
+    loadingTimer.current = setTimeout(() => {
+      setLoading(true);
+    }, 500);
+
+    return () => clearTimeout(loadingTimer.current);
+  }, [search, priceRange]);
 
   /* reset page when filter change */
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch, debouncedPrice]);
+
+  useEffect(() => {
+  if (search === "" && priceRange[0] === 0 && priceRange[1] === 100000) {
+    setLoading(false);
+    clearTimeout(loadingTimer.current);
+  }
+}, [search, priceRange]);
 
   /* ================= fetch inventory ================= */
   useEffect(() => {
@@ -77,6 +99,9 @@ function AdminInventory() {
         setAnimateKey((k) => k + 1);
       } catch (err) {
         console.error("fetch inventory error:", err);
+      } finally {
+        clearTimeout(loadingTimer.current);
+        setLoading(false);
       }
     };
 
@@ -84,151 +109,150 @@ function AdminInventory() {
   }, [debouncedSearch, debouncedPrice, page]);
 
   return (
-    <Box
-      sx={{
-        minHeight: "80vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* search + filter */}
+    <>
       <Box
         sx={{
+          minHeight: "80vh",
           display: "flex",
-          gap: 2,
-          mb: 3,
-          flexWrap: "wrap",
+          flexDirection: "column",
         }}
       >
-        <TextField
-          label="search product / code"
-          size="small"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ width: 260 }}
-        />
-
-        <Box sx={{ width: 320 }}>
-          <Typography variant="caption">
-            price range: {priceRange[0]} - {priceRange[1]}
-          </Typography>
-          <Slider
-            value={priceRange}
-            min={0}
-            max={100000}
-            onChange={(_, v) => setPriceRange(v)}
-            valueLabelDisplay="auto"
-            disableSwap
+        {/* search + filter */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            mb: 3,
+            flexWrap: "wrap",
+          }}
+        >
+          <TextField
+            label="search product / code"
+            size="small"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ width: 260 }}
           />
+
+          <Box sx={{ width: 320 }}>
+            <Typography variant="caption">
+              price range: {priceRange[0]} - {priceRange[1]}
+            </Typography>
+            <Slider
+              value={priceRange}
+              min={0}
+              max={100000}
+              onChange={(_, v) => setPriceRange(v)}
+              valueLabelDisplay="auto"
+              disableSwap
+            />
+          </Box>
+        </Box>
+
+        {/* cards */}
+        <div className="row g-3" key={animateKey}>
+          {products.map((p, index) => {
+            const isAvailable = p.lines.some((l) => Number(l.amount) > 0);
+
+            return (
+              <div
+                key={p.productCode}
+                className="col-12 col-sm-6 col-md-4 col-lg-3"
+              >
+                <Grow in timeout={400 + index * 80}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      background: "rgba(255,255,255,0.15)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255,255,255,0.25)",
+                      borderRadius: 3,
+                      boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      sx={{
+                        width: 250,
+                        height: 250,
+                        objectFit: "contain",
+                        mx: "auto",
+                      }}
+                      image={p.image || ""}
+                      alt={p.productName}
+                    />
+
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="subtitle1" noWrap>
+                        {p.productName}
+                      </Typography>
+
+                      <Typography variant="caption" color="text.secondary">
+                        {p.productCode}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          mt: 1,
+                          fontWeight: 600,
+                          color: isAvailable ? "success.main" : "error.main",
+                        }}
+                      >
+                        {isAvailable ? "available" : "sold"}
+                      </Typography>
+                    </CardContent>
+
+                    <div className="p-2 mt-auto">
+                      <Button
+                        fullWidth
+                        size="small"
+                        variant="contained"
+                        onClick={() =>
+                          navigate(`/AdminAddProduct?prd=${p.productCode}`)
+                        }
+                      >
+                        manage
+                      </Button>
+                    </div>
+                  </Card>
+                </Grow>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* pagination */}
+        <Box
+          sx={{
+            mt: "auto",
+            pt: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+            prev
+          </Button>
+
+          <Typography>
+            {page} / {totalPages}
+          </Typography>
+
+          <Button
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            next
+          </Button>
         </Box>
       </Box>
 
-      {/* cards */}
-      <div className="row g-3" key={animateKey}>
-        {products.map((p, index) => {
-          const isAvailable = p.lines.some((l) => Number(l.amount) > 0);
-
-          return (
-            <div
-              key={p.productCode}
-              className="col-12 col-sm-6 col-md-4 col-lg-3"
-            >
-              <Grow in timeout={400 + index * 80}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    background: "rgba(255,255,255,0.15)",
-                    backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255,255,255,0.25)",
-                    borderRadius: 3,
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
-                    transition: "all 0.25s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
-                    },
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      width: 250,
-                      height: 250,
-                      objectFit: "contain",
-                      mx: "auto",
-                    }}
-                    image={p.image || ""}
-                    alt={p.productName}
-                  />
-
-                  <CardContent sx={{ py: 1 }}>
-                    <Typography variant="subtitle1" noWrap>
-                      {p.productName}
-                    </Typography>
-
-                    <Typography variant="caption" color="text.secondary">
-                      {p.productCode}
-                    </Typography>
-
-                    <Typography
-                      sx={{
-                        mt: 1,
-                        fontWeight: 600,
-                        color: isAvailable ? "success.main" : "error.main",
-                      }}
-                    >
-                      {isAvailable ? "available" : "sold"}
-                    </Typography>
-                  </CardContent>
-
-                  <div className="p-2 mt-auto">
-                    <Button
-                      fullWidth
-                      size="small"
-                      variant="contained"
-                      onClick={() =>
-                        navigate(`/AdminAddProduct?prd=${p.productCode}`)
-                      }
-                    >
-                      manage
-                    </Button>
-                  </div>
-                </Card>
-              </Grow>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* pagination */}
-      <Box
-        sx={{
-          mt: "auto",
-          pt: 4,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <Button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-          prev
-        </Button>
-
-        <Typography>
-          {page} / {totalPages}
-        </Typography>
-
-        <Button
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          next
-        </Button>
-      </Box>
-    </Box>
+      <SavingBackdrop open={loading} text="loading inventory..." />
+    </>
   );
 }
 
