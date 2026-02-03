@@ -23,16 +23,3 @@ class MockIntersectionObserver {
   disconnect() {}
 }
 window.IntersectionObserver = MockIntersectionObserver;
-
-/* =====================
-   mock videos
-   ===================== */
-
-// LayoutBg.jsx
-vi.mock("../assets/design/video/bg_dark_video.mp4", () => ({
-  default: "mock-dark-video",
-}));
-
-vi.mock("../assets/design/video/bg_light_video.mp4", () => ({
-  default: "mock-light-video",
-}));

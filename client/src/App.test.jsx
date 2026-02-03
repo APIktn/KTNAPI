@@ -4,6 +4,10 @@ import { AppRoutes } from "./App";
 import { renderWithProviders } from "./main_test";
 
 describe("App routing", () => {
+  /* mock bg */
+  vi.mock("./component/LayoutBg", () => ({
+    default: ({ children }) => <div>{children}</div>,
+  }));
 
   it("test renders Home page on /", () => {
     renderWithProviders(<AppRoutes />, { route: "/" });
@@ -18,33 +22,26 @@ describe("App routing", () => {
   it("test renders Login page on /login (public route)", () => {
     renderWithProviders(<AppRoutes />, { route: "/login" });
 
-    expect(
-      screen.getByRole("heading", { name: /login/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
   });
 
   it("test renders Signup page on /signup (public route)", () => {
     renderWithProviders(<AppRoutes />, { route: "/signup" });
 
     expect(
-      screen.getByRole("heading", { name: /sign up/i })
+      screen.getByRole("heading", { name: /sign up/i }),
     ).toBeInTheDocument();
   });
 
   it("test redirects to Login page when accessing protected route without authentication", () => {
     renderWithProviders(<AppRoutes />, { route: "/profile" });
 
-    expect(
-      screen.getByRole("heading", { name: /login/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
   });
 
   it("test renders NotFound page for unknown routes", () => {
     renderWithProviders(<AppRoutes />, { route: "/unknown" });
 
-    expect(
-      screen.getByText(/not found/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/not found/i)).toBeInTheDocument();
   });
-
 });
