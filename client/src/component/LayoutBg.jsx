@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { useTheme } from "../context/Theme";
 
-import darkVideo from "../assets/design/video/bg_dark_video.mp4";
-import lightVideo from "../assets/design/video/bg_light_video.mp4";
+const DARK_VIDEO = "/assets/design/video/bg_dark_video.mp4";
+const LIGHT_VIDEO = "/assets/design/video/bg_light_video.mp4";
 
 export default function LayoutBg() {
   const { theme } = useTheme();
-  const bgVideo = theme === "dark" ? darkVideo : lightVideo;
+  const bgVideo = theme === "dark" ? DARK_VIDEO : LIGHT_VIDEO;
 
   return (
     <div

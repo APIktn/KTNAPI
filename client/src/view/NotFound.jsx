@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import bgVideo from "../assets/Design/video/NotFound.mp4";
+
+const BG_VIDEO = "/assets/design/video/notfound.mp4";
 
 function NotFound() {
   return (
     <div className="notfound-wrapper">
       <video autoPlay loop muted playsInline className="notfound-video">
-        <source src={bgVideo} type="video/mp4" />
+        <source src={BG_VIDEO} type="video/mp4" />
       </video>
 
       <div className="notfound-content">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Grow } from "@mui/material";
-import resume from "../assets/Design/Image/Kittanun_ Apisitamorn_resume.png";
+
+const RESUME_IMG ="/assets/design/image/kittanun_apisitamorn_resume.png";
 
 function Contact() {
   const [animateKey, setAnimateKey] = useState(0);
@@ -27,7 +28,7 @@ function Contact() {
         }}
       >
         <img
-          src={resume}
+          src={RESUME_IMG}
           alt="resume"
           style={{
             maxWidth: "100%",
