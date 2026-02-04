@@ -1,4 +1,4 @@
-#tech stack ja
+#tech stack naja
 ////////////////////////////////////////////////////
 client 
 npm run dev
@@ -78,3 +78,28 @@ Home/bone_chop
 ////////////////////////////////////////////////////
 pin vitest for ci
 npm audit fix --omit=dev
+
+////////////////////////////////////////////////////
+git hook
+post-merge
+#!/bin/sh
+
+echo "📦 running npm install (client)..."
+if [ -d "client" ]; then
+  cd client || exit 1
+  npm install
+  cd ..
+else
+  echo "⚠️ client folder not found"
+fi
+
+echo "📦 running npm install (server)..."
+if [ -d "server" ]; then
+  cd server || exit 1
+  npm install
+  cd ..
+else
+  echo "⚠️ server folder not found"
+fi
+
+echo "✅ post-merge hook done"
