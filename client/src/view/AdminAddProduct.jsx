@@ -51,7 +51,11 @@ const SIZE_OPTIONS = ["100%", "200%", "300%", "400%", "800%", "1200%"];
 /* ================= sortable row ================= */
 function SortableRow({ id, disabled, children }) {
   const { setNodeRef, transform, transition, attributes, listeners } =
-    useSortable({ id, disabled });
+    useSortable({
+      id,
+      disabled,
+      animateLayoutChanges: () => false,
+    });
 
   return (
     <TableRow
@@ -82,17 +86,16 @@ function AdminAddProduct() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
 
-const openModal = (config) => {
-  setModalConfig({
-    ...config,
-    onClose: () => {
-      config.onClose?.();
-      setModalOpen(false);
-    },
-  });
-  setModalOpen(true);
-};
-
+  const openModal = (config) => {
+    setModalConfig({
+      ...config,
+      onClose: () => {
+        config.onClose?.();
+        setModalOpen(false);
+      },
+    });
+    setModalOpen(true);
+  };
 
   /* ================= product ================= */
   const [productName, setProductName] = useState("");
@@ -103,9 +106,7 @@ const openModal = (config) => {
 
   /* ================= rows ================= */
   const [tempCounter, setTempCounter] = useState(1);
-  const [rows, setRows] = useState([
-    { lineKey: "new1", lineNo: 1, size: "", price: "", amount: "", note: "" },
-  ]);
+  const [rows, setRows] = useState([]);
 
   /* ================= dnd ================= */
   const sensors = useSensors(
@@ -115,7 +116,7 @@ const openModal = (config) => {
     }),
   );
 
-  /* ================= reset when new ================= */
+  /* ================= reset new prod ================= */
   useEffect(() => {
     if (prd) return;
 
@@ -461,13 +462,17 @@ const openModal = (config) => {
 
           {/* product info */}
           <Box
-            display="flex"
-            flexDirection={{ xs: "column", md: "row" }}
-            gap={3}
-            mb={4}
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 3,
+              mb: 4,
+            }}
           >
-            {/* left: product info */}
-            <Box flex={1} display="flex" flexDirection="column" gap={2}>
+            {/* left */}
+            <Box
+              sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}
+            >
               <TextField
                 label="product name"
                 value={productName}
@@ -485,19 +490,19 @@ const openModal = (config) => {
               />
             </Box>
 
-            {/* right: image */}
+            {/* right */}
             <Box
               component="label"
               sx={{
                 width: { xs: "100%", md: 220 },
-                height: { xs: 220, md: 220 },
+                height: 220,
+                flexShrink: 0,
                 border: "2px dashed #ccc",
                 borderRadius: 2,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                alignSelf: { xs: "stretch", md: "flex-start" },
               }}
             >
               <input
@@ -535,17 +540,29 @@ const openModal = (config) => {
               items={rows.map((r) => r.lineKey)}
               strategy={verticalListSortingStrategy}
             >
-              <Box sx={{ width: "100%", overflowX: "auto" }}>
-                <Table size="small" sx={{ minWidth: 800 }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  overflowX: "auto",
+                  WebkitOverflowScrolling: "touch",
+                }}
+              >
+                <Table
+                  size="small"
+                  sx={{
+                    minWidth: 900,
+                    width: "100%",
+                  }}
+                >
                   <TableHead>
                     <TableRow>
-                      <TableCell />
-                      <TableCell>line</TableCell>
-                      <TableCell>size</TableCell>
-                      <TableCell>price</TableCell>
-                      <TableCell>amount</TableCell>
-                      <TableCell>note</TableCell>
-                      <TableCell />
+                      <TableCell sx={{ width: 48 }} />
+                      <TableCell sx={{ width: 60 }}>line</TableCell>
+                      <TableCell sx={{ minWidth: 140 }}>size</TableCell>
+                      <TableCell sx={{ minWidth: 120 }}>price</TableCell>
+                      <TableCell sx={{ minWidth: 120 }}>amount</TableCell>
+                      <TableCell sx={{ minWidth: 180 }}>note</TableCell>
+                      <TableCell sx={{ width: 48 }} />
                     </TableRow>
                   </TableHead>
 
@@ -569,9 +586,7 @@ const openModal = (config) => {
                                     size="small"
                                     {...attributes}
                                     {...listeners}
-                                    sx={{
-                                      touchAction: "none",
-                                    }}
+                                    sx={{ touchAction: "none" }}
                                   >
                                     <DragIndicatorIcon fontSize="small" />
                                   </IconButton>
@@ -583,6 +598,8 @@ const openModal = (config) => {
                               <TableCell>
                                 <Select
                                   value={row.size}
+                                  size="small"
+                                  fullWidth
                                   onChange={(e) =>
                                     setRows((prev) => {
                                       const copy = [...prev];
@@ -590,8 +607,6 @@ const openModal = (config) => {
                                       return copy;
                                     })
                                   }
-                                  size="small"
-                                  fullWidth
                                 >
                                   {SIZE_OPTIONS.map((s) => (
                                     <MenuItem key={s} value={s}>
@@ -606,6 +621,7 @@ const openModal = (config) => {
                                   size="small"
                                   type="number"
                                   value={row.price}
+                                  fullWidth
                                   onChange={(e) =>
                                     setRows((prev) => {
                                       const copy = [...prev];
@@ -613,7 +629,6 @@ const openModal = (config) => {
                                       return copy;
                                     })
                                   }
-                                  fullWidth
                                 />
                               </TableCell>
 
@@ -622,6 +637,7 @@ const openModal = (config) => {
                                   size="small"
                                   type="number"
                                   value={row.amount}
+                                  fullWidth
                                   onChange={(e) =>
                                     setRows((prev) => {
                                       const copy = [...prev];
@@ -629,7 +645,6 @@ const openModal = (config) => {
                                       return copy;
                                     })
                                   }
-                                  fullWidth
                                 />
                               </TableCell>
 
@@ -637,6 +652,7 @@ const openModal = (config) => {
                                 <TextField
                                   size="small"
                                   value={row.note}
+                                  fullWidth
                                   onChange={(e) =>
                                     setRows((prev) => {
                                       const copy = [...prev];
@@ -644,7 +660,6 @@ const openModal = (config) => {
                                       return copy;
                                     })
                                   }
-                                  fullWidth
                                 />
                               </TableCell>
 

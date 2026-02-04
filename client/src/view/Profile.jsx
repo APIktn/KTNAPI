@@ -176,10 +176,9 @@ function Profile() {
       >
         <Box
           sx={{
-            minHeight: "79vh",
+            minHeight: "78vh",
             p: 3,
             borderRadius: 2,
-            marginBottom: 2,
             background:
               theme === "dark" ? "rgba(30,30,30,0.6)" : "rgba(255,255,255,0.6)",
             backdropFilter: "blur(14px)",
@@ -188,12 +187,6 @@ function Profile() {
             boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
           }}
         >
-          <Typography variant="h6" mb={2}>
-            profile
-          </Typography>
-
-          <Divider sx={{ mb: 3 }} />
-
           <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {/* avatar */}
             <Box
