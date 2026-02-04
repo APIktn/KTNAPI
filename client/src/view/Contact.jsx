@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Grow } from "@mui/material";
 
-const RESUME_IMG ="/assets/design/image/kittanun_apisitamorn_resume.png";
+const RESUME_IMG ="/public/image/kittanun_apisitamorn_resume.png";
 
 function Contact() {
   const [animateKey, setAnimateKey] = useState(0);

@@ -3,10 +3,9 @@ import Backdrop from "@mui/material/Backdrop";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 export default function SavingBackdrop({
   open,
-  text = "saving...",
+  text = "loading...",
 }) {
   return (
     <Backdrop

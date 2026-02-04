@@ -40,15 +40,15 @@
 
 /* background image */
 .card-1 {
-  background-image: url("../assets/design/image/land_1.png");
+  background-image: url("../public/image/land_1.png");
 }
 
 .card-2 {
-  background-image: url("../assets/design/image/land_2.png");
+  background-image: url("../public/image/land_2.png");
 }
 
 .card-4 {
-  background-image: url("../assets/design/image/land_3.png");
+  background-image: url("../public/image/land_3.png");
 }
 
 /* hero */

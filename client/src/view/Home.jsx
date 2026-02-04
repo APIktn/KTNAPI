@@ -6,23 +6,23 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 /* ---------- asset paths (from public) ---------- */
-const LOGO = "/assets/design/image/mrbonelogo.png";
+const LOGO = "/public/image/mrbonelogo.png";
 
 const IMAGES = [
-  "/assets/design/image/mrbone_1.png",
-  "/assets/design/image/mrbone_2.png",
-  "/assets/design/image/mrbone_3.png",
-  "/assets/design/image/mrbone_4.png",
-  "/assets/design/image/mrbone_5.png",
-  "/assets/design/image/mrbone_6.png",
-  "/assets/design/image/mrbone_7.png",
-  "/assets/design/image/mrbone_8.png",
+  "/public/image/mrbone_1.png",
+  "/public/image/mrbone_2.png",
+  "/public/image/mrbone_3.png",
+  "/public/image/mrbone_4.png",
+  "/public/image/mrbone_5.png",
+  "/public/image/mrbone_6.png",
+  "/public/image/mrbone_7.png",
+  "/public/image/mrbone_8.png",
 ];
 
-const PACK_IMAGE = "/assets/design/image/mrbone_pack1.png";
+const PACK_IMAGE = "/public/image/mrbone_pack1.png";
 
-const VIDEO_1 = "/assets/design/video/mrbone_v1.mp4";
-const VIDEO_2 = "/assets/design/video/mrbone_v2.mp4";
+const VIDEO_1 = "/public/video/mrbone_v1.mp4";
+const VIDEO_2 = "/public/video/mrbone_v2.mp4";
 
 function Home() {
   const [animateText, setAnimateText] = useState(false);
