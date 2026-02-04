@@ -6,23 +6,23 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 /* ---------- asset paths (from public) ---------- */
-const LOGO = "/public/image/mrbonelogo.png";
+const LOGO = "/image/mrbonelogo.png";
 
 const IMAGES = [
-  "/public/image/mrbone_1.png",
-  "/public/image/mrbone_2.png",
-  "/public/image/mrbone_3.png",
-  "/public/image/mrbone_4.png",
-  "/public/image/mrbone_5.png",
-  "/public/image/mrbone_6.png",
-  "/public/image/mrbone_7.png",
-  "/public/image/mrbone_8.png",
+  "/image/MRBone_1.png",
+  "/image/MRBone_2.png",
+  "/image/MRBone_3.png",
+  "/image/MRBone_4.png",
+  "/image/MRBone_5.png",
+  "/image/MRBone_6.png",
+  "/image/MRBone_7.png",
+  "/image/MRBone_8.png",
 ];
 
-const PACK_IMAGE = "/public/image/mrbone_pack1.png";
+const PACK_IMAGE = "/image/MRBone_pack1.png";
 
-const VIDEO_1 = "/public/video/mrbone_v1.mp4";
-const VIDEO_2 = "/public/video/mrbone_v2.mp4";
+const VIDEO_1 = "/video/MRBone_V1.mp4";
+const VIDEO_2 = "/video/MRBone_V2.mp4";
 
 function Home() {
   const [animateText, setAnimateText] = useState(false);
@@ -149,10 +149,44 @@ function Home() {
                         <li>collectible pieces with unique stories</li>
                         <li>perfect for display & collection</li>
                       </ul>
+
+                      <div>
+                        <button className="btn-shop btn-glass">
+                          shop now!
+                        </button>
+                      </div>
                     </div>
 
                     <div className="col-lg-4 text-center">
-                      <img src={LOGO} alt="bone chop logo" className="hero-logo" />
+                      <img
+                        src={LOGO}
+                        alt="bone chop logo"
+                        className="hero-logo"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* card 1.5 */}
+            <div className="col-lg-12">
+              <div className="card feature-card card-15 scroll-fade">
+                <div className="card-body text-white">
+                  <div className="row text-center">
+                    <div className="col-md-4 stat-item">
+                      <div className="stat-number gold">500+</div>
+                      <div className="stat-label">original collections</div>
+                    </div>
+
+                    <div className="col-md-4 stat-item">
+                      <div className="stat-number gold">100,000+</div>
+                      <div className="stat-label">sold items worldwide</div>
+                    </div>
+
+                    <div className="col-md-4 stat-item">
+                      <div className="stat-number gold">500,000+</div>
+                      <div className="stat-label">collector community</div>
                     </div>
                   </div>
                 </div>
@@ -160,32 +194,34 @@ function Home() {
             </div>
 
             {/* card 2 */}
-            <div className="col-lg-6">
-              <h2 className="fw-bold text-white mb-3 text-center observe-title">
-                select your style!
-              </h2>
+            <div className="col-lg-6 d-flex align-items-center">
+              <div className="w-100">
+                <h2 className="fw-bold text-white mb-3 text-center observe-title card-2-title">
+                  select your style!
+                </h2>
 
-              <div className="card feature-card card-2 scroll-fade">
-                <div className="card-body text-white text-center">
-                  <div className="d-flex align-items-center justify-content-center gap-2">
-                    <IconButton onClick={prev}>
-                      <ChevronLeftIcon sx={{ color: "#fff" }} />
-                    </IconButton>
+                <div className="card feature-card card-2 scroll-fade">
+                  <div className="card-body text-white text-center">
+                    <div className="d-flex align-items-center justify-content-center gap-2">
+                      <IconButton aria-label="prev" onClick={prev}>
+                        <ChevronLeftIcon sx={{ color: "#fff" }} />
+                      </IconButton>
 
-                    <img src={leftImg} className="mrbone-img side" />
-                    <img src={centerImg} className="mrbone-img center" />
-                    <img src={rightImg} className="mrbone-img side" />
+                      <img src={leftImg} className="mrbone-img side" />
+                      <img src={centerImg} className="mrbone-img center" />
+                      <img src={rightImg} className="mrbone-img side" />
 
-                    <IconButton onClick={next}>
-                      <ChevronRightIcon sx={{ color: "#fff" }} />
-                    </IconButton>
+                      <IconButton aria-label="next" onClick={next}>
+                        <ChevronRightIcon sx={{ color: "#fff" }} />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <h2 className="fw-bold text-white mt-3 text-center card-2-title2">
-                find your favorite
-              </h2>
+                <h2 className="fw-bold text-white mt-3 text-center card-2-title2">
+                  find your favorite
+                </h2>
+              </div>
             </div>
 
             {/* card 3 */}

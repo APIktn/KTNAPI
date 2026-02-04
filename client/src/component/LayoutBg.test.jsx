@@ -36,7 +36,7 @@ describe("LayoutBg", () => {
     render(<LayoutBg />);
 
     const source = document.querySelector("source");
-    expect(source.src).toContain("/public/video/bg_light_video.mp4");
+    expect(source.src).toContain("/video/bg_light_video.mp4");
   });
 
   it("uses dark background video when theme is dark", async () => {
@@ -49,6 +49,6 @@ describe("LayoutBg", () => {
     render(<LayoutBg />);
 
     const source = document.querySelector("source");
-    expect(source.src).toContain("/public/video/bg_dark_video.mp4");
+    expect(source.src).toContain("/video/bg_dark_video.mp4");
   });
 });

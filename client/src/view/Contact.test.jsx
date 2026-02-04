@@ -24,7 +24,7 @@ describe("contact page", () => {
     const img = screen.getByAltText("resume");
     expect(img).toHaveAttribute(
       "src",
-      expect.stringContaining("kittanun_apisitamorn_resume.png")
+      expect.stringContaining("Kittanun_Apisitamorn_resume.png")
     );
   });
 });

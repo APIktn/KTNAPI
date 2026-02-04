@@ -12,6 +12,8 @@ import {
   MenuItem,
   IconButton,
   Button,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -53,13 +55,13 @@ function SortableRow({ id, disabled, children }) {
   const { setNodeRef, transform, transition, attributes, listeners } =
     useSortable({
       id,
-      disabled,
       animateLayoutChanges: () => false,
     });
 
   return (
     <TableRow
       ref={setNodeRef}
+      sx={{ minHeight: 72 }}
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
@@ -202,6 +204,7 @@ function AdminAddProduct() {
         note: "",
       },
     ]);
+    setRowErrors((prev) => [...prev, {}]);
     setTempCounter(next);
   };
 
@@ -214,6 +217,7 @@ function AdminAddProduct() {
           .filter((_, i) => i !== index)
           .map((r, i) => ({ ...r, lineNo: i + 1 })),
       );
+      setRowErrors((prev) => prev.filter((_, i) => i !== index));
       return;
     }
 
@@ -297,8 +301,47 @@ function AdminAddProduct() {
   /* ================= loading ================= */
   const [saving, setSaving] = useState(false);
 
+  /* ================= validate ================= */
+  const [rowErrors, setRowErrors] = useState([]);
+  const [productError, setProductError] = useState(false);
+
+  const validateProd = () => {
+    let valid = true;
+
+    // product name
+    if (!productName.trim()) {
+      setProductError(true);
+      valid = false;
+    }
+
+    // ไม่มีแถว → modal
+    if (rows.length === 0) {
+      openModal({
+        type: "warning",
+        title: "no item",
+        message: "please add at least one item",
+      });
+      return false;
+    }
+
+    const errors = rows.map((r) => ({
+      size: !r.size,
+      price: !r.price,
+      amount: !r.amount,
+      note: false,
+    }));
+
+    setRowErrors(errors);
+
+    const hasRowError = errors.some((e) => Object.values(e).some(Boolean));
+
+    return valid && !hasRowError;
+  };
+
   /* ================= SAVE ================= */
   const handleSave = async () => {
+    if (!validateProd()) return;
+
     const formData = new FormData();
     formData.append("status", isEdit ? "updateprod" : "createprod");
     formData.append("productCode", prd || "");
@@ -325,8 +368,9 @@ function AdminAddProduct() {
         type: "success",
         title: "save success",
         message: "product saved successfully",
-        onClose: () => {
+        onClose: async () => {
           setImage(null);
+          await fetchProduct(res.data.productCode);
           navigate(`/AdminAddProduct?prd=${res.data.productCode}`);
         },
       });
@@ -476,8 +520,15 @@ function AdminAddProduct() {
               <TextField
                 label="product name"
                 value={productName}
-                onChange={(e) => setProductName(e.target.value)}
                 fullWidth
+                error={productError}
+                helperText={productError ? "product name is required" : ""}
+                onChange={(e) => {
+                  setProductName(e.target.value);
+                  if (productError && e.target.value.trim()) {
+                    setProductError(false);
+                  }
+                }}
               />
 
               <TextField
@@ -556,13 +607,16 @@ function AdminAddProduct() {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ width: 48 }} />
-                      <TableCell sx={{ width: 60 }}>line</TableCell>
-                      <TableCell sx={{ minWidth: 140 }}>size</TableCell>
-                      <TableCell sx={{ minWidth: 120 }}>price</TableCell>
-                      <TableCell sx={{ minWidth: 120 }}>amount</TableCell>
-                      <TableCell sx={{ minWidth: 180 }}>note</TableCell>
-                      <TableCell sx={{ width: 48 }} />
+                      <TableCell
+                        colSpan={7}
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          textAlign: "left",
+                        }}
+                      >
+                        product stock
+                      </TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -578,7 +632,12 @@ function AdminAddProduct() {
                         >
                           {({ attributes, listeners }) => (
                             <>
-                              <TableCell>
+                              <TableCell
+                                sx={{
+                                  verticalAlign: "middle",
+                                  textAlign: "center",
+                                }}
+                              >
                                 {isNew ? (
                                   <BlockIcon fontSize="small" />
                                 ) : (
@@ -593,77 +652,141 @@ function AdminAddProduct() {
                                 )}
                               </TableCell>
 
-                              <TableCell>{row.lineNo}</TableCell>
+                              <TableCell
+                                sx={{
+                                  verticalAlign: "middle",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {row.lineNo}
+                              </TableCell>
 
-                              <TableCell>
-                                <Select
-                                  value={row.size}
+                              <TableCell
+                                sx={{
+                                  verticalAlign: "middle",
+                                  width: 140,
+                                }}
+                              >
+                                <FormControl
                                   size="small"
                                   fullWidth
-                                  onChange={(e) =>
-                                    setRows((prev) => {
-                                      const copy = [...prev];
-                                      copy[index].size = e.target.value;
-                                      return copy;
-                                    })
-                                  }
+                                  error={rowErrors[index]?.size}
                                 >
-                                  {SIZE_OPTIONS.map((s) => (
-                                    <MenuItem key={s} value={s}>
-                                      {s}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
+                                  <InputLabel>size</InputLabel>
+
+                                  <Select
+                                    value={row.size}
+                                    label="size"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+
+                                      setRows((prev) =>
+                                        prev.map((r, i) =>
+                                          i === index
+                                            ? { ...r, size: value }
+                                            : r,
+                                        ),
+                                      );
+
+                                      if (rowErrors[index]?.size) {
+                                        setRowErrors((prev) =>
+                                          prev.map((err, i) =>
+                                            i === index
+                                              ? { ...err, size: false }
+                                              : err,
+                                          ),
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    {SIZE_OPTIONS.map((s) => (
+                                      <MenuItem key={s} value={s}>
+                                        {s}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
                               </TableCell>
 
-                              <TableCell>
+                              <TableCell sx={{ verticalAlign: "middle" }}>
                                 <TextField
+                                  label="price"
                                   size="small"
                                   type="number"
+                                  fullWidth
                                   value={row.price}
-                                  fullWidth
-                                  onChange={(e) =>
-                                    setRows((prev) => {
-                                      const copy = [...prev];
-                                      copy[index].price = e.target.value;
-                                      return copy;
-                                    })
-                                  }
+                                  error={rowErrors[index]?.price}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+
+                                    setRows((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index
+                                          ? { ...r, price: value }
+                                          : r,
+                                      ),
+                                    );
+
+                                    if (rowErrors[index]?.price) {
+                                      setRowErrors((prev) =>
+                                        prev.map((err, i) =>
+                                          i === index
+                                            ? { ...err, price: false }
+                                            : err,
+                                        ),
+                                      );
+                                    }
+                                  }}
                                 />
                               </TableCell>
 
-                              <TableCell>
+                              <TableCell sx={{ verticalAlign: "middle" }}>
                                 <TextField
+                                  label="amount"
                                   size="small"
                                   type="number"
+                                  fullWidth
                                   value={row.amount}
-                                  fullWidth
-                                  onChange={(e) =>
-                                    setRows((prev) => {
-                                      const copy = [...prev];
-                                      copy[index].amount = e.target.value;
-                                      return copy;
-                                    })
-                                  }
+                                  error={rowErrors[index]?.amount}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+
+                                    setRows((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index
+                                          ? { ...r, amount: value }
+                                          : r,
+                                      ),
+                                    );
+
+                                    if (rowErrors[index]?.amount) {
+                                      setRowErrors((prev) =>
+                                        prev.map((err, i) =>
+                                          i === index
+                                            ? { ...err, amount: false }
+                                            : err,
+                                        ),
+                                      );
+                                    }
+                                  }}
                                 />
                               </TableCell>
 
-                              <TableCell>
+                              <TableCell sx={{ verticalAlign: "middle" }}>
                                 <TextField
+                                  label="note"
                                   size="small"
-                                  value={row.note}
+                                  type="text"
                                   fullWidth
-                                  onChange={(e) =>
-                                    setRows((prev) => {
-                                      const copy = [...prev];
-                                      copy[index].note = e.target.value;
-                                      return copy;
-                                    })
-                                  }
                                 />
                               </TableCell>
 
-                              <TableCell>
+                              <TableCell
+                                sx={{
+                                  verticalAlign: "middle",
+                                  textAlign: "center",
+                                }}
+                              >
                                 <IconButton
                                   size="small"
                                   color="error"

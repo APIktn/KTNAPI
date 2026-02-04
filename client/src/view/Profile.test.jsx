@@ -90,38 +90,38 @@ describe("profile page", () => {
     expect(screen.getByDisplayValue("bangkok")).toBeInTheDocument();
     expect(screen.getByDisplayValue("0123456789")).toBeInTheDocument();
   });
+it("shows validation errors when saving empty names", async () => {
+  localStorage.setItem("token", "fake-token");
 
-  it("shows validation errors when saving empty names", async () => {
-    localStorage.setItem("token", "fake-token");
-
-    axios.post.mockResolvedValueOnce({
-      data: {
-        user: {
-          firstName: "",
-          lastName: "",
-          userName: "",
-          address: "",
-          tel: "",
-        },
+  axios.post.mockResolvedValueOnce({
+    data: {
+      user: {
+        firstName: "",
+        lastName: "",
+        userName: "",
+        address: "",
+        tel: "",
       },
-    });
-
-    render(<Profile />);
-
-    await screen.findByText("profile");
-
-    fireEvent.click(
-      screen.getByRole("button", { name: /save/i })
-    );
-
-    expect(
-      screen.getByText("first name is required")
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText("last name is required")
-    ).toBeInTheDocument();
+    },
   });
+
+  render(<Profile />);
+
+  // รอให้ form โหลดจริง
+  await screen.findByLabelText("first name");
+
+  fireEvent.click(
+    screen.getByRole("button", { name: /save/i })
+  );
+
+  expect(
+    screen.getByText("first name is required")
+  ).toBeInTheDocument();
+
+  expect(
+    screen.getByText("last name is required")
+  ).toBeInTheDocument();
+});
 
   it("saves profile and updates user after closing modal", async () => {
     localStorage.setItem("token", "fake-token");
