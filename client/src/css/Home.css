@@ -40,15 +40,19 @@
 
 /* background image */
 .card-1 {
-  background-image: url("../assets/design/image/land_1.png");
+  background-image: url("/image/land_1.png");
 }
 
 .card-2 {
-  background-image: url("../assets/design/image/land_2.png");
+  background-image: url("/image/land_2.png");
 }
 
 .card-4 {
-  background-image: url("../assets/design/image/land_3.png");
+  background-image: url("/image/land_3.png");
+}
+
+.card-15 {
+  background-image: url("/image/land_1_5.png");
 }
 
 /* hero */
@@ -165,6 +169,116 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* card 1.5 */
+
+/* number */
+.stat-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* gold gradient text */
+.gold {
+  background: linear-gradient(180deg, #ffd27d, #c89b3c);
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* label (initial state) */
+.stat-label {
+  margin-top: 6px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* stat item initial */
+.stat-item {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* animate number when scroll visible */
+.scroll-fade.show .stat-item {
+  animation: statIn 0.6s ease forwards;
+}
+
+/* delay numbers left → right */
+.scroll-fade.show .stat-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.scroll-fade.show .stat-item:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.scroll-fade.show .stat-item:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* animate label after number */
+.scroll-fade.show .stat-label {
+  animation: labelZoomIn 0.6s ease forwards;
+}
+
+/* label delay sync with number */
+.scroll-fade.show .stat-item:nth-child(1) .stat-label {
+  animation-delay: 0.25s;
+}
+
+.scroll-fade.show .stat-item:nth-child(2) .stat-label {
+  animation-delay: 0.4s;
+}
+
+.scroll-fade.show .stat-item:nth-child(3) .stat-label {
+  animation-delay: 0.55s;
+}
+
+/* keyframes */
+@keyframes statIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes labelZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .stat-number {
+    font-size: 2.2rem;
+  }
+
+  .card-15 {
+    height: auto;
+  }
+
+  .stat-item {
+    margin-bottom: 1.2rem;
   }
 }
 

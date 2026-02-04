@@ -74,7 +74,7 @@ export default function Header() {
       <div className="flex-grow-1">
         {/* desktop */}
         {!isMobile && (
-          <div className="row p-3 desktop-layout d-flex">
+          <div className="row px-3 py-2 desktop-layout d-flex">
             <div
               className={`desktop-sidebar ${isSidebarOpen ? "open" : "closed"}`}
             >

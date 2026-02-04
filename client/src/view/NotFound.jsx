@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const BG_VIDEO = "/assets/design/video/notfound.mp4";
+const BG_VIDEO = "/public/video/notfound.mp4";
 
 function NotFound() {
   return (

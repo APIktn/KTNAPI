@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useTheme } from "../context/Theme";
 
-const DARK_VIDEO = "/assets/design/video/bg_dark_video.mp4";
-const LIGHT_VIDEO = "/assets/design/video/bg_light_video.mp4";
+const DARK_VIDEO = "/video/bg_dark_video.mp4";
+const LIGHT_VIDEO = "/video/bg_light_video.mp4";
 
 export default function LayoutBg() {
   const { theme } = useTheme();

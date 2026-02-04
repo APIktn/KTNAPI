@@ -37,8 +37,8 @@ const Drawer = styled(MuiDrawer, {
 
     return {
       "& .MuiDrawer-paper": {
-        top: isNavbarSticky ? "80px" : "100px",
-        bottom: isFooterVisible ? "80px" : "1rem",
+        top: isNavbarSticky ? "80px" : "93px",
+        bottom: isFooterVisible ? "78px" : "1rem",
         left: "1.5rem",
         height: "auto",
 
