@@ -399,10 +399,9 @@ const openModal = (config) => {
       >
         <Box
           sx={{
-            minHeight: "79vh",
-            p: 3,
+            minHeight: "78vh",
+            p: 2,
             borderRadius: 2,
-            marginBottom: 2,
             background:
               theme === "dark" ? "rgba(30,30,30,0.6)" : "rgba(255,255,255,0.6)",
 

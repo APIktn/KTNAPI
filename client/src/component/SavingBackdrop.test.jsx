@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import SavingBackdrop from "./SavingBackdrop";
 
-/* mock MUI Backdrop ให้ test ง่าย */
+/* mock MUI */
 vi.mock("@mui/material/Backdrop", () => ({
   default: ({ open, children }) =>
     open ? <div data-testid="backdrop">{children}</div> : null,

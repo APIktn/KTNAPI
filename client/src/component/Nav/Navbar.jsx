@@ -70,7 +70,7 @@ function Navbar({ onToggleSidebar, onStickyChange }) {
     : user?.imageProfile;
 
   return (
-    <div className={isSticky ? "navbar-placeholder" : "pt-3 mx-4"}>
+    <div className={isSticky ? "navbar-placeholder" : "pt-2 mx-4"}>
       <nav
         className={`navbar bg-body-tertiary ${
           isSticky ? "navbar-fixed" : "border rounded-4"

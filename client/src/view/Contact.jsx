@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Grow } from "@mui/material";
 
-const RESUME_IMG ="/public/image/kittanun_apisitamorn_resume.png";
+const RESUME_IMG ="/public/image/Kittanun_Apisitamorn_resume.png";
 
 function Contact() {
   const [animateKey, setAnimateKey] = useState(0);
@@ -16,7 +16,7 @@ function Contact() {
         sx={{
           width: "100%",
           height: "78vh",
-          p: 3,
+          p: 2,
           textAlign: "center",
           background: "rgba(255,255,255,0.15)",
           backdropFilter: "blur(12px)",
@@ -24,7 +24,6 @@ function Contact() {
           borderRadius: 2,
           border: "1px solid rgba(255,255,255,0.25)",
           boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
-          marginBottom: 2,
         }}
       >
         <img

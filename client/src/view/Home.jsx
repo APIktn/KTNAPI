@@ -110,7 +110,7 @@ function Home() {
 
   return (
     <PageWrapper>
-      <div className="home">
+      <div className="home mb-2">
         <div className="home-container">
           <div className="row g-3">
             {/* card 1 */}

@@ -112,7 +112,7 @@ function AdminInventory() {
     <>
       <Box
         sx={{
-          minHeight: "80vh",
+          minHeight: "78vh",
           display: "flex",
           flexDirection: "column",
         }}

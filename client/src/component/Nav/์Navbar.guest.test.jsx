@@ -24,7 +24,7 @@ vi.mock("../Modal/AppModal", () => ({
   default: () => null,
 }));
 
-/* ลด noise จาก MUI */
+/* MUI */
 vi.mock("@mui/material/BottomNavigation", () => ({
   default: ({ children }) => <div>{children}</div>,
 }));

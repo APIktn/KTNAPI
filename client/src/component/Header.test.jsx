@@ -31,7 +31,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-/* ================= mock IntersectionObserver (สำคัญ) ================= */
+/* ================= mock IntersectionObserver ================= */
 beforeEach(() => {
   vi.stubGlobal(
     "IntersectionObserver",
