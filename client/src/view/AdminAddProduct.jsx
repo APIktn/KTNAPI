@@ -14,6 +14,8 @@ import {
   Button,
   FormControl,
   InputLabel,
+  Slide, 
+  useMediaQuery
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -38,7 +40,6 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Slide, useMediaQuery } from "@mui/material";
 
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -55,6 +56,7 @@ function SortableRow({ id, disabled, children }) {
   const { setNodeRef, transform, transition, attributes, listeners } =
     useSortable({
       id,
+      disabled,
       animateLayoutChanges: () => false,
     });
 
@@ -79,6 +81,7 @@ function AdminAddProduct() {
   const prd = searchParams.get("prd");
   const isEdit = Boolean(prd);
   const [animateKey, setAnimateKey] = useState(0);
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   useEffect(() => {
     setAnimateKey((k) => k + 1);
@@ -182,13 +185,6 @@ function AdminAddProduct() {
     if (!prd) return;
     fetchProduct(prd);
   }, [prd]);
-
-  if (notFound)
-    return (
-      <Box sx={{ p: 2, borderRadius: 2 }}>
-        <NotFound />
-      </Box>
-    );
 
   /* ================= row handlers ================= */
   const handleAddRow = () => {
@@ -427,7 +423,6 @@ function AdminAddProduct() {
     });
   };
 
-  const isMobile = useMediaQuery("(max-width:768px)");
   /* ================= UI ================= */
   /* ================= UI ================= */
   /* ================= UI ================= */
@@ -435,6 +430,11 @@ function AdminAddProduct() {
   /* ================= UI ================= */
   return (
     <>
+      {notFound ? (
+        <Box sx={{ p: 2 }}>
+          <NotFound />
+        </Box>
+      ) : (
       <Slide
         in
         direction="left"
@@ -814,7 +814,7 @@ function AdminAddProduct() {
             </IconButton>
           </Box>
         </Box>
-      </Slide>
+      </Slide>)}
 
       {/* modal */}
       <AppModal open={modalOpen} {...modalConfig} />

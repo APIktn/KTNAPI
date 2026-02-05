@@ -8,7 +8,7 @@ import { validateProduct } from "../middleware/prodValidator.mjs";
 const productRoute = express.Router();
 
 //////////////////////////////////////////////////
-// upload config (memory)
+// upload config
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5mb
@@ -263,15 +263,24 @@ productRoute.post(
 
     } catch (err) {
       await conn.rollback();
+      if (imagePublicId) {
+        await cloudinary.uploader.destroy(imagePublicId);
+      }
       console.error("save product error:", err);
 
+      if (err.code === "ER_DUP_ENTRY") {
+        return res.status(409).json({
+          error: "product code already exists. please try again."
+        });
+      }
+
       res.status(500).json({ error: "server error" });
+
     } finally {
       conn.release();
     }
   }
 );
-
 
 //////////////////////////////////////////////////
 // line update / delete
