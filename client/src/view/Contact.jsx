@@ -15,7 +15,7 @@ function Contact() {
       <Box
         sx={{
           width: "100%",
-          height: "78vh",
+          height: "80vh",
           p: 2,
           textAlign: "center",
           background: "rgba(255,255,255,0.15)",

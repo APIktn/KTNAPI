@@ -14,7 +14,6 @@ import {
   Button,
   FormControl,
   InputLabel,
-  Slide,
   useMediaQuery,
 } from "@mui/material";
 
@@ -54,20 +53,20 @@ const SIZE_OPTIONS = ["100%", "200%", "300%", "400%", "800%", "1200%"];
 /* ================= sortable row ================= */
 function SortableRow({ id, disabled, children }) {
   const { setNodeRef, transform, transition, attributes, listeners } =
-    useSortable({
-      id,
-      disabled,
-      animateLayoutChanges: () => false,
-    });
+    useSortable({ id, disabled });
 
   return (
     <TableRow
       ref={setNodeRef}
       sx={{ minHeight: 72 }}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-      }}
+      style={
+        disabled
+          ? undefined
+          : {
+              transform: CSS.Transform.toString(transform),
+              transition,
+            }
+      }
     >
       {children({ attributes, listeners })}
     </TableRow>
@@ -435,407 +434,402 @@ function AdminAddProduct() {
           <NotFound />
         </Box>
       ) : (
-        <Slide
-          in
-          direction="left"
-          timeout={450}
-          key={animateKey}
-          appear={!isMobile}
-        >
-          <Box
-            sx={{
-              minHeight: "78vh",
-              p: 2,
-              borderRadius: 2,
-              background:
-                theme === "dark"
-                  ? "rgba(30,30,30,0.6)"
-                  : "rgba(255,255,255,0.6)",
-
-              backdropFilter: "blur(14px)",
-              WebkitBackdropFilter: "blur(14px)",
-
-              border: "1px solid rgba(255,255,255,0.25)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
-            }}
-          >
-            {/* header */}
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              flexWrap="wrap"
-              gap={1}
-              mb={2}
-            >
-              <Typography variant="h6">
-                {isEdit ? prd : "new product"}
-              </Typography>
-
-              <Box
-                display="flex"
-                gap={1}
-                flexWrap="wrap"
-                justifyContent="flex-end"
-              >
-                <Button
-                  variant="outlined"
-                  startIcon={<AddCircleOutlineIcon />}
-                  onClick={() => navigate("/AdminAddProduct")}
-                >
-                  new
-                </Button>
-
-                {isEdit && (
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={handleDeleteProduct}
-                  >
-                    delete
-                  </Button>
-                )}
-
-                <Button
-                  variant="contained"
-                  color="success"
-                  startIcon={<SaveIcon />}
-                  onClick={handleSave}
-                  disabled={saving}
-                >
-                  save
-                </Button>
-              </Box>
-            </Box>
-
-            {/* product info */}
             <Box
               sx={{
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                gap: 3,
-                mb: 4,
+                minHeight: "81vh",
+                p: 2,
+                borderRadius: 2,
+                background:
+                  theme === "dark"
+                    ? "rgba(30,30,30,0.6)"
+                    : "rgba(255,255,255,0.6)",
+
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
+
+                border: "1px solid rgba(255,255,255,0.25)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+                mb: { xs: 3, md: 0 },
+                width: "100%",
+                maxWidth: "100%",
               }}
             >
-              {/* left */}
+              {/* header */}
               <Box
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                }}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                flexWrap="wrap"
+                gap={1}
+                mb={2}
               >
-                <TextField
-                  label="product name"
-                  value={productName}
-                  fullWidth
-                  error={productError}
-                  helperText={productError ? "product name is required" : ""}
-                  onChange={(e) => {
-                    setProductName(e.target.value);
-                    if (productError && e.target.value.trim()) {
-                      setProductError(false);
-                    }
-                  }}
-                />
+                <Typography variant="h6">
+                  {isEdit ? prd : "new product"}
+                </Typography>
 
-                <TextField
-                  label="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  multiline
-                  rows={5}
-                  fullWidth
-                />
+                <Box
+                  display="flex"
+                  gap={1}
+                  flexWrap="wrap"
+                  justifyContent="flex-end"
+                >
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => navigate("/AdminAddProduct")}
+                  >
+                    new
+                  </Button>
+
+                  {isEdit && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={handleDeleteProduct}
+                    >
+                      delete
+                    </Button>
+                  )}
+
+                  <Button
+                    variant="contained"
+                    color="success"
+                    startIcon={<SaveIcon />}
+                    onClick={handleSave}
+                    disabled={saving}
+                  >
+                    save
+                  </Button>
+                </Box>
               </Box>
 
-              {/* right */}
+              {/* product info */}
               <Box
-                component="label"
                 sx={{
-                  width: { xs: "100%", md: 220 },
-                  height: 220,
-                  flexShrink: 0,
-                  border: "2px dashed #ccc",
-                  borderRadius: 2,
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
+                  flexDirection: { xs: "column", md: "row" },
+                  gap: 3,
+                  mb: 4,
                 }}
               >
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={(e) => setImage(e.target.files[0])}
-                />
-
-                {image || imagePreview ? (
-                  <img
-                    src={image ? URL.createObjectURL(image) : imagePreview}
-                    alt="preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <Typography variant="h4" sx={{ color: "#aaa" }}>
-                    +
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-
-            {/* table */}
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={rows.map((r) => r.lineKey)}
-                strategy={verticalListSortingStrategy}
-              >
+                {/* left */}
                 <Box
                   sx={{
-                    width: "100%",
-                    overflowX: "auto",
-                    WebkitOverflowScrolling: "touch",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
                   }}
                 >
-                  <Table
-                    size="small"
+                  <TextField
+                    label="product name"
+                    value={productName}
+                    fullWidth
+                    error={productError}
+                    helperText={productError ? "product name is required" : ""}
+                    onChange={(e) => {
+                      setProductName(e.target.value);
+                      if (productError && e.target.value.trim()) {
+                        setProductError(false);
+                      }
+                    }}
+                  />
+
+                  <TextField
+                    label="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    multiline
+                    rows={5}
+                    fullWidth
+                  />
+                </Box>
+
+                {/* right */}
+                <Box
+                  component="label"
+                  sx={{
+                    width: { xs: "100%", md: 220 },
+                    height: 220,
+                    flexShrink: 0,
+                    border: "2px dashed #ccc",
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+
+                  {image || imagePreview ? (
+                    <img
+                      src={image ? URL.createObjectURL(image) : imagePreview}
+                      alt="preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  ) : (
+                    <Typography variant="h4" sx={{ color: "#aaa" }}>
+                      +
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+
+              {/* table */}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={rows.map((r) => r.lineKey)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <Box
                     sx={{
-                      minWidth: 900,
                       width: "100%",
+                      overflowX: "auto",
+                      WebkitOverflowScrolling: "touch",
                     }}
                   >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          colSpan={7}
-                          sx={{
-                            fontWeight: "bold",
-                            fontSize: 16,
-                            textAlign: "left",
-                          }}
-                        >
-                          product stock
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {rows.map((row, index) => {
-                        const isNew = row.lineKey.startsWith("new");
-
-                        return (
-                          <SortableRow
-                            key={row.lineKey}
-                            id={row.lineKey}
-                            disabled={isNew}
+                    <Table
+                      size="small"
+                      sx={{
+                        minWidth: 900,
+                        width: "100%",
+                      }}
+                    >
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            colSpan={7}
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: 16,
+                              textAlign: "left",
+                            }}
                           >
-                            {({ attributes, listeners }) => (
-                              <>
-                                <TableCell
-                                  sx={{
-                                    verticalAlign: "middle",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {isNew ? (
-                                    <BlockIcon fontSize="small" />
-                                  ) : (
-                                    <IconButton
-                                      size="small"
-                                      {...attributes}
-                                      {...listeners}
-                                      sx={{ touchAction: "none" }}
-                                    >
-                                      <DragIndicatorIcon fontSize="small" />
-                                    </IconButton>
-                                  )}
-                                </TableCell>
+                            product stock
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
 
-                                <TableCell
-                                  sx={{
-                                    verticalAlign: "middle",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {row.lineNo}
-                                </TableCell>
+                      <TableBody>
+                        {rows.map((row, index) => {
+                          const isNew = row.lineKey.startsWith("new");
 
-                                <TableCell
-                                  sx={{
-                                    verticalAlign: "middle",
-                                    width: 140,
-                                  }}
-                                >
-                                  <FormControl
-                                    size="small"
-                                    fullWidth
-                                    error={rowErrors[index]?.size}
+                          return (
+                            <SortableRow
+                              key={row.lineKey}
+                              id={row.lineKey}
+                              disabled={isNew}
+                            >
+                              {({ attributes, listeners }) => (
+                                <>
+                                  <TableCell
+                                    sx={{
+                                      verticalAlign: "middle",
+                                      textAlign: "center",
+                                    }}
                                   >
-                                    <InputLabel>size</InputLabel>
+                                    {isNew ? (
+                                      <BlockIcon fontSize="small" />
+                                    ) : (
+                                      <IconButton
+                                        size="small"
+                                        {...attributes}
+                                        {...listeners}
+                                        sx={{ touchAction: "none" }}
+                                      >
+                                        <DragIndicatorIcon fontSize="small" />
+                                      </IconButton>
+                                    )}
+                                  </TableCell>
 
-                                    <Select
-                                      value={row.size}
-                                      label="size"
+                                  <TableCell
+                                    sx={{
+                                      verticalAlign: "middle",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {row.lineNo}
+                                  </TableCell>
+
+                                  <TableCell
+                                    sx={{
+                                      verticalAlign: "middle",
+                                      width: 140,
+                                    }}
+                                  >
+                                    <FormControl
+                                      size="small"
+                                      fullWidth
+                                      error={rowErrors[index]?.size}
+                                    >
+                                      <InputLabel>size</InputLabel>
+
+                                      <Select
+                                        value={row.size}
+                                        label="size"
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+
+                                          setRows((prev) =>
+                                            prev.map((r, i) =>
+                                              i === index
+                                                ? { ...r, size: value }
+                                                : r,
+                                            ),
+                                          );
+
+                                          if (rowErrors[index]?.size) {
+                                            setRowErrors((prev) =>
+                                              prev.map((err, i) =>
+                                                i === index
+                                                  ? { ...err, size: false }
+                                                  : err,
+                                              ),
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        {SIZE_OPTIONS.map((s) => (
+                                          <MenuItem key={s} value={s}>
+                                            {s}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  </TableCell>
+
+                                  <TableCell sx={{ verticalAlign: "middle" }}>
+                                    <TextField
+                                      label="price"
+                                      size="small"
+                                      type="number"
+                                      fullWidth
+                                      value={row.price}
+                                      error={rowErrors[index]?.price}
                                       onChange={(e) => {
                                         const value = e.target.value;
 
                                         setRows((prev) =>
                                           prev.map((r, i) =>
                                             i === index
-                                              ? { ...r, size: value }
+                                              ? { ...r, price: value }
                                               : r,
                                           ),
                                         );
 
-                                        if (rowErrors[index]?.size) {
+                                        if (rowErrors[index]?.price) {
                                           setRowErrors((prev) =>
                                             prev.map((err, i) =>
                                               i === index
-                                                ? { ...err, size: false }
+                                                ? { ...err, price: false }
                                                 : err,
                                             ),
                                           );
                                         }
                                       }}
-                                    >
-                                      {SIZE_OPTIONS.map((s) => (
-                                        <MenuItem key={s} value={s}>
-                                          {s}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                </TableCell>
+                                    />
+                                  </TableCell>
 
-                                <TableCell sx={{ verticalAlign: "middle" }}>
-                                  <TextField
-                                    label="price"
-                                    size="small"
-                                    type="number"
-                                    fullWidth
-                                    value={row.price}
-                                    error={rowErrors[index]?.price}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
+                                  <TableCell sx={{ verticalAlign: "middle" }}>
+                                    <TextField
+                                      label="amount"
+                                      size="small"
+                                      type="number"
+                                      fullWidth
+                                      value={row.amount}
+                                      error={rowErrors[index]?.amount}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
 
-                                      setRows((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? { ...r, price: value }
-                                            : r,
-                                        ),
-                                      );
-
-                                      if (rowErrors[index]?.price) {
-                                        setRowErrors((prev) =>
-                                          prev.map((err, i) =>
+                                        setRows((prev) =>
+                                          prev.map((r, i) =>
                                             i === index
-                                              ? { ...err, price: false }
-                                              : err,
+                                              ? { ...r, amount: value }
+                                              : r,
                                           ),
                                         );
-                                      }
-                                    }}
-                                  />
-                                </TableCell>
 
-                                <TableCell sx={{ verticalAlign: "middle" }}>
-                                  <TextField
-                                    label="amount"
-                                    size="small"
-                                    type="number"
-                                    fullWidth
-                                    value={row.amount}
-                                    error={rowErrors[index]?.amount}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
+                                        if (rowErrors[index]?.amount) {
+                                          setRowErrors((prev) =>
+                                            prev.map((err, i) =>
+                                              i === index
+                                                ? { ...err, amount: false }
+                                                : err,
+                                            ),
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </TableCell>
 
-                                      setRows((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? { ...r, amount: value }
-                                            : r,
-                                        ),
-                                      );
+                                  <TableCell sx={{ verticalAlign: "middle" }}>
+                                    <TextField
+                                      label="note"
+                                      size="small"
+                                      type="text"
+                                      fullWidth
+                                      value={row.note}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
 
-                                      if (rowErrors[index]?.amount) {
-                                        setRowErrors((prev) =>
-                                          prev.map((err, i) =>
+                                        setRows((prev) =>
+                                          prev.map((r, i) =>
                                             i === index
-                                              ? { ...err, amount: false }
-                                              : err,
+                                              ? { ...r, note: value }
+                                              : r,
                                           ),
                                         );
-                                      }
+                                      }}
+                                    />
+                                  </TableCell>
+
+                                  <TableCell
+                                    sx={{
+                                      verticalAlign: "middle",
+                                      textAlign: "center",
                                     }}
-                                  />
-                                </TableCell>
-
-                                <TableCell sx={{ verticalAlign: "middle" }}>
-                                  <TextField
-                                    label="note"
-                                    size="small"
-                                    type="text"
-                                    fullWidth
-                                    value={row.note}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-
-                                      setRows((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? { ...r, note: value }
-                                            : r,
-                                        ),
-                                      );
-                                    }}
-                                  />
-                                </TableCell>
-
-                                <TableCell
-                                  sx={{
-                                    verticalAlign: "middle",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  <IconButton
-                                    size="small"
-                                    color="error"
-                                    onClick={() =>
-                                      handleAskDeleteLine(index, row)
-                                    }
                                   >
-                                    <DeleteIcon fontSize="small" />
-                                  </IconButton>
-                                </TableCell>
-                              </>
-                            )}
-                          </SortableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </SortableContext>
-            </DndContext>
+                                    <IconButton
+                                      size="small"
+                                      color="error"
+                                      onClick={() =>
+                                        handleAskDeleteLine(index, row)
+                                      }
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </TableCell>
+                                </>
+                              )}
+                            </SortableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                </SortableContext>
+              </DndContext>
 
-            <Box mt={2}>
-              <IconButton onClick={handleAddRow}>
-                <AddIcon />
-              </IconButton>
+              <Box mt={2}>
+                <IconButton onClick={handleAddRow}>
+                  <AddIcon />
+                </IconButton>
+              </Box>
             </Box>
-          </Box>
-        </Slide>
       )}
 
       {/* modal */}
