@@ -35,13 +35,14 @@ CREATE TABLE `tbl_trs_product_header` (
   `CreateDateTime` datetime NOT NULL,
   `UpdateBy` int(20) NOT NULL,
   `UpdateDateTime` datetime NOT NULL,
-  PRIMARY KEY (`Id`)
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `uk_product_code` (`ProductCode`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ktnapi.tbl_trs_product_image definition
 
 CREATE TABLE `tbl_trs_product_image` (
-  `Id` int(150) NOT NULL,
+  `Id` int(150) NOT NULL AUTO_INCREMENT,
   `IdRef` int(150) NOT NULL,
   `ImageType` varchar(50) NOT NULL,
   `ProductImage` text NOT NULL,
@@ -53,7 +54,7 @@ CREATE TABLE `tbl_trs_product_image` (
   PRIMARY KEY (`Id`),
   KEY `fk_product_image_header` (`IdRef`),
   CONSTRAINT `fk_product_image_header` FOREIGN KEY (`IdRef`) REFERENCES `tbl_trs_product_header` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB UTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ktnapi.tbl_trs_product_line definition
 
