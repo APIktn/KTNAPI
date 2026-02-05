@@ -15,7 +15,7 @@ export const getRandomBackgroundColor = () => {
 };
 
 const generateAvatarUrl = (firstname, lastname) => {
-  const initials = `${firstname[0]}${lastname[0]}`;
+  const initials = `${firstname[0]}${lastname[0]}`.toUpperCase();
   const backgroundColor = getRandomBackgroundColor();
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
     initials

@@ -5,7 +5,7 @@ import authenticateToken from "./middleware/authVerify.mjs";
 import testRoute from "./routes/test.routes.mjs";
 import authRouter from "./routes/auth.routes.mjs";
 import productRoute from "./routes/prod.routes.mjs";
-import inventoryRoute from "./routes/inventory.roustes.mjs";
+import inventoryRoute from "./routes/inventory.routes.mjs";
 import profileRoute from "./routes/profile.routes.mjs";
 
 const app = express();

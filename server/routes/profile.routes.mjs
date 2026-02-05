@@ -152,7 +152,7 @@ profileRoute.post(
             UserName,
             FirstName,
             LastName,
-Profile_Image,
+            Profile_Image,
             Upload_Image
           from tbl_mas_users
           where UserCode = ?
