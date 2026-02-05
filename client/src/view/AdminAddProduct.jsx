@@ -55,6 +55,7 @@ function SortableRow({ id, disabled, children }) {
   const { setNodeRef, transform, transition, attributes, listeners } =
     useSortable({
       id,
+      disabled,
       animateLayoutChanges: () => false,
     });
 
