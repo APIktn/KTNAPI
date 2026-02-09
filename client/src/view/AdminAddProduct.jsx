@@ -13,8 +13,7 @@ import {
   IconButton,
   Button,
   FormControl,
-  InputLabel,
-  useMediaQuery,
+  InputLabel
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -32,6 +31,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+
 import {
   SortableContext,
   useSortable,
@@ -79,12 +79,6 @@ function AdminAddProduct() {
   const [searchParams] = useSearchParams();
   const prd = searchParams.get("prd");
   const isEdit = Boolean(prd);
-  const [animateKey, setAnimateKey] = useState(0);
-  const isMobile = useMediaQuery("(max-width:768px)");
-
-  useEffect(() => {
-    setAnimateKey((k) => k + 1);
-  }, [prd]);
 
   /* ================= modal ================= */
   const [modalOpen, setModalOpen] = useState(false);
@@ -120,20 +114,29 @@ function AdminAddProduct() {
     }),
   );
 
-  /* ================= reset new prod ================= */
-  useEffect(() => {
-    if (prd) return;
-
+  /* ================= on ini ================= */
+useEffect(() => {
+  if (prd) {
+    fetchProduct(prd);
+  } else {
     setProductName("");
     setDescription("");
     setImage(null);
     setImagePreview(null);
     setRows([
-      { lineKey: "new1", lineNo: 1, size: "", price: "", amount: "", note: "" },
+      {
+        lineKey: "new1",
+        lineNo: 1,
+        size: "",
+        price: "",
+        amount: "",
+        note: "",
+      },
     ]);
     setTempCounter(1);
     setNotFound(false);
-  }, [prd]);
+  }
+}, [prd]);
 
   /* ================= GET PRODUCT ================= */
   const fetchProduct = async (code) => {
@@ -179,11 +182,6 @@ function AdminAddProduct() {
       }
     }
   };
-
-  useEffect(() => {
-    if (!prd) return;
-    fetchProduct(prd);
-  }, [prd]);
 
   /* ================= row handlers ================= */
   const handleAddRow = () => {
@@ -256,7 +254,7 @@ function AdminAddProduct() {
     });
   };
 
-  /* ===== drag reorder (api only, no modal success) ===== */
+  /* ===== drag reorder ===== */
   const handleDragEnd = async ({ active, over }) => {
     if (!over || active.id === over.id) return;
 
@@ -436,7 +434,6 @@ function AdminAddProduct() {
       ) : (
             <Box
               sx={{
-                minHeight: "81vh",
                 p: 2,
                 borderRadius: 2,
                 background:
@@ -450,8 +447,6 @@ function AdminAddProduct() {
                 border: "1px solid rgba(255,255,255,0.25)",
                 boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
                 mb: { xs: 3, md: 0 },
-                width: "100%",
-                maxWidth: "100%",
               }}
             >
               {/* header */}

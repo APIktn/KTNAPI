@@ -14,8 +14,6 @@ function Contact() {
     <Grow in timeout={500} key={animateKey}>
       <Box
         sx={{
-          width: "100%",
-          height: "80vh",
           p: 2,
           textAlign: "center",
           background: "rgba(255,255,255,0.15)",

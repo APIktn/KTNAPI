@@ -180,10 +180,14 @@ body {
 /* แก้บัค animate triger scoll bar */
 body {
   overflow-x: hidden;
-  /* overflow-y: hidden; */
 }
 
 /* * {
   outline: 1px solid red;
 } */
 
+
+.desktop-content {
+  height: 100%;
+  width: 100%;
+}
