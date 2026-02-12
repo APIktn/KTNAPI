@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider, useTheme } from "./Theme";
 
-/* ================= helper component ================= */
+// mock
 function TestComponent() {
   const { theme, toggleTheme } = useTheme();
   return (
@@ -13,7 +13,7 @@ function TestComponent() {
   );
 }
 
-/* ================= tests ================= */
+// tests
 describe("ThemeProvider", () => {
   beforeEach(() => {
     localStorage.clear();

@@ -57,32 +57,32 @@ export default function Login() {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const newErrors = validateLogin(form);
-  setErrors(newErrors);
-  if (Object.keys(newErrors).length > 0) return;
+    const newErrors = validateLogin(form);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
-  try {
-    const res = await auth.login(form);
+    try {
+      const res = await auth.login(form);
 
-    if (res.status === 200) {
-      setIsLogin(true);
-      localStorage.setItem("token", res.data.token);
-      login(res.data.user);
-      openModal("success", "login successful", res.data.message);
+      if (res.status === 200) {
+        setIsLogin(true);
+        localStorage.setItem("token", res.data.token);
+        login(res.data.user);
+        openModal("success", "login successful", res.data.message);
+      }
+    } catch (err) {
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.errors?.userName ||
+        err.response?.data?.errors?.password ||
+        "something went wrong";
+
+      openModal("error", "login failed", msg);
     }
-  } catch (err) {
-    const msg =
-      err.response?.data?.error ||
-      err.response?.data?.errors?.userName ||
-      err.response?.data?.errors?.password ||
-      "something went wrong";
-
-    openModal("error", "login failed", msg);
-  }
-};
+  };
 
   return (
     <PageWrapper>
@@ -116,17 +116,19 @@ const handleSubmit = async (e) => {
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
                 }}
               />
 
