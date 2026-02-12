@@ -8,12 +8,12 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
 import AppModal from "../component/Modal/AppModal";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { validateRegister } from "../validations/auth.validation";
+import { useServices } from "../context/ServiceContext";
 
 export default function Signup() {
+  const { auth } = useServices();
   const [form, setForm] = useState({
     userEmail: "",
     password: "",
@@ -57,42 +57,18 @@ export default function Signup() {
     });
   };
 
-  const validate = () => {
-    const newErrors = {};
-
-    if (!form.firstName.trim()) {
-      newErrors.firstName = "first name is required";
-    }
-
-    if (!form.lastName.trim()) {
-      newErrors.lastName = "last name is required";
-    }
-
-    if (!form.userEmail.trim()) {
-      newErrors.userEmail = "email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.userEmail)) {
-      newErrors.userEmail = "invalid email format";
-    }
-
-    if (!form.password) {
-      newErrors.password = "password is required";
-    } else if (form.password.length < 10) {
-      newErrors.password = "password must be at least 10 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+
+    // validate
+    const newErrors = validateRegister(form);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
 
     try {
-      const res = await axios.post(`${API_URL}/auth/register`, {
-        ...form,
-        status: "register",
-      });
+      // di
+      const res = await auth.register(form);
 
       if (res.status === 201) {
         openModal("success", "registration successful", res.data.message);
@@ -101,7 +77,7 @@ export default function Signup() {
       openModal(
         "error",
         "registration failed",
-        err.response?.data?.error || "something went wrong"
+        err.response?.data?.error || "something went wrong",
       );
     }
   };
@@ -161,17 +137,19 @@ export default function Signup() {
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff /> }
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
                 }}
               />
 
@@ -181,7 +159,10 @@ export default function Signup() {
 
               <Link
                 to="/login"
-                style={{ textAlign: "center", textDecoration: "none" }}
+                style={{
+                  textAlign: "center",
+                  textDecoration: "none",
+                }}
               >
                 already have an account ? let's login here!
               </Link>

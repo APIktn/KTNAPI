@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies.access_token;
 
   if (!token) {
     return res
@@ -16,9 +15,10 @@ export const authenticateToken = (req, res, next) => {
         .status(403)
         .json({ error: "invalid or expired token. please login again." });
     }
+
     req.user = user;
     next();
   });
 };
 
-export default authenticateToken
+export default authenticateToken;

@@ -7,14 +7,22 @@ import authRouter from "./routes/auth.routes.mjs";
 import productRoute from "./routes/prod.routes.mjs";
 import inventoryRoute from "./routes/inventory.routes.mjs";
 import profileRoute from "./routes/profile.routes.mjs";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+dotenv.config();
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
 const app = express();
 
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+  origin: CLIENT_URL,
+  credentials: true
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
+  res.send("Server Start!");
 });
 
 app.use("/test", authenticateToken, testRoute);

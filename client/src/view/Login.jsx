@@ -8,13 +8,13 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
 import AppModal from "../component/Modal/AppModal";
 import { useAuth } from "../context/AuthContext";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { validateLogin } from "../validations/auth.validation";
+import { useServices } from "../context/ServiceContext";
 
 export default function Login() {
+  const { auth } = useServices();
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -57,50 +57,32 @@ export default function Login() {
     });
   };
 
-  const validate = () => {
-    const newErrors = {};
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!form.username.trim()) {
-      newErrors.username = "username or email is required";
+  const newErrors = validateLogin(form);
+  setErrors(newErrors);
+  if (Object.keys(newErrors).length > 0) return;
+
+  try {
+    const res = await auth.login(form);
+
+    if (res.status === 200) {
+      setIsLogin(true);
+      localStorage.setItem("token", res.data.token);
+      login(res.data.user);
+      openModal("success", "login successful", res.data.message);
     }
+  } catch (err) {
+    const msg =
+      err.response?.data?.error ||
+      err.response?.data?.errors?.userName ||
+      err.response?.data?.errors?.password ||
+      "something went wrong";
 
-    if (!form.password) {
-      newErrors.password = "password is required";
-    } else if (form.password.length < 10) {
-      newErrors.password = "password must be at least 10 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    try {
-      const res = await axios.post(`${API_URL}/auth/login`, {
-        username: form.username,
-        password: form.password,
-        status: "LoginUser",
-      });
-
-      if (res.status === 200) {
-        setIsLogin(true);
-        localStorage.setItem("token", res.data.token);
-        login(res.data.user);
-        openModal("success", "login successful", res.data.message);
-      }
-    } catch (err) {
-      const msg =
-        err.response?.data?.error ||
-        err.response?.data?.errors?.userName ||
-        err.response?.data?.errors?.password ||
-        "something went wrong";
-
-      openModal("error", "login failed", msg);
-    }
-  };
+    openModal("error", "login failed", msg);
+  }
+};
 
   return (
     <PageWrapper>

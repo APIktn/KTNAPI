@@ -48,8 +48,10 @@ export function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthExpiredModal />
-      <AppRoutes />
+      <ServiceProvider>
+        <AuthExpiredModal />
+        <AppRoutes />
+      </ServiceProvider>
     </BrowserRouter>
   );
 }

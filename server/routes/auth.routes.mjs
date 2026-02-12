@@ -90,9 +90,15 @@ authRouter.post("/login", validateLogin, async (req, res) => {
       { expiresIn: "1h" }
     );
 
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000
+    });
+
     res.json({
       message: "login successful",
-      token,
       user: {
         userCode: user.UserCode,
         email: user.UserEmail,
@@ -106,11 +112,12 @@ authRouter.post("/login", validateLogin, async (req, res) => {
           : `${user.FirstName} ${user.LastName}`,
       },
     });
+
   } catch (err) {
     console.error("login error:", err);
     res.status(500).json({ error: "server error" });
   }
-
 });
+
 
 export default authRouter

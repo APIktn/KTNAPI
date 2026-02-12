@@ -21,6 +21,7 @@ npm install jwt-decode
 npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
 npm install -D jsdom@22.1.0
 npm install -D @vitest/coverage-v8
+npm install @vitejs/plugin-basic-ssl -D
 
 ////////////////////////////////////////////////////
 server 
@@ -36,7 +37,9 @@ docker run -p 5001:5000 server-app
 
 npm init -y
 npm install express cors dotenv
+npm install cookie-parser
 npm install --save-dev nodemon
+npm install selfsigned
 npm install cloudinary multer
 npm install -D vitest
 npm install -D @vitest/coverage-v8

@@ -10,9 +10,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { ThemeProvider } from "./context/Theme.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import jwtInterceptor from "./utils/JwtInterceptor.js";
 
-jwtInterceptor();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
