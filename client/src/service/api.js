@@ -50,8 +50,8 @@ api.interceptors.response.use(
                 return api(originalRequest);
 
             } catch (refreshErr) {
-                localStorage.removeItem("token");
                 window.dispatchEvent(new Event("auth-expired"));
+                return Promise.reject(refreshErr);
             }
         }
 
