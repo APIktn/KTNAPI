@@ -17,7 +17,9 @@ import AdminInventory from "./view/AdminInventory.jsx";
 export function AppRoutes() {
   return (
     <Routes>
+      {/* bg */}
       <Route element={<LayoutBg />}>
+        {/* nav */}
         <Route element={<Header />}>
           {/* Public */}
           <Route path="/" element={<Home />} />
